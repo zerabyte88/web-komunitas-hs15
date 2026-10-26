@@ -2,36 +2,74 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+:root {
+  color-scheme: dark;
+}
+
+html {
+  overflow-y: scroll;
+}
+
+html.light {
+  color-scheme: light;
+}
+
 body {
-  background-color: #0b0f19;
-  color: #f1f5f9;
+  background-color: #0a0a0a;
+  color: #fafafa;
   min-height: 100vh;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Glassmorphism utility */
+html.light body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+::selection {
+  background: #D7193A;
+  color: #fff;
+}
+
+/* Hexagon motif */
+.hex-clip {
+  clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+}
+
+/* Glass & Flat panels */
 .glass-panel {
-  background: rgba(19, 27, 46, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+html.light .glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
 }
 
 .glass-card {
-  background: rgba(19, 27, 46, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.3s ease;
+}
+
+html.light .glass-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 .glass-card:hover {
-  background: rgba(26, 38, 64, 0.85);
-  border-color: rgba(59, 130, 246, 0.4);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.5), 0 0 24px -4px rgba(59, 130, 246, 0.25);
+  border-color: rgba(215, 25, 58, 0.6);
+  transform: translateY(-2px);
 }
 
 /* Shimmer Loading Skeleton */
@@ -47,42 +85,103 @@ body {
 .skeleton-shimmer {
   background: linear-gradient(
     90deg,
-    rgba(30, 41, 59, 0.6) 25%,
-    rgba(51, 65, 85, 0.7) 37%,
-    rgba(30, 41, 59, 0.6) 63%
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.09) 37%,
+    rgba(255, 255, 255, 0.04) 63%
   );
   background-size: 200% 100%;
   animation: shimmer 1.6s infinite ease-in-out;
 }
 
-/* Fancybox v5 UI Dark Theme Customization */
+html.light .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.04) 25%,
+    rgba(0, 0, 0, 0.08) 37%,
+    rgba(0, 0, 0, 0.04) 63%
+  );
+  background-size: 200% 100%;
+}
+
+/* Fancybox v5 UI Theme Customization */
 .fancybox__container {
-  --fancybox-bg: rgba(11, 15, 25, 0.95);
-  --fancybox-color: #f8fafc;
-  --fancybox-accent-color: #3b82f6;
-  backdrop-filter: blur(20px);
+  --fancybox-bg: rgba(10, 10, 10, 0.96);
+  --fancybox-color: #fafafa;
+  --fancybox-accent-color: #D7193A;
+  backdrop-filter: blur(16px);
+}
+
+html.light .fancybox__container {
+  --fancybox-bg: rgba(255, 255, 255, 0.97);
+  --fancybox-color: #0f172a;
 }
 
 .fancybox__toolbar {
-  background: linear-gradient(to bottom, rgba(11, 15, 25, 0.85), transparent);
+  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.85), transparent);
   padding: 12px 20px;
+}
+
+html.light .fancybox__toolbar {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), transparent);
 }
 
 .fancybox__caption {
   font-family: inherit;
   font-size: 0.95rem;
-  background: linear-gradient(to top, rgba(11, 15, 25, 0.95), transparent);
+  background: linear-gradient(to top, rgba(10, 10, 10, 0.95), transparent);
   padding: 16px 24px;
 }
 
+html.light .fancybox__caption {
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.95), transparent);
+}
+
 .fancybox__thumb {
-  border-radius: 8px;
+  border-radius: 4px;
   overflow: hidden;
   border: 2px solid transparent;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .fancybox__thumb.is-selected {
-  border-color: #3b82f6;
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+  border-color: #D7193A;
+}
+
+/* Light mode typography & UI fine-tunes */
+html.light .text-white {
+  color: #0f172a !important;
+}
+
+html.light .text-neutral-100 {
+  color: #0f172a !important;
+}
+
+html.light .text-neutral-200 {
+  color: #1e293b !important;
+}
+
+html.light .text-neutral-300 {
+  color: #334155 !important;
+}
+
+html.light .text-neutral-400 {
+  color: #64748b !important;
+}
+
+html.light .text-neutral-500 {
+  color: #94a3b8 !important;
+}
+
+html.light .border-neutral-800,
+html.light .border-neutral-800\/80,
+html.light .border-neutral-700 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .bg-neutral-900,
+html.light .bg-neutral-900\/60,
+html.light .bg-neutral-800\/50,
+html.light .hover\:bg-neutral-800:hover,
+html.light .hover\:bg-neutral-800\/50:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
 }

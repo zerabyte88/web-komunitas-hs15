@@ -78,10 +78,10 @@ const closeModal = () => {
 
 <template>
   <div v-if="modelValue" class="modal modal-open">
-    <div class="modal-box glass-panel border border-slate-700 max-w-xl text-slate-100 shadow-2xl relative">
+    <div class="modal-box glass-panel border border-neutral-700 max-w-xl text-neutral-100 shadow-2xl relative">
       <!-- Close Button -->
       <button
-        class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3 text-slate-400 hover:text-white"
+        class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3 text-neutral-400 hover:text-white"
         @click="closeModal"
       >
         ✕
@@ -89,7 +89,7 @@ const closeModal = () => {
 
       <!-- Header -->
       <div class="flex items-center gap-3 mb-5">
-        <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
+        <div class="w-10 h-10 rounded-xl bg-crimson-500/20 text-crimson-400 flex items-center justify-center border border-crimson-500/30">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -97,7 +97,7 @@ const closeModal = () => {
         </div>
         <div>
           <h3 class="font-bold text-lg text-white">Integrasi Google Drive API</h3>
-          <p class="text-xs text-slate-400">Atur kredensial Google Drive untuk memuat arsip foto dan video secara langsung.</p>
+          <p class="text-xs text-neutral-400">Atur kredensial Google Drive untuk memuat arsip foto dan video secara langsung.</p>
         </div>
       </div>
 
@@ -114,44 +114,44 @@ const closeModal = () => {
       <!-- Form Inputs -->
       <div class="space-y-4 text-sm">
         <div>
-          <label class="block font-medium text-slate-300 mb-1">
+          <label class="block font-medium text-neutral-300 mb-1">
             Google Drive Folder ID
           </label>
           <input
             v-model="folderId"
             type="text"
             placeholder="Contoh: 1a2B3c4D5e6F7g8H9i0J..."
-            class="input input-bordered w-full bg-slate-900/80 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-500 text-sm"
+            class="input input-bordered w-full bg-neutral-900/80 border-neutral-700 text-neutral-100 placeholder:text-neutral-500 focus:border-crimson-500 text-sm"
           >
-          <p class="text-xs text-slate-400 mt-1">
+          <p class="text-xs text-neutral-400 mt-1">
             Salin ID folder dari URL Google Drive Anda (bagian setelah <code>/folders/</code>).
           </p>
         </div>
 
         <div>
-          <label class="block font-medium text-slate-300 mb-1">
+          <label class="block font-medium text-neutral-300 mb-1">
             Google Drive API Key
           </label>
           <input
             v-model="apiKey"
             type="password"
             placeholder="Contoh: AIzaSyA... (Google Cloud API Key)"
-            class="input input-bordered w-full bg-slate-900/80 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-500 text-sm font-mono"
+            class="input input-bordered w-full bg-neutral-900/80 border-neutral-700 text-neutral-100 placeholder:text-neutral-500 focus:border-crimson-500 text-sm font-mono"
           >
-          <p class="text-xs text-slate-400 mt-1">
+          <p class="text-xs text-neutral-400 mt-1">
             Buat API Key gratis di Google Cloud Console dengan mengaktifkan <strong>Google Drive API</strong>.
           </p>
         </div>
 
         <!-- Instructions Box -->
-        <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 space-y-1.5">
-          <div class="font-semibold text-blue-400 flex items-center gap-1.5">
+        <div class="p-3.5 rounded-xl bg-neutral-900/60 border border-neutral-800 text-xs text-neutral-300 space-y-1.5">
+          <div class="font-semibold text-crimson-400 flex items-center gap-1.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Petunjuk Penggunaan:
           </div>
-          <ol class="list-decimal list-inside space-y-1 pl-1 text-slate-400">
+          <ol class="list-decimal list-inside space-y-1 pl-1 text-neutral-400">
             <li>Pastikan izin folder Google Drive diatur ke <strong>"Siapa saja yang memiliki link dapat melihat"</strong>.</li>
             <li>Jika dikosongkan, website akan secara otomatis menampilkan galeri arsip lokal bawaan komunitas HS15.</li>
             <li>Nilai konfigurasi ini juga dapat disimpan permanen pada berkas <code>.env</code> server.</li>
@@ -161,11 +161,11 @@ const closeModal = () => {
 
       <!-- Action Buttons -->
       <div class="modal-action mt-6 flex justify-between items-center">
-        <span class="text-xs text-slate-500">
-          Status: <strong class="text-slate-300">{{ folderId && apiKey ? 'Kredensial Siap' : 'Mode Arsip Lokal / Demo' }}</strong>
+        <span class="text-xs text-neutral-500">
+          Status: <strong class="text-neutral-300">{{ folderId && apiKey ? 'Kredensial Siap' : 'Mode Arsip Lokal / Demo' }}</strong>
         </span>
         <div class="flex gap-2">
-          <button type="button" class="btn btn-ghost btn-sm text-slate-300" @click="closeModal">
+          <button type="button" class="btn btn-ghost btn-sm text-neutral-300" @click="closeModal">
             Batal
           </button>
           <button

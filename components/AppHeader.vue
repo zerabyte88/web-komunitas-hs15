@@ -1,6 +1,67 @@
 <script setup lang="ts">
 const route = useRoute()
-const showSettings = ref(false)
+const { isDark, toggleTheme } = useTheme()
+
+const navLinks = [
+  {
+    path: '/',
+    label: 'Beranda',
+    icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'
+  },
+  {
+    path: '/photos',
+    label: 'Galeri Foto',
+    icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
+  },
+  {
+    path: '/videos',
+    label: 'Galeri Video',
+    icon: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'
+  }
+]
+
+const navContainerRef = ref<HTMLElement | null>(null)
+const linkRefs = ref<HTMLElement[]>([])
+
+// Indicator pill style (sliding bubble indicator)
+const indicatorStyle = ref({
+  width: '0px',
+  transform: 'translateX(0px)',
+  opacity: 0
+})
+
+const updateIndicator = () => {
+  nextTick(() => {
+    const activeIndex = navLinks.findIndex(link => link.path === route.path)
+    if (activeIndex !== -1 && linkRefs.value[activeIndex] && navContainerRef.value) {
+      const activeEl = linkRefs.value[activeIndex]
+      const containerLeft = navContainerRef.value.getBoundingClientRect().left
+      const elLeft = activeEl.getBoundingClientRect().left
+      const left = elLeft - containerLeft
+
+      indicatorStyle.value = {
+        width: `${activeEl.offsetWidth}px`,
+        transform: `translateX(${left}px)`,
+        opacity: 1
+      }
+    } else {
+      indicatorStyle.value.opacity = 0
+    }
+  })
+}
+
+watch(() => route.path, () => {
+  updateIndicator()
+})
+
+onMounted(() => {
+  updateIndicator()
+  window.addEventListener('resize', updateIndicator)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateIndicator)
+})
 
 const isActive = (path: string) => {
   return route.path === path
@@ -8,112 +69,119 @@ const isActive = (path: string) => {
 </script>
 
 <template>
-  <header class="sticky top-0 z-40 w-full glass-panel border-b border-slate-800/80 shadow-lg">
+  <header class="sticky top-0 z-40 w-full glass-panel border-b border-neutral-800/80 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <!-- Brand Logo -->
-        <NuxtLink to="/" class="flex items-center gap-3 group">
-          <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-blue-500/60 shadow-[0_0_15px_rgba(59,130,246,0.5)] group-hover:border-purple-400 transition-all duration-300">
-            <img src="/img/logo.png" alt="HS15 Logo" class="w-full h-full object-cover">
+      <div class="grid grid-cols-3 items-center h-16">
+        <!-- Brand Logo (Left Column) -->
+        <div class="flex items-center justify-start">
+          <NuxtLink to="/" class="flex items-center gap-3 group">
+            <div class="relative w-10 h-10 hex-clip overflow-hidden group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 shrink-0">
+              <img src="/img/logo.png" alt="HS15 Logo" class="w-full h-full object-cover">
+            </div>
+            <div class="flex flex-col">
+              <span class="font-extrabold text-lg tracking-wide group-hover:text-crimson-400 transition-colors" :class="isDark ? 'text-white' : 'text-slate-900'">
+                HS15
+              </span>
+              <span class="text-[11px] font-medium hidden sm:inline -mt-1" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
+                Komunitas Keliling Banjar
+              </span>
+            </div>
+          </NuxtLink>
+        </div>
+
+        <!-- Navigation Links with Sliding Pill Indicator (Center Column) -->
+        <nav class="hidden md:flex items-center justify-center">
+          <div 
+            ref="navContainerRef"
+            class="relative flex items-center p-1 rounded-2xl border transition-colors duration-300"
+            :class="isDark 
+              ? 'bg-neutral-900/60 border-neutral-800/80 shadow-inner' 
+              : 'bg-slate-100/80 border-slate-200/80 shadow-inner'"
+          >
+            <!-- Sliding Indicator Pill -->
+            <div
+              class="absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out pointer-events-none"
+              :class="isDark 
+                ? 'bg-crimson-600 border border-crimson-400 shadow-[0_0_20px_rgba(215,25,58,0.45)]' 
+                : 'bg-crimson-600 border border-crimson-400 shadow-md'"
+              :style="indicatorStyle"
+            />
+
+            <!-- Nav Links -->
+            <NuxtLink
+              v-for="(link, idx) in navLinks"
+              :key="link.path"
+              :ref="(el) => { if (el) linkRefs[idx] = (el as any).$el || el }"
+              :to="link.path"
+              class="relative z-10 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 group whitespace-nowrap"
+              :class="isActive(link.path)
+                ? '!text-white' 
+                : (isDark 
+                    ? 'text-neutral-400 hover:text-white' 
+                    : 'text-slate-600 hover:text-slate-900')"
+            >
+              <svg 
+                class="w-4 h-4 transition-transform duration-200 group-hover:scale-110" 
+                :class="isActive(link.path) ? '!text-white' : ''"
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="link.icon" />
+              </svg>
+              <span>{{ link.label }}</span>
+            </NuxtLink>
           </div>
-          <div class="flex flex-col">
-            <span class="font-extrabold text-lg text-white tracking-wide group-hover:text-blue-400 transition-colors">
-              HS15
-            </span>
-            <span class="text-[11px] text-slate-400 font-medium hidden sm:inline -mt-1">
-              Komunitas Keliling Banjar
-            </span>
-          </div>
-        </NuxtLink>
-
-        <!-- Navigation Links (Desktop) -->
-        <nav class="hidden md:flex items-center gap-2">
-          <NuxtLink
-            to="/"
-            class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2"
-            :class="isActive('/') ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30 shadow-[0_0_12px_rgba(59,130,246,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/50'"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            <span>Beranda</span>
-          </NuxtLink>
-
-          <NuxtLink
-            to="/photos"
-            class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2"
-            :class="isActive('/photos') ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30 shadow-[0_0_12px_rgba(59,130,246,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/50'"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <span>Galeri Foto</span>
-          </NuxtLink>
-
-          <NuxtLink
-            to="/videos"
-            class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2"
-            :class="isActive('/videos') ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30 shadow-[0_0_12px_rgba(168,85,247,0.2)]' : 'text-slate-300 hover:text-white hover:bg-slate-800/50'"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-            <span>Galeri Video</span>
-          </NuxtLink>
         </nav>
 
-        <!-- Right Side: Google Drive Status & Settings Button -->
-        <div class="flex items-center gap-3">
+        <!-- Right Side: Theme Toggle & Mobile Menu (Right Column) -->
+        <div class="flex items-center justify-end gap-2 col-start-3">
+          <!-- Theme Toggle Button -->
           <button
             type="button"
-            class="btn btn-sm btn-ghost border border-slate-700/80 bg-slate-900/60 hover:bg-slate-800 text-xs font-medium text-slate-300 flex items-center gap-2 px-3 rounded-xl shadow-sm"
-            title="Konfigurasi Google Drive API"
-            @click="showSettings = true"
+            class="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 border hover:scale-105 active:scale-95 shrink-0"
+            :class="isDark 
+              ? 'bg-neutral-900/80 hover:bg-neutral-800 text-amber-400 border-neutral-700/80 hover:border-amber-400/40 shadow-sm' 
+              : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-300 shadow-sm'"
+            :title="isDark ? 'Ganti ke Tema Terang' : 'Ganti ke Tema Gelap'"
+            aria-label="Toggle theme"
+            @click="toggleTheme"
           >
-            <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span class="hidden sm:inline">Google Drive</span>
-            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <svg v-if="isDark" class="w-4 h-4 transition-transform hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg v-else class="w-4 h-4 text-slate-700 transition-transform hover:-rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
           </button>
 
           <!-- Mobile Dropdown Navigation -->
           <div class="dropdown dropdown-end md:hidden">
-            <button tabindex="0" class="btn btn-sm btn-circle btn-ghost text-slate-300">
+            <button tabindex="0" class="btn btn-sm btn-circle btn-ghost" :class="isDark ? 'text-neutral-300' : 'text-slate-700'">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <ul tabindex="0" class="dropdown-content z-50 menu p-2 shadow-2xl glass-panel rounded-2xl w-52 mt-3 border border-slate-700">
+            <ul tabindex="0" class="dropdown-content z-50 menu p-2 shadow-2xl glass-panel rounded-2xl w-52 mt-3 border border-neutral-700">
               <li>
-                <NuxtLink to="/" class="py-2.5 flex items-center gap-2" :class="isActive('/') ? 'text-blue-400 font-bold' : 'text-slate-200'">
+                <NuxtLink to="/" class="py-2.5 flex items-center gap-2" :class="isActive('/') ? '!text-white font-bold bg-crimson-600 rounded-lg px-3' : (isDark ? 'text-neutral-200' : 'text-slate-800')">
                   Beranda
                 </NuxtLink>
               </li>
               <li>
-                <NuxtLink to="/photos" class="py-2.5 flex items-center gap-2" :class="isActive('/photos') ? 'text-blue-400 font-bold' : 'text-slate-200'">
+                <NuxtLink to="/photos" class="py-2.5 flex items-center gap-2" :class="isActive('/photos') ? '!text-white font-bold bg-crimson-600 rounded-lg px-3' : (isDark ? 'text-neutral-200' : 'text-slate-800')">
                   Galeri Foto
                 </NuxtLink>
               </li>
               <li>
-                <NuxtLink to="/videos" class="py-2.5 flex items-center gap-2" :class="isActive('/videos') ? 'text-purple-400 font-bold' : 'text-slate-200'">
+                <NuxtLink to="/videos" class="py-2.5 flex items-center gap-2" :class="isActive('/videos') ? '!text-white font-bold bg-crimson-600 rounded-lg px-3' : (isDark ? 'text-neutral-200' : 'text-slate-800')">
                   Galeri Video
                 </NuxtLink>
-              </li>
-              <div class="divider my-1 border-slate-800" />
-              <li>
-                <button type="button" class="py-2.5 text-xs text-slate-300" @click="showSettings = true">
-                  Setelan Google Drive
-                </button>
               </li>
             </ul>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Drive Settings Modal Component -->
-    <DriveSettingsModal v-model="showSettings" />
   </header>
 </template>

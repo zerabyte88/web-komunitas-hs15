@@ -1,5 +1,12 @@
+<script setup lang="ts">
+const { isDark } = useTheme()
+</script>
+
 <template>
-  <div class="min-h-screen flex flex-col relative text-slate-100 bg-[#0b0f19]">
+  <div 
+    class="min-h-screen flex flex-col relative transition-colors duration-300"
+    :class="isDark ? 'text-neutral-100 bg-[#0a0a0a]' : 'text-slate-900 bg-slate-50'"
+  >
     <!-- Dynamic background slideshow -->
     <BackgroundSlideshow />
 
@@ -13,5 +20,8 @@
 
     <!-- Footer -->
     <AppFooter />
+
+    <!-- Back to top floating button -->
+    <ScrollToTop />
   </div>
 </template>
