@@ -47,13 +47,9 @@ const playVideo = (startIndex: number) => {
       thumb: item.thumbnailUrl,
       type: mediaType,
       caption: `
-        <div class="space-y-1 text-left">
-          <div class="font-bold text-white text-base">${item.title}</div>
-          <div class="text-xs text-neutral-300 max-w-xl">${item.description || 'Rekaman Dokumentasi Komunitas Keliling Banjar'}</div>
-          <div class="flex items-center gap-3 text-[11px] text-crimson-400 font-mono mt-1">
-            <span>📅 ${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-            <span>📁 ${item.folderName || 'Arsip Video HS15'}</span>
-          </div>
+        <div class="gallery-caption-box">
+          <div class="gallery-caption-title">${item.name}</div>
+          <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
         </div>
       `,
       downloadSrc: item.downloadUrl
@@ -64,6 +60,13 @@ const playVideo = (startIndex: number) => {
     startIndex,
     Html: {
       videoAutoplay: true
+    },
+    Toolbar: {
+      display: {
+        left: [],
+        middle: [],
+        right: ['thumbs', 'download', 'close']
+      }
     }
   })
 }
@@ -139,8 +142,8 @@ const displayedPages = computed<(number | string)[]>(() => {
           type="button"
           class="btn btn-sm rounded-xl px-4 text-xs font-semibold whitespace-nowrap shrink-0 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm"
           :class="currentFolder === 'all' 
-            ? 'bg-crimson-600 hover:bg-crimson-500 text-white border-crimson-400 shadow-[0_0_15px_rgba(215,25,58,0.4)]' 
-            : 'btn-ghost text-neutral-300 hover:bg-neutral-800/80 hover:text-white border-transparent'"
+            ? 'bg-crimson-600 hover:bg-crimson-500 !text-white btn-active-album border-crimson-400 shadow-[0_0_15px_rgba(215,25,58,0.4)]' 
+            : 'btn-ghost album-tab-inactive border-transparent'"
           @click="currentFolder = 'all'"
         >
           Semua Album
@@ -151,8 +154,8 @@ const displayedPages = computed<(number | string)[]>(() => {
           type="button"
           class="btn btn-sm rounded-xl px-4 text-xs font-semibold whitespace-nowrap shrink-0 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm"
           :class="currentFolder === folder.id 
-            ? 'bg-crimson-600 hover:bg-crimson-500 text-white border-crimson-400 shadow-[0_0_15px_rgba(215,25,58,0.4)]' 
-            : 'btn-ghost text-neutral-300 hover:bg-neutral-800/80 hover:text-white border-transparent'"
+            ? 'bg-crimson-600 hover:bg-crimson-500 !text-white btn-active-album border-crimson-400 shadow-[0_0_15px_rgba(215,25,58,0.4)]' 
+            : 'btn-ghost album-tab-inactive border-transparent'"
           @click="currentFolder = folder.id"
         >
           {{ folder.name }}
@@ -167,9 +170,9 @@ const displayedPages = computed<(number | string)[]>(() => {
             v-model="searchTerm"
             type="text"
             placeholder="Cari video..."
-            class="input input-sm input-bordered w-full bg-neutral-900/80 border-neutral-700 text-neutral-200 placeholder:text-neutral-500 rounded-xl pl-8 text-xs focus:border-crimson-500"
+            class="input input-sm input-bordered w-full bg-neutral-900 border-neutral-700 search-control-white rounded-xl pl-8 text-xs focus:border-crimson-500"
           >
-          <svg class="w-4 h-4 text-neutral-400 absolute left-2.5 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 text-neutral-300 absolute left-2.5 top-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
@@ -177,7 +180,7 @@ const displayedPages = computed<(number | string)[]>(() => {
         <!-- Sort Select -->
         <select
           v-model="sortBy"
-          class="select select-sm select-bordered bg-neutral-900/80 border-neutral-700 text-neutral-200 rounded-xl text-xs focus:border-crimson-500"
+          class="select select-sm select-bordered bg-neutral-900 border-neutral-700 select-control-white rounded-xl text-xs focus:border-crimson-500"
         >
           <option value="newest">Terbaru</option>
           <option value="oldest">Terlama</option>
@@ -242,7 +245,7 @@ const displayedPages = computed<(number | string)[]>(() => {
         <div class="p-4 flex flex-col justify-between flex-1 bg-neutral-900/40">
           <div>
             <h4 class="font-bold text-base text-neutral-100 group-hover:text-crimson-400 transition-colors line-clamp-1">
-              {{ video.title }}
+              {{ video.name || video.title }}
             </h4>
             <p v-if="video.description" class="text-xs text-neutral-400 mt-1 line-clamp-2">
               {{ video.description }}
@@ -265,7 +268,7 @@ const displayedPages = computed<(number | string)[]>(() => {
     <div v-if="mediaResponse && mediaResponse.pages > 1" class="flex justify-center pt-8">
       <div class="join glass-panel rounded-2xl border border-neutral-800 p-1.5 shadow-md">
         <button
-          class="join-item btn btn-sm btn-ghost text-neutral-300 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 disabled:hover:scale-100"
+          class="join-item btn btn-sm btn-ghost album-tab-inactive rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 disabled:hover:scale-100"
           :disabled="currentPage <= 1"
           @click="currentPage--"
         >
@@ -277,15 +280,15 @@ const displayedPages = computed<(number | string)[]>(() => {
             v-else
             class="join-item btn btn-sm rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 mx-0.5"
             :class="p === currentPage 
-              ? 'bg-crimson-600 hover:bg-crimson-500 text-white font-bold border-crimson-400 shadow-[0_0_12px_rgba(215,25,58,0.4)]' 
-              : 'btn-ghost text-neutral-300 hover:bg-neutral-800/80 hover:text-white'"
+              ? 'bg-crimson-600 hover:bg-crimson-500 !text-white font-bold border-crimson-400 shadow-[0_0_12px_rgba(215,25,58,0.4)]' 
+              : 'btn-ghost album-tab-inactive'"
             @click="currentPage = Number(p)"
           >
             {{ p }}
           </button>
         </template>
         <button
-          class="join-item btn btn-sm btn-ghost text-neutral-300 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 disabled:hover:scale-100"
+          class="join-item btn btn-sm btn-ghost album-tab-inactive rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 disabled:hover:scale-100"
           :disabled="currentPage >= mediaResponse.pages"
           @click="currentPage++"
         >

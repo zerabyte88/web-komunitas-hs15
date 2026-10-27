@@ -19,17 +19,23 @@ const openLightbox = (index: number) => {
     src: item.previewUrl,
     thumb: item.thumbnailUrl,
     caption: `
-      <div class="space-y-1">
-        <div class="font-bold text-white text-base">${item.title}</div>
-        <div class="text-xs text-neutral-300">${item.description || 'Dokumentasi Komunitas Keliling Banjar'}</div>
-        <div class="text-[11px] text-crimson-400 font-mono mt-1">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+      <div class="gallery-caption-box">
+        <div class="gallery-caption-title">${item.name}</div>
+        <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
       </div>
     `,
     downloadSrc: item.downloadUrl
   }))
 
   Fancybox.show(galleryItems, {
-    startIndex: index
+    startIndex: index,
+    Toolbar: {
+      display: {
+        left: [],
+        middle: ['zoomIn', 'zoomOut', 'toggle1to1', 'rotateCCW', 'rotateCW'],
+        right: ['slideshow', 'thumbs', 'download', 'close']
+      }
+    }
   })
 }
 </script>
@@ -206,7 +212,7 @@ const openLightbox = (index: number) => {
             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
           >
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-end">
-            <span class="text-xs font-bold text-white truncate">{{ photo.title }}</span>
+            <span class="text-xs font-bold text-white truncate">{{ photo.name || photo.title }}</span>
             <span class="text-[10px] text-crimson-400">{{ photo.folderName }}</span>
           </div>
         </div>

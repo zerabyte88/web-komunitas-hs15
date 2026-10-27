@@ -125,15 +125,81 @@ html.light .fancybox__toolbar {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), transparent);
 }
 
-.fancybox__caption {
-  font-family: inherit;
-  font-size: 0.95rem;
-  background: linear-gradient(to top, rgba(10, 10, 10, 0.95), transparent);
-  padding: 16px 24px;
+/* Gallery App Style Lightbox Caption (Top-Left) */
+.fancybox__caption,
+.fancybox__slide .fancybox__caption,
+.fancybox__footer .fancybox__caption {
+  position: absolute !important;
+  top: 14px !important;
+  left: 20px !important;
+  bottom: auto !important;
+  right: auto !important;
+  max-width: calc(100vw - 220px) !important;
+  text-align: left !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  z-index: 50 !important;
+  pointer-events: auto !important;
+  line-height: normal !important;
 }
 
-html.light .fancybox__caption {
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.95), transparent);
+.fancybox__footer,
+.is-compact .fancybox__footer {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: auto !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  z-index: 30 !important;
+}
+
+.gallery-caption-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.gallery-caption-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html.light .gallery-caption-title {
+  color: #0f172a;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.gallery-caption-date {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+html.light .gallery-caption-date {
+  color: #64748b;
+  text-shadow: none;
+}
+
+@media (min-width: 640px) {
+  .gallery-caption-title {
+    font-size: 1.05rem;
+  }
+  .gallery-caption-date {
+    font-size: 0.8rem;
+  }
 }
 
 .fancybox__thumb {
@@ -148,28 +214,85 @@ html.light .fancybox__caption {
 }
 
 /* Light mode typography & UI fine-tunes */
-html.light .text-white {
-  color: #0f172a !important;
+html.light h1:not(.keep-white),
+html.light h2:not(.keep-white),
+html.light h3:not(.keep-white),
+html.light h4:not(.keep-white) {
+  color: #0f172a;
 }
 
 html.light .text-neutral-100 {
-  color: #0f172a !important;
+  color: #0f172a;
 }
 
 html.light .text-neutral-200 {
-  color: #1e293b !important;
+  color: #1e293b;
 }
 
 html.light .text-neutral-300 {
-  color: #334155 !important;
+  color: #334155;
 }
 
 html.light .text-neutral-400 {
-  color: #64748b !important;
+  color: #64748b;
 }
 
 html.light .text-neutral-500 {
-  color: #94a3b8 !important;
+  color: #94a3b8;
+}
+
+/* Focused/active crimson buttons: ALWAYS white text in both light and dark modes */
+.bg-crimson-600,
+.bg-crimson-500,
+.btn-active-album,
+html.light .bg-crimson-600,
+html.light .bg-crimson-500,
+html.light .btn-active-album {
+  color: #ffffff !important;
+}
+
+/* Inactive album tabs: black in light theme, soft gray in dark theme */
+html.light .album-tab-inactive {
+  color: #000000 !important;
+}
+
+html.light .album-tab-inactive:hover {
+  color: #000000 !important;
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.dark .album-tab-inactive {
+  color: #d4d4d4 !important;
+}
+
+html.dark .album-tab-inactive:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Search input & Sort filter controls: ALWAYS white text in both light and dark mode */
+.search-control-white,
+html.light .search-control-white,
+html.dark .search-control-white {
+  color: #ffffff !important;
+}
+
+.search-control-white::placeholder,
+html.light .search-control-white::placeholder,
+html.dark .search-control-white::placeholder {
+  color: #e2e8f0 !important;
+  opacity: 1 !important;
+}
+
+.select-control-white,
+html.light .select-control-white,
+html.dark .select-control-white {
+  color: #ffffff !important;
+}
+
+.select-control-white option {
+  background-color: #171717 !important;
+  color: #ffffff !important;
 }
 
 html.light .border-neutral-800,
