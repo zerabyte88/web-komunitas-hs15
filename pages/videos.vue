@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Fancybox } from '@fancyapps/ui'
 import type { MediaFilterOptions } from '~/types/drive'
+import { useDragScroll } from '~/composables/useDragScroll'
 
 const { getMedia, getFolders } = useGoogleDrive()
 
@@ -8,6 +9,9 @@ const currentFolder = ref<string>('all')
 const searchTerm = ref<string>('')
 const sortBy = ref<'newest' | 'oldest' | 'name-asc' | 'name-desc'>('newest')
 const currentPage = ref<number>(1)
+
+const albumTabsRef = ref<HTMLElement | null>(null)
+useDragScroll(albumTabsRef)
 
 const filterOptions = computed<MediaFilterOptions>(() => ({
   type: 'video',
@@ -127,10 +131,13 @@ const displayedPages = computed<(number | string)[]>(() => {
     <!-- Filter & Search Toolbar -->
     <div class="glass-panel p-4 rounded-2xl flex flex-col lg:flex-row items-center justify-between gap-4 border border-neutral-800 shadow-md">
       <!-- Folder/Album Tabs -->
-      <div class="flex items-center gap-2 overflow-x-auto w-full lg:w-auto pb-2 lg:pb-0 scrollbar-none">
+      <div
+        ref="albumTabsRef"
+        class="flex items-center gap-2 overflow-x-auto overflow-y-hidden w-full lg:w-auto py-1 scrollbar-none no-scrollbar cursor-grab active:cursor-grabbing select-none touch-pan-x"
+      >
         <button
           type="button"
-          class="btn btn-sm rounded-xl px-4 text-xs font-semibold whitespace-nowrap transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm"
+          class="btn btn-sm rounded-xl px-4 text-xs font-semibold whitespace-nowrap shrink-0 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm"
           :class="currentFolder === 'all' 
             ? 'bg-crimson-600 hover:bg-crimson-500 text-white border-crimson-400 shadow-[0_0_15px_rgba(215,25,58,0.4)]' 
             : 'btn-ghost text-neutral-300 hover:bg-neutral-800/80 hover:text-white border-transparent'"
@@ -142,7 +149,7 @@ const displayedPages = computed<(number | string)[]>(() => {
           v-for="folder in folders || []"
           :key="folder.id"
           type="button"
-          class="btn btn-sm rounded-xl px-4 text-xs font-semibold whitespace-nowrap transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm"
+          class="btn btn-sm rounded-xl px-4 text-xs font-semibold whitespace-nowrap shrink-0 transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-sm"
           :class="currentFolder === folder.id 
             ? 'bg-crimson-600 hover:bg-crimson-500 text-white border-crimson-400 shadow-[0_0_15px_rgba(215,25,58,0.4)]' 
             : 'btn-ghost text-neutral-300 hover:bg-neutral-800/80 hover:text-white border-transparent'"
