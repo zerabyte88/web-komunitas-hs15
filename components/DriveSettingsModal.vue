@@ -135,7 +135,7 @@ const closeModal = () => {
           <input
             v-model="apiKey"
             type="password"
-            placeholder="Contoh: AIzaSyA... (Google Cloud API Key)"
+            placeholder="Masukkan Google Cloud API Key"
             class="input input-bordered w-full bg-neutral-900/80 border-neutral-700 text-neutral-100 placeholder:text-neutral-500 focus:border-crimson-500 text-sm font-mono"
           >
           <p class="text-xs text-neutral-400 mt-1">
