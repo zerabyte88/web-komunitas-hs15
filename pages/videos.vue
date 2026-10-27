@@ -35,13 +35,13 @@ const playVideo = (startIndex: number) => {
   if (!mediaResponse.value?.items?.length) return
 
   const videoItems = mediaResponse.value.items.map(item => {
-    const isDirectMp4 = item.previewUrl.endsWith('.mp4') || item.mimeType === 'video/mp4'
     const isDrivePreview = item.previewUrl.includes('drive.google.com')
+    const mediaType: 'iframe' | 'html5video' = isDrivePreview ? 'iframe' : 'html5video'
 
     return {
       src: item.previewUrl,
       thumb: item.thumbnailUrl,
-      type: isDrivePreview ? 'iframe' : 'html5video',
+      type: mediaType,
       caption: `
         <div class="space-y-1 text-left">
           <div class="font-bold text-white text-base">${item.title}</div>
@@ -56,18 +56,43 @@ const playVideo = (startIndex: number) => {
     }
   })
 
-  Fancybox.show(videoItems, {
+  Fancybox.show(videoItems as any, {
     startIndex,
     Html: {
-      video: {
-        autoplay: true
-      }
+      videoAutoplay: true
     }
   })
 }
 
 watch([currentFolder, searchTerm, sortBy], () => {
   currentPage.value = 1
+})
+
+// Calculate smart pagination range
+const displayedPages = computed<(number | string)[]>(() => {
+  if (!mediaResponse.value) return []
+  const total = mediaResponse.value.pages
+  const current = currentPage.value
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+  const pages: (number | string)[] = []
+  if (current <= 4) {
+    for (let i = 1; i <= 5; i++) pages.push(i)
+    pages.push('...')
+    pages.push(total)
+  } else if (current >= total - 3) {
+    pages.push(1)
+    pages.push('...')
+    for (let i = total - 4; i <= total; i++) pages.push(i)
+  } else {
+    pages.push(1)
+    pages.push('...')
+    for (let i = current - 1; i <= current + 1; i++) pages.push(i)
+    pages.push('...')
+    pages.push(total)
+  }
+  return pages
 })
 </script>
 
@@ -239,17 +264,19 @@ watch([currentFolder, searchTerm, sortBy], () => {
         >
           « Sebelumnya
         </button>
-        <button
-          v-for="p in mediaResponse.pages"
-          :key="p"
-          class="join-item btn btn-sm rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 mx-0.5"
-          :class="p === currentPage 
-            ? 'bg-crimson-600 hover:bg-crimson-500 text-white font-bold border-crimson-400 shadow-[0_0_12px_rgba(215,25,58,0.4)]' 
-            : 'btn-ghost text-neutral-300 hover:bg-neutral-800/80 hover:text-white'"
-          @click="currentPage = p"
-        >
-          {{ p }}
-        </button>
+        <template v-for="(p, i) in displayedPages" :key="i">
+          <span v-if="p === '...'" class="join-item btn btn-sm btn-disabled btn-ghost text-neutral-500 font-bold px-2 pointer-events-none">...</span>
+          <button
+            v-else
+            class="join-item btn btn-sm rounded-xl transition-all duration-200 hover:scale-110 active:scale-95 mx-0.5"
+            :class="p === currentPage 
+              ? 'bg-crimson-600 hover:bg-crimson-500 text-white font-bold border-crimson-400 shadow-[0_0_12px_rgba(215,25,58,0.4)]' 
+              : 'btn-ghost text-neutral-300 hover:bg-neutral-800/80 hover:text-white'"
+            @click="currentPage = Number(p)"
+          >
+            {{ p }}
+          </button>
+        </template>
         <button
           class="join-item btn btn-sm btn-ghost text-neutral-300 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 disabled:hover:scale-100"
           :disabled="currentPage >= mediaResponse.pages"
