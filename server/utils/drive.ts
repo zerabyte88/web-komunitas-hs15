@@ -1,6 +1,5 @@
 import type { DriveMediaItem, DriveFolder, DriveStats, MediaFilterOptions, MediaResponse } from '../../types/drive'
 
-// Global Nitro auto-imports declarations for seamless IDE intellisense
 declare const useRuntimeConfig: () => {
   googleDriveApiKey?: string
   googleDriveFolderId?: string
@@ -11,13 +10,6 @@ declare const $fetch: <T = any>(url: string, opts?: any) => Promise<T>
 interface DriveConfig {
   apiKey: string
   folderId: string
-}
-
-let customConfig: Partial<DriveConfig> = {}
-
-export function setRuntimeDriveConfig(config: Partial<DriveConfig>) {
-  customConfig = { ...customConfig, ...config }
-  cache.clear()
 }
 
 export function getDriveConfig(): DriveConfig {
@@ -33,8 +25,8 @@ export function getDriveConfig(): DriveConfig {
   }
 
   return {
-    apiKey: customConfig.apiKey || runtimeConfigApiKey || process.env.GOOGLE_DRIVE_API_KEY || '',
-    folderId: customConfig.folderId || runtimeConfigFolderId || process.env.GOOGLE_DRIVE_FOLDER_ID || ''
+    apiKey: runtimeConfigApiKey || process.env.GOOGLE_DRIVE_API_KEY || '',
+    folderId: runtimeConfigFolderId || process.env.GOOGLE_DRIVE_FOLDER_ID || ''
   }
 }
 

@@ -17,24 +17,9 @@ export function useGoogleDrive() {
     return useFetch<DriveStats>('/api/drive/stats')
   }
 
-  const updateConfig = async (payload: { apiKey?: string; folderId?: string }) => {
-    return await $fetch<{
-      success: boolean
-      apiKeyConfigured: boolean
-      folderIdConfigured: boolean
-      folderId: string
-      isConnected: boolean
-      error: string | null
-    }>('/api/drive/config', {
-      method: 'POST',
-      body: payload
-    })
-  }
-
   return {
     getMedia,
     getFolders,
-    getStats,
-    updateConfig
+    getStats
   }
 }

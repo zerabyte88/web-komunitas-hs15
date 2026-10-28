@@ -11,13 +11,10 @@
   },
   "dependencies": {
     "@fancyapps/ui": "^5.0.36",
-    "@lucide/vue": "^1.61.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
     "daisyui": "^4.12.23",
-    "lucide-vue-next": "^1.0.0",
     "nuxt": "^4.6.2",
-    "vue": "^3.5.44",
-    "vue-router": "^5.4.0"
+    "vue": "^3.5.44"
   },
   "allowScripts": {
     "esbuild@0.28.2": true

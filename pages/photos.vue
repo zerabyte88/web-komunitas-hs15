@@ -23,8 +23,8 @@ const filterOptions = computed<MediaFilterOptions>(() => ({
 }))
 
 // Fetch folders and media
-const { data: folders, pending: foldersPending } = await getFolders()
-const { data: mediaResponse, pending: mediaPending, refresh } = await getMedia(filterOptions)
+const { data: folders } = await getFolders()
+const { data: mediaResponse, pending: mediaPending } = await getMedia(filterOptions)
 
 // Trigger Fancybox v5 on image click
 const openGallery = (startIndex: number) => {

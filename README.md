@@ -39,7 +39,6 @@ Website galeri dan arsip digital dokumentasi **HS15 - Komunitas Keliling Banjar*
 * **Google Drive API v3:** Pengambilan media langsung dari folder Google Drive tanpa database server, dilengkapi *in-memory cache* 5 menit untuk kecepatan dan penghematan kuota API.
 * **Filter & Pencarian:** Navigasi media per album/kegiatan serta pencarian judul dan opsi sortir (*Terbaru*, *Terlama*, *A-Z*, *Z-A*).
 * **Desain Khas HS15:** Tema gelap kustom `hs15dark` dengan *glassmorphism*, tata letak responsif, dan *slideshow* crossfade latar belakang 5 foto asli komunitas.
-* **Modal Pengaturan Drive:** Antarmuka praktis untuk mengatur dan menguji koneksi Folder ID dan API Key Google Drive langsung dari web, lengkap dengan fallback data lokal.
 
 ---
 
