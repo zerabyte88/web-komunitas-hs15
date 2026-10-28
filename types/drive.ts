@@ -32,7 +32,7 @@ export interface DriveStats {
 }
 
 export interface MediaFilterOptions {
-  type?: MediaType
+  type?: MediaType | 'all'
   folderId?: string
   search?: string
   sort?: 'newest' | 'oldest' | 'name-asc' | 'name-desc'

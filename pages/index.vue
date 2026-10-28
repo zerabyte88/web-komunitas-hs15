@@ -119,7 +119,7 @@ const openLightbox = (index: number) => {
       </div>
     </header>
 
-    <!-- Main Navigation Entrances: Dual Archival Portals -->
+    <!-- Main Navigation Entrance: Unified Archival Portal -->
     <section class="space-y-4">
       <div class="flex items-center justify-between">
         <div>
@@ -127,153 +127,100 @@ const openLightbox = (index: number) => {
             Pintu Arsip
           </h2>
           <p class="text-xs sm:text-sm text-neutral-300">
-            Pilih direktori dokumentasi yang ingin Anda telusuri.
+            Telusuri seluruh koleksi dokumentasi foto dan video perjalanan komunitas dalam satu galeri.
           </p>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Portal 1: Galeri Foto -->
-        <NuxtLink
-          to="/photos"
-          class="glass-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between group relative overflow-hidden transition-all duration-300 border hover:border-crimson-500/60"
-        >
-          <div class="space-y-5">
-            <!-- Header Badge & Icon -->
-            <div class="flex items-center justify-between">
-              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-crimson-500/15 text-crimson-400 border border-crimson-500/25">
-                <span>Dokumentasi Foto</span>
-              </span>
-              <div class="w-12 h-12 rounded-2xl bg-crimson-500/10 text-crimson-500 flex items-center justify-center border border-crimson-500/20 group-hover:scale-110 group-hover:bg-crimson-500 group-hover:text-white transition-all duration-300">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-            </div>
-
-            <!-- Title & Description -->
-            <div class="space-y-2">
-              <h3 class="text-2xl font-extrabold group-hover:text-crimson-500 transition-colors" :class="isDark ? 'text-white' : 'text-slate-900'">
-                Galeri Foto Kegiatan
-              </h3>
-              <p class="text-sm leading-relaxed" :class="isDark ? 'text-neutral-300' : 'text-slate-600'">
-                Koleksi potret dari setiap agenda touring, titik henti, potret convoy, serta momen kebersamaan anggota HS15.
-              </p>
-            </div>
-
-            <!-- Features / Metadata List -->
-            <div class="grid grid-cols-2 gap-2 pt-2 text-xs font-medium" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
-              <div class="flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Tinjau Foto</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Filter per Album</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Unduh Berkas</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>{{ stats?.photos ?? 0 }} Foto Tersedia</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bottom Action Bar -->
-          <div 
-            class="mt-8 pt-4 border-t flex items-center justify-between text-sm font-bold text-crimson-500 group-hover:text-crimson-400 transition-colors"
-            :class="isDark ? 'border-neutral-800' : 'border-slate-100'"
-          >
-            <span>Masuk ke Galeri Foto</span>
-            <div class="flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-200">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+      <div class="glass-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden transition-all duration-300 border hover:border-crimson-500/60">
+        <div class="space-y-5">
+          <!-- Header Badge & Icon -->
+          <div class="flex items-center justify-between">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-crimson-500/15 text-crimson-400 border border-crimson-500/25">
+              <span>Arsip Dokumentasi Terpadu</span>
+            </span>
+            <div class="w-12 h-12 rounded-2xl bg-crimson-500/10 text-crimson-500 flex items-center justify-center border border-crimson-500/20">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
           </div>
-        </NuxtLink>
 
-        <!-- Portal 2: Galeri Video -->
-        <NuxtLink
-          to="/videos"
-          class="glass-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between group relative overflow-hidden transition-all duration-300 border hover:border-crimson-500/60"
-        >
-          <div class="space-y-5">
-            <!-- Header Badge & Icon -->
-            <div class="flex items-center justify-between">
-              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-crimson-500/15 text-crimson-400 border border-crimson-500/25">
-                <span>Dokumentasi Audio &amp; Video</span>
-              </span>
-              <div class="w-12 h-12 rounded-2xl bg-crimson-500/10 text-crimson-500 flex items-center justify-center border border-crimson-500/20 group-hover:scale-110 group-hover:bg-crimson-500 group-hover:text-white transition-all duration-300">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-              </div>
-            </div>
-
-            <!-- Title & Description -->
-            <div class="space-y-2">
-              <h3 class="text-2xl font-extrabold group-hover:text-crimson-500 transition-colors" :class="isDark ? 'text-white' : 'text-slate-900'">
-                Galeri Video Touring
-              </h3>
-              <p class="text-sm leading-relaxed" :class="isDark ? 'text-neutral-300' : 'text-slate-600'">
-                Rekaman saat berkendara di aspal, dokumentasi perjalanan, serta video kebersamaan resmi komunitas.
-              </p>
-            </div>
-
-            <!-- Features / Metadata List -->
-            <div class="grid grid-cols-2 gap-2 pt-2 text-xs font-medium" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
-              <div class="flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Putar Video Langsung</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Pilah Kategori Rute</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Video HD</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>{{ stats?.videos ?? 0 }} Video Tersedia</span>
-              </div>
-            </div>
+          <!-- Title & Description -->
+          <div class="space-y-2 max-w-2xl">
+            <h3 class="text-2xl font-extrabold" :class="isDark ? 'text-white' : 'text-slate-900'">
+              Galeri Foto &amp; Video Kegiatan
+            </h3>
+            <p class="text-sm leading-relaxed" :class="isDark ? 'text-neutral-300' : 'text-slate-600'">
+              Koleksi potret dan rekaman video dari setiap agenda touring, titik henti, perjalanan di jalanan Kalimantan, serta momen kebersamaan anggota HS15.
+            </p>
           </div>
 
-          <!-- Bottom Action Bar -->
-          <div 
-            class="mt-8 pt-4 border-t flex items-center justify-between text-sm font-bold text-crimson-500 group-hover:text-crimson-400 transition-colors"
-            :class="isDark ? 'border-neutral-800' : 'border-slate-100'"
-          >
-            <span>Masuk ke Galeri Video</span>
-            <div class="flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-200">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          <!-- Features / Metadata List -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs font-medium" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
+            <div class="flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
+              <span>{{ stats?.photos ?? 0 }} Foto Tersedia</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>{{ stats?.videos ?? 0 }} Video Tersedia</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Filter Foto &amp; Video</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Filter per Album &amp; Unduh</span>
             </div>
           </div>
-        </NuxtLink>
+        </div>
+
+        <!-- Bottom Action Bar with Quick Filters -->
+        <div 
+          class="mt-8 pt-5 border-t flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          :class="isDark ? 'border-neutral-800' : 'border-slate-100'"
+        >
+          <NuxtLink
+            to="/gallery"
+            class="inline-flex items-center gap-2 text-sm font-bold text-crimson-500 hover:text-crimson-400 transition-colors group"
+          >
+            <span>Buka Galeri Foto &amp; Video</span>
+            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </NuxtLink>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <NuxtLink
+              to="/gallery"
+              class="btn btn-xs sm:btn-sm rounded-xl bg-crimson-600 hover:bg-crimson-500 !text-white border-crimson-400 px-3.5 font-semibold"
+            >
+              Semua
+            </NuxtLink>
+            <NuxtLink
+              to="/gallery?type=photo"
+              class="btn btn-xs sm:btn-sm rounded-xl btn-ghost album-tab-inactive border border-neutral-700/80 px-3.5 font-semibold"
+            >
+              Foto Saja
+            </NuxtLink>
+            <NuxtLink
+              to="/gallery?type=video"
+              class="btn btn-xs sm:btn-sm rounded-xl btn-ghost album-tab-inactive border border-neutral-700/80 px-3.5 font-semibold"
+            >
+              Video Saja
+            </NuxtLink>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -336,10 +283,10 @@ const openLightbox = (index: number) => {
         </div>
 
         <NuxtLink 
-          to="/photos" 
+          to="/gallery" 
           class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-crimson-500 hover:text-crimson-400 transition-colors group shrink-0"
         >
-          <span>Buka Semua Foto</span>
+          <span>Buka Galeri</span>
           <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>

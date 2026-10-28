@@ -9,14 +9,9 @@ const navLinks = [
     icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'
   },
   {
-    path: '/photos',
-    label: 'Galeri Foto',
+    path: '/gallery',
+    label: 'Galeri',
     icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
-  },
-  {
-    path: '/videos',
-    label: 'Galeri Video',
-    icon: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'
   }
 ]
 
@@ -169,13 +164,8 @@ const isActive = (path: string) => {
                 </NuxtLink>
               </li>
               <li>
-                <NuxtLink to="/photos" class="py-2.5 flex items-center gap-2" :class="isActive('/photos') ? '!text-white font-bold bg-crimson-600 rounded-lg px-3' : (isDark ? 'text-neutral-200' : 'text-slate-800')">
-                  Galeri Foto
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/videos" class="py-2.5 flex items-center gap-2" :class="isActive('/videos') ? '!text-white font-bold bg-crimson-600 rounded-lg px-3' : (isDark ? 'text-neutral-200' : 'text-slate-800')">
-                  Galeri Video
+                <NuxtLink to="/gallery" class="py-2.5 flex items-center gap-2" :class="isActive('/gallery') ? '!text-white font-bold bg-crimson-600 rounded-lg px-3' : (isDark ? 'text-neutral-200' : 'text-slate-800')">
+                  Galeri
                 </NuxtLink>
               </li>
             </ul>

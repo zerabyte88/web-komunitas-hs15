@@ -59,7 +59,6 @@ export async function fetchGoogleDriveFiles(options: MediaFilterOptions = {}): P
   // Use live Google Drive API if apiKey and folderId are configured
   if (apiKey && rootFolderId) {
     try {
-      const type = options.type || 'all'
       const requestedFolderId = options.folderId && options.folderId !== 'all' ? options.folderId : undefined
 
       let allFiles: DriveMediaItem[] = []
@@ -69,10 +68,10 @@ export async function fetchGoogleDriveFiles(options: MediaFilterOptions = {}): P
         const folders = await fetchGoogleDriveFolders()
         const targetFolder = folders.find(f => f.id === requestedFolderId)
         const folderName = targetFolder?.name || ''
-        allFiles = await queryGoogleDriveFolder(apiKey, requestedFolderId, folderName, options.type)
+        allFiles = await queryGoogleDriveFolder(apiKey, requestedFolderId, folderName, 'all')
       } else {
         // "Semua Album": fetch from all album subfolders + root folder
-        const cacheKey = `drive-all-files-${rootFolderId}-${type}`
+        const cacheKey = `drive-all-files-${rootFolderId}`
         const cached = getCached<DriveMediaItem[]>(cacheKey)
 
         if (cached) {
@@ -82,11 +81,11 @@ export async function fetchGoogleDriveFiles(options: MediaFilterOptions = {}): P
 
           // Query all album subfolders in parallel
           const folderPromises = folders.map(f =>
-            queryGoogleDriveFolder(apiKey, f.id, f.name, options.type)
+            queryGoogleDriveFolder(apiKey, f.id, f.name, 'all')
           )
 
           // Also check root folder in case any media files are directly at root
-          folderPromises.push(queryGoogleDriveFolder(apiKey, rootFolderId, '', options.type))
+          folderPromises.push(queryGoogleDriveFolder(apiKey, rootFolderId, '', 'all'))
 
           const results = await Promise.all(folderPromises)
           allFiles = results.flat()
@@ -234,6 +233,11 @@ async function queryGoogleDriveFolder(
 
 function processAndPaginate(allFiles: DriveMediaItem[], options: MediaFilterOptions): MediaResponse {
   let list = [...allFiles]
+
+  // Filter by media type (photo | video)
+  if (options.type === 'photo' || options.type === 'video') {
+    list = list.filter(item => item.type === options.type)
+  }
 
   // Search filter
   if (options.search && options.search.trim()) {
