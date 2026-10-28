@@ -263,7 +263,7 @@ const openLightbox = (index: number) => {
             Penyimpanan Terbuka &amp; Terarsip
           </div>
           <p class="text-xs sm:text-sm leading-relaxed" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
-            Memastikan seluruh anggota dapat mengakses file dokumentasi orisinal dalam resolusi penuh.
+            Memastikan seluruh anggota dapat mengakses file dokumentasi orisinal dengan mudah dan cepat.
           </p>
         </div>
       </div>
@@ -273,12 +273,12 @@ const openLightbox = (index: number) => {
     <section class="space-y-6 pt-2">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div class="space-y-1">
-          <span class="text-xs font-bold uppercase tracking-wider text-crimson-500">Pembaruan Terbaru</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-crimson-500">Sorotan Terbaru</span>
           <h2 class="keep-white text-2xl sm:text-3xl font-black tracking-tight text-white">
             Sorotan Dokumentasi Terkini
           </h2>
           <p class="text-xs sm:text-sm text-neutral-300">
-            Beberapa potret terbaru dari arsip kegiatan.
+            Cuplikan beberapa dokumentasi terbaru.
           </p>
         </div>
 
