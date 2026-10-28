@@ -75,8 +75,8 @@ const isActive = (path: string) => {
         <!-- Brand Logo (Left Column) -->
         <div class="flex items-center justify-start">
           <NuxtLink to="/" class="flex items-center gap-3 group">
-            <div class="relative w-10 h-10 hex-clip overflow-hidden group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 shrink-0">
-              <img src="/img/logo.png" alt="HS15 Logo" class="w-full h-full object-cover">
+            <div class="relative w-10 h-10 group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 shrink-0">
+              <img src="/img/logo.png" alt="HS15 Logo" class="w-full h-full object-contain">
             </div>
             <div class="flex flex-col">
               <span class="font-extrabold text-lg tracking-wide group-hover:text-crimson-400 transition-colors" :class="isDark ? 'text-white' : 'text-slate-900'">
