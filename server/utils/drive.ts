@@ -150,7 +150,7 @@ async function queryGoogleDriveFolder(
   apiKey: string,
   folderId: string,
   folderName: string,
-  type?: 'photo' | 'video'
+  type?: 'photo' | 'video' | 'all'
 ): Promise<DriveMediaItem[]> {
   try {
     const cacheKey = `drive-folder-${folderId}-${type || 'all'}`

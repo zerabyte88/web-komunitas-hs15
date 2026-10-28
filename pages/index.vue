@@ -60,7 +60,7 @@ const openLightbox = (index: number) => {
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-white/15 transition-colors">
         <div class="flex items-center gap-2.5 text-xs font-semibold tracking-wider uppercase">
           <span class="inline-block w-2 h-2 rounded-full bg-crimson-500" />
-          <span class="text-neutral-200">Arsip Dokumentasi HS15</span>
+          <span class="text-neutral-200">Dokumentasi HS15</span>
           <span class="text-neutral-500">/</span>
           <span class="text-neutral-300">Wilayah Kalimantan Selatan</span>
         </div>
@@ -124,7 +124,7 @@ const openLightbox = (index: number) => {
 
       <div class="glass-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden transition-all duration-300 border hover:border-crimson-500/60">
         <div class="space-y-5">
-          
+
           <!-- Title & Description -->
           <div class="space-y-2 max-w-2xl">
             <h3 class="text-2xl font-extrabold" :class="isDark ? 'text-white' : 'text-slate-900'">

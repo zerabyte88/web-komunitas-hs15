@@ -17,6 +17,10 @@
   },
   "include": [
     "./.nuxt/nuxt.d.ts",
+    "./.nuxt/nuxt.node.d.ts",
+    "./node_modules/.cache/nuxt/.nuxt/nuxt.d.ts",
+    "./node_modules/.cache/nuxt/.nuxt/nuxt.node.d.ts",
+    "./nuxt.config.ts",
     "./types/**/*",
     "./server/**/*",
     "./components/**/*",

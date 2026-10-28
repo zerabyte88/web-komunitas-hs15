@@ -1,3 +1,5 @@
+import { defineNuxtConfig } from 'nuxt/config'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -16,11 +18,11 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'HS15 - Arsip Dokumentasi Komunitas Keliling Banjar',
+      title: 'HS15 - Beranda',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Website galeri dan arsip digital foto dan video kegiatan komunitas HS15 - Komunitas Keliling Banjar didukung Google Drive API.' }
+        { name: 'description', content: 'Website galeri dan arsip digital komunitas HS15.' }
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
