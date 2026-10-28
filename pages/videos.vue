@@ -114,10 +114,10 @@ const displayedPages = computed<(number | string)[]>(() => {
           </svg>
           <span>Dokumentasi Video HS15</span>
         </div>
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h1 class="keep-white text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
           Galeri Video Komunitas
         </h1>
-        <p class="text-neutral-400 text-sm max-w-xl">
+        <p class="text-neutral-300 text-sm max-w-xl">
           Kumpulan video touring, keseruan, dan rekaman perjalanan Komunitas Keliling Banjar.
         </p>
       </div>

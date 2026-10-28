@@ -57,23 +57,20 @@ const openLightbox = (index: number) => {
     <!-- Editorial Masthead Section -->
     <header class="space-y-6">
       <!-- Archival Docket Top Strip -->
-      <div 
-        class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b transition-colors"
-        :class="isDark ? 'border-neutral-800' : 'border-slate-200'"
-      >
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-white/15 transition-colors">
         <div class="flex items-center gap-2.5 text-xs font-semibold tracking-wider uppercase">
           <span class="inline-block w-2 h-2 rounded-full bg-crimson-500" />
-          <span :class="isDark ? 'text-neutral-300' : 'text-slate-700'">Arsip Dokumentasi HS15</span>
-          <span :class="isDark ? 'text-neutral-600' : 'text-slate-400'">/</span>
-          <span :class="isDark ? 'text-neutral-400' : 'text-slate-500'">Wilayah Kalimantan Selatan</span>
+          <span class="text-neutral-200">Arsip Dokumentasi HS15</span>
+          <span class="text-neutral-500">/</span>
+          <span class="text-neutral-300">Wilayah Kalimantan Selatan</span>
         </div>
 
         <!-- Integrated Live Archive Docket Bar -->
         <div 
           class="inline-flex items-center gap-2 sm:gap-3 px-3.5 py-1.5 rounded-xl border text-xs font-medium transition-colors"
           :class="isDark 
-            ? 'bg-neutral-900/60 border-neutral-800 text-neutral-300' 
-            : 'bg-white border-slate-200 text-slate-700 shadow-sm'"
+            ? 'bg-neutral-900/70 border-neutral-800 text-neutral-300' 
+            : 'bg-white/90 border-slate-200 text-slate-700 shadow-sm'"
         >
           <span class="font-bold text-crimson-500">
             <span v-if="statsPending" class="loading loading-dots loading-xs" />
@@ -98,31 +95,22 @@ const openLightbox = (index: number) => {
       <!-- Main Editorial Headline & Manifesto -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-end pt-2">
         <div class="lg:col-span-8 space-y-4">
-          <h1 
-            class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]"
-            :class="isDark ? 'text-white' : 'text-slate-900'"
-          >
+          <h1 class="keep-white text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-white">
             Jejak Roda Dua di Sepanjang Aspal &amp; Alam <span class="text-crimson-500">Tanah Borneo</span>.
           </h1>
-          <p 
-            class="text-base sm:text-lg leading-relaxed max-w-2xl"
-            :class="isDark ? 'text-neutral-300' : 'text-slate-600'"
-          >
+          <p class="text-base sm:text-lg leading-relaxed max-w-2xl text-neutral-200">
           Dokumentasi ini didedikasikan untuk mengarsipkan setiap momen perjalanan touring dan pertemuan Komunitas HS15. Website ini menangkap esensi perjalanan di jalanan Kalimantan, dinamika di titik peristirahatan, serta nilai solidaritas yang menyatukan kami.
           </p>
         </div>
 
         <!-- Regional Route Footnotes -->
-        <div class="lg:col-span-4 lg:border-l lg:pl-6 space-y-2.5" :class="isDark ? 'border-neutral-800' : 'border-slate-200'">
+        <div class="lg:col-span-4 lg:border-l lg:border-white/15 lg:pl-6 space-y-2.5">
           <span class="text-[11px] font-bold uppercase tracking-wider text-crimson-500">Lintas Perjalanan</span>
           <div class="flex flex-wrap gap-1.5 text-xs">
             <span 
               v-for="route in ['Banjarmasin', 'Banjarbaru', 'Pelaihari']"
               :key="route"
-              class="px-2.5 py-1 rounded-lg border transition-colors"
-              :class="isDark 
-                ? 'bg-neutral-900/70 border-neutral-800 text-neutral-300' 
-                : 'bg-slate-100 border-slate-200 text-slate-700'"
+              class="px-2.5 py-1 rounded-lg border border-white/15 bg-black/40 text-neutral-200 backdrop-blur-sm"
             >
               {{ route }}
             </span>
@@ -135,10 +123,10 @@ const openLightbox = (index: number) => {
     <section class="space-y-4">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-xl sm:text-2xl font-black tracking-tight" :class="isDark ? 'text-white' : 'text-slate-900'">
-            Pintu Masuk Arsip
+          <h2 class="keep-white text-xl sm:text-2xl font-black tracking-tight text-white">
+            Pintu Arsip
           </h2>
-          <p class="text-xs sm:text-sm" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
+          <p class="text-xs sm:text-sm text-neutral-300">
             Pilih direktori dokumentasi yang ingin Anda telusuri.
           </p>
         </div>
@@ -154,7 +142,7 @@ const openLightbox = (index: number) => {
             <!-- Header Badge & Icon -->
             <div class="flex items-center justify-between">
               <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-crimson-500/15 text-crimson-400 border border-crimson-500/25">
-                <span>Dokumentasi Foto Resolusi Penuh</span>
+                <span>Dokumentasi Foto</span>
               </span>
               <div class="w-12 h-12 rounded-2xl bg-crimson-500/10 text-crimson-500 flex items-center justify-center border border-crimson-500/20 group-hover:scale-110 group-hover:bg-crimson-500 group-hover:text-white transition-all duration-300">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -225,7 +213,7 @@ const openLightbox = (index: number) => {
             <!-- Header Badge & Icon -->
             <div class="flex items-center justify-between">
               <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-crimson-500/15 text-crimson-400 border border-crimson-500/25">
-                <span>Dokumentasi Audio-Visual &amp; Vlog</span>
+                <span>Dokumentasi Audio &amp; Video</span>
               </span>
               <div class="w-12 h-12 rounded-2xl bg-crimson-500/10 text-crimson-500 flex items-center justify-center border border-crimson-500/20 group-hover:scale-110 group-hover:bg-crimson-500 group-hover:text-white transition-all duration-300">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -339,10 +327,10 @@ const openLightbox = (index: number) => {
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div class="space-y-1">
           <span class="text-xs font-bold uppercase tracking-wider text-crimson-500">Pembaruan Terbaru</span>
-          <h2 class="text-2xl sm:text-3xl font-black tracking-tight" :class="isDark ? 'text-white' : 'text-slate-900'">
+          <h2 class="keep-white text-2xl sm:text-3xl font-black tracking-tight text-white">
             Sorotan Dokumentasi Terkini
           </h2>
-          <p class="text-xs sm:text-sm" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
+          <p class="text-xs sm:text-sm text-neutral-300">
             Beberapa potret terbaru dari arsip kegiatan.
           </p>
         </div>
