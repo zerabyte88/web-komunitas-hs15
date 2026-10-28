@@ -63,7 +63,7 @@ const openLightbox = (index: number) => {
       >
         <div class="flex items-center gap-2.5 text-xs font-semibold tracking-wider uppercase">
           <span class="inline-block w-2 h-2 rounded-full bg-crimson-500" />
-          <span :class="isDark ? 'text-neutral-300' : 'text-slate-700'">Arsip Dokumentasi Komunitas</span>
+          <span :class="isDark ? 'text-neutral-300' : 'text-slate-700'">Arsip Dokumentasi HS15</span>
           <span :class="isDark ? 'text-neutral-600' : 'text-slate-400'">/</span>
           <span :class="isDark ? 'text-neutral-400' : 'text-slate-500'">Wilayah Kalimantan Selatan</span>
         </div>
@@ -91,7 +91,7 @@ const openLightbox = (index: number) => {
             <span v-if="statsPending" class="loading loading-dots loading-xs" />
             <span v-else>{{ stats?.folders ?? 0 }}</span>
           </span>
-          <span>Album Touring</span>
+          <span>Album</span>
         </div>
       </div>
 
@@ -102,22 +102,22 @@ const openLightbox = (index: number) => {
             class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]"
             :class="isDark ? 'text-white' : 'text-slate-900'"
           >
-            Jejak Roda Dua di Sepanjang Aspal &amp; Alam <span class="text-crimson-500">Tanah Banjar</span>.
+            Jejak Roda Dua di Sepanjang Aspal &amp; Alam <span class="text-crimson-500">Tanah Borneo</span>.
           </h1>
           <p 
             class="text-base sm:text-lg leading-relaxed max-w-2xl"
             :class="isDark ? 'text-neutral-300' : 'text-slate-600'"
           >
-            Koleksi dokumentasi visual terbuka dari perjalanan touring dan agenda perkumpulan Komunitas HS15. Mengabadikan setiap kilometer jalanan, persinggahan rest point, dan kebersamaan di bumi Kalimantan Selatan.
+          Dokumentasi ini didedikasikan untuk mengarsipkan setiap momen perjalanan touring dan pertemuan Komunitas HS15. Website ini menangkap esensi perjalanan di jalanan Kalimantan, dinamika di titik peristirahatan, serta nilai solidaritas yang menyatukan kami.
           </p>
         </div>
 
         <!-- Regional Route Footnotes -->
         <div class="lg:col-span-4 lg:border-l lg:pl-6 space-y-2.5" :class="isDark ? 'border-neutral-800' : 'border-slate-200'">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-crimson-500">Lintas Penjelajahan</span>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-crimson-500">Lintas Perjalanan</span>
           <div class="flex flex-wrap gap-1.5 text-xs">
             <span 
-              v-for="route in ['Banjarmasin', 'Banjarbaru', 'Martapura', 'Kiram & Meratus', 'Tanah Laut', 'Banua Enam']"
+              v-for="route in ['Banjarmasin', 'Banjarbaru', 'Pelaihari']"
               :key="route"
               class="px-2.5 py-1 rounded-lg border transition-colors"
               :class="isDark 
@@ -169,7 +169,7 @@ const openLightbox = (index: number) => {
                 Galeri Foto Kegiatan
               </h3>
               <p class="text-sm leading-relaxed" :class="isDark ? 'text-neutral-300' : 'text-slate-600'">
-                Koleksi potret berkualitas tinggi dari setiap agenda touring, titik henti santai, potret convoy, serta momen kebersamaan anggota HS15.
+                Koleksi potret dari setiap agenda touring, titik henti, potret convoy, serta momen kebersamaan anggota HS15.
               </p>
             </div>
 
@@ -179,19 +179,19 @@ const openLightbox = (index: number) => {
                 <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Tinjau Lightbox Cepat</span>
+                <span>Tinjau Foto</span>
               </div>
               <div class="flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Filter per Album Rute</span>
+                <span>Filter per Album</span>
               </div>
               <div class="flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Unduh Berkas Asli</span>
+                <span>Unduh Berkas</span>
               </div>
               <div class="flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -240,7 +240,7 @@ const openLightbox = (index: number) => {
                 Galeri Video Touring
               </h3>
               <p class="text-sm leading-relaxed" :class="isDark ? 'text-neutral-300' : 'text-slate-600'">
-                Rekaman visual dinamis saat berkendara di aspal, dokumentasi jalur perbukitan, serta video cuplikan perjalanan touring resmi komunitas.
+                Rekaman saat berkendara di aspal, dokumentasi perjalanan, serta video kebersamaan resmi komunitas.
               </p>
             </div>
 
@@ -250,7 +250,7 @@ const openLightbox = (index: number) => {
                 <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Pemutar Video Langsung</span>
+                <span>Putar Video Langsung</span>
               </div>
               <div class="flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,7 +262,7 @@ const openLightbox = (index: number) => {
                 <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Tampilan Penuh HD</span>
+                <span>Video HD</span>
               </div>
               <div class="flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -295,31 +295,31 @@ const openLightbox = (index: number) => {
       :class="isDark ? 'border-neutral-800' : 'border-slate-200'"
     >
       <div class="max-w-3xl space-y-2">
-        <span class="text-xs font-bold uppercase tracking-wider text-crimson-500">Mengenal Komunitas</span>
+        <span class="text-xs font-bold uppercase tracking-wider text-crimson-500">Mengenal Kami</span>
         <h2 class="text-2xl sm:text-3xl font-black tracking-tight" :class="isDark ? 'text-white' : 'text-slate-900'">
-          HS15: Menjelajah Bumi Kalimantan Selatan
+          HS15 - Komunitas Keliling Banjar
         </h2>
         <p class="text-sm sm:text-base leading-relaxed" :class="isDark ? 'text-neutral-300' : 'text-slate-600'">
-          Komunitas Keliling Banjar bukan sebatas kelompok pengendara roda dua, melainkan ruang berkumpul untuk menyusuri rute nyata, merekam dinamika jalanan, dan menjaga silaturahmi di setiap sudut banua.
+          Komunitas HS15 bukan sebatas kelompok pengendara roda dua, melainkan komunitas berkumpul untuk menyusuri alam, merekam perjalanan, dan menjaga silaturahmi sesama anggota di setiap sudut banua.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
         <div class="space-y-2">
           <div class="text-xs font-bold uppercase tracking-wide" :class="isDark ? 'text-white' : 'text-slate-900'">
-            Rute Aspal &amp; Pegunungan
+            Rute Aspal &amp; Alam
           </div>
           <p class="text-xs sm:text-sm leading-relaxed" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
-            Menyusuri jalur perkotaan Banjarbaru dan Martapura hingga tantangan kontur jalan perbukitan Kiram dan lereng Pegunungan Meratus.
+            Menyusuri jalur perkotaan dan pedesaan hingga tantangan jalan berpasir dan bebatuan.
           </p>
         </div>
 
         <div class="space-y-2">
           <div class="text-xs font-bold uppercase tracking-wide" :class="isDark ? 'text-white' : 'text-slate-900'">
-            Dokumentasi Lapangan Nyata
+            Dokumentasi Lapangan
           </div>
           <p class="text-xs sm:text-sm leading-relaxed" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
-            Tanpa rekayasa panggung, setiap foto dan video merekam cuaca, medan aspal, canda tawa di warung kopi, dan persaudaraan tanpa sekat.
+            Setiap foto dan video merekam perjalanan, cuaca, medan, canda tawa, dan persaudaraan.
           </p>
         </div>
 
@@ -328,7 +328,7 @@ const openLightbox = (index: number) => {
             Penyimpanan Terbuka &amp; Terarsip
           </div>
           <p class="text-xs sm:text-sm leading-relaxed" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
-            Terhubung langsung ke Google Drive API, memastikan seluruh anggota dapat mengakses file dokumentasi orisinal dalam resolusi penuh.
+            Memastikan seluruh anggota dapat mengakses file dokumentasi orisinal dalam resolusi penuh.
           </p>
         </div>
       </div>
@@ -343,7 +343,7 @@ const openLightbox = (index: number) => {
             Sorotan Dokumentasi Terkini
           </h2>
           <p class="text-xs sm:text-sm" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
-            Empat potret terbaru dari arsip kegiatan. Klik untuk memperbesar dalam resolusi tinggi.
+            Beberapa potret terbaru dari arsip kegiatan.
           </p>
         </div>
 
@@ -414,7 +414,7 @@ const openLightbox = (index: number) => {
         class="glass-card rounded-2xl p-8 text-center border"
         :class="isDark ? 'border-neutral-800 text-neutral-400' : 'border-slate-200 text-slate-500'"
       >
-        <p class="text-sm">Belum ada foto arsip yang dimuat.</p>
+        <p class="text-sm">Belum ada arsip yang dimuat.</p>
       </div>
     </section>
   </div>
