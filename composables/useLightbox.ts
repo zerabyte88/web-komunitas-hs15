@@ -10,25 +10,20 @@ export function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
 
   const isMobile = window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches
 
-  const slides = items.map(item => {
-    const isVideo = item.type === 'video'
-    const isPortraitVideo = isVideo && item.height && item.width && item.height > item.width
-    return {
-      src: item.previewUrl,
-      thumb: item.thumbnailUrl,
-      type: isVideo
-        ? (item.previewUrl.includes('drive.google.com') ? 'iframe' : 'html5video')
-        : 'image',
-      customClass: isVideo ? (isPortraitVideo ? 'is-portrait-video' : 'is-landscape-video') : '',
-      caption: `
-        <div class="gallery-caption-box">
-          <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>
-          <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-        </div>
-      `,
-      downloadSrc: item.downloadUrl
-    }
-  })
+  const slides = items.map(item => ({
+    src: item.previewUrl,
+    thumb: item.thumbnailUrl,
+    type: item.type === 'video'
+      ? (item.previewUrl.includes('drive.google.com') ? 'iframe' : 'html5video')
+      : 'image',
+    caption: `
+      <div class="gallery-caption-box">
+        <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>
+        <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+      </div>
+    `,
+    downloadSrc: item.downloadUrl
+  }))
 
   history.pushState({ ...history.state, lightbox: true }, '')
   let closedByBack = false
