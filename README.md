@@ -1,60 +1,57 @@
 <p align="center">
-  <img src="public/img/logo.png" width="120" height="120" style="border-radius: 50%; box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);" alt="HS15 Logo" />
+  <img src="public/img/logo.png" width="120" height="120" alt="HS15 Logo" />
 </p>
 
-<h1 align="center">HS15 - Web Gallery & Archive</h1>
+<h1 align="center">HS15 - Komunitas Keliling Banjar</h1>
 
 <p align="center">
-  <strong>Pusat galeri dan arsip digital foto serta rekaman video kegiatan Komunitas Keliling Banjar didukung Google Drive API.</strong>
+  <strong>Portal dokumentasi dan arsip digital kegiatan perjalanan komunitas HS15 di wilayah Kalimantan Selatan.</strong>
 </p>
 
 <div align="center">
-  <a href="https://github.com/zerabyte88/web-komunitas-hs15"><img src="https://img.shields.io/static/v1?label=Version&message=v2.0.0&color=2563eb&style=flat-square&logo=github&logoColor=white" alt="Version" /></a>
   <img src="https://img.shields.io/static/v1?label=Framework&message=Nuxt%203%20(Vue%203)&color=00DC82&style=flat-square&logo=nuxtdotjs&logoColor=white" alt="Framework" />
   <img src="https://img.shields.io/static/v1?label=Styling&message=Tailwind%20CSS%20%2B%20DaisyUI&color=38bdf8&style=flat-square&logo=tailwindcss&logoColor=white" alt="Styling" />
   <img src="https://img.shields.io/static/v1?label=Lightbox&message=Fancybox%20v5&color=a855f7&style=flat-square" alt="Lightbox" />
-  <img src="https://img.shields.io/static/v1?label=Storage&message=Google%20Drive%20API&color=ea4335&style=flat-square&logo=googledrive&logoColor=white" alt="Storage" />
   <a href="LICENSE"><img src="https://img.shields.io/static/v1?label=License&message=MIT&color=334155&style=flat-square" alt="License" /></a>
 
   <p>
-    <a href="#overview">Overview</a> •
-    <a href="#features">Features</a> •
-    <a href="#tech-stack">Tech Stack</a> •
-    <a href="#license">License</a>
+    <a href="#ringkasan">Ringkasan</a> •
+    <a href="#fitur-utama">Fitur Utama</a> •
+    <a href="#struktur-halaman">Struktur Halaman</a> •
+    <a href="#lisensi">Lisensi</a>
   </p>
 </div>
 
 ---
 
-## Overview
+## Ringkasan
 
-Website galeri dan arsip digital dokumentasi **HS15 - Komunitas Keliling Banjar**. Dibangun dengan **Nuxt 3 Fullstack (SSR + Vue 3)**, antarmuka bertema gelap (*dark mode*) **Tailwind CSS + DaisyUI**, serta terhubung langsung ke **Google Drive API v3** untuk menyajikan foto dan video tanpa database SQL konvensional.
+**HS15 - Komunitas Keliling Banjar** merupakan ruang dokumentasi digital yang didedikasikan untuk mengarsipkan setiap momen perjalanan touring, serta kegiatan kebersamaan seluruh anggota komunitas.
 
----
-
-## Features
-
-* **Galeri Foto & Fancybox v5:** Lightbox interaktif resolusi penuh dengan fitur *zoom*, *pan*, *thumbnail strip*, rotasi, tayangan *slideshow*, dan unduh foto asli.
-* **Galeri Video:** Pemutar video modal responsif dengan poster sampul, penanda durasi, dan pemutaran lancar.
-* **Google Drive API v3:** Pengambilan media langsung dari folder Google Drive tanpa database server, dilengkapi *in-memory cache* 5 menit untuk kecepatan dan penghematan kuota API.
-* **Filter & Pencarian:** Navigasi media per album/kegiatan serta pencarian judul dan opsi sortir (*Terbaru*, *Terlama*, *A-Z*, *Z-A*).
-* **Desain Khas HS15:** Tema gelap kustom `hs15dark` dengan *glassmorphism*, tata letak responsif, dan *slideshow* crossfade latar belakang 5 foto asli komunitas.
+Website ini dirancang agar seluruh dokumentasi foto dan rekaman video dari berbagai agenda kegiatan tersusun rapi berdasarkan album perjalanan, mudah ditelusuri kembali, dan dapat diakses maupun diunduh dalam kualitas aslinya melalui perangkat desktop maupun ponsel.
 
 ---
 
-## Tech Stack
+## Fitur Utama
 
-| Komponen | Teknologi | Keterangan |
+- **Galeri Foto & Video Terpadu**: Menampilkan seluruh koleksi dokumentasi foto dan rekaman video dalam satu halaman galeri dengan filter tipe media (*Semua*, *Foto*, dan *Video*).
+- **Pengelompokan Album Kegiatan**: Mengorganisir dokumentasi berdasarkan nama dan tanggal agenda perjalanan sehingga anggota dapat menelusuri arsip per kegiatan dengan mudah.
+- **Pencarian & Pengurutan**: Dilengkapi fitur pencarian berkas secara langsung serta pengurutan berdasarkan waktu (*Terbaru*, *Terlama*) maupun abjad (*Nama A-Z*, *Nama Z-A*).
+- **Peninjau Media Layar Penuh**: Mendukung peninjauan foto resolusi penuh dengan kontrol perbesaran, rotasi, pemutaran video langsung, serta tombol unduh berkas asli.
+- **Dukungan Tema Gelap & Terang**: Antarmuka responsif dengan pilihan mode tampilan gelap dan terang yang menyesuaikan kenyamanan membaca di berbagai kondisi layar.
+
+---
+
+## Struktur Halaman
+
+| Halaman | Rute | Deskripsi |
 | :--- | :--- | :--- |
-| **Framework** | [Nuxt 3](https://nuxt.com/) (Vue 3 + Vite) | Fullstack SSR & Nitro Server Engine |
-| **Styling** | [Tailwind CSS](https://tailwindcss.com/) + [DaisyUI 4](https://daisyui.com/) | Tema gelap kustom `hs15dark` |
-| **Lightbox** | [Fancyapps UI v5](https://fancyapps.com/fancybox/) | Viewer foto interaktif & modal video |
-| **Storage Backend** | [Google Drive API v3](https://developers.google.com/drive) | Arsip media awan terpusat (Read-Only) |
-| **Language** | TypeScript | Tipisasi data untuk media dan album |
+| **Beranda** | `/` | Menampilkan ringkasan profil komunitas, jumlah total arsip dokumentasi, pintasan kategori galeri, serta cuplikan dokumentasi terbaru. |
+| **Galeri Dokumentasi** | `/gallery` | Halaman penelusuran utama untuk seluruh arsip foto dan video lengkap dengan filter tipe media, daftar album kegiatan, pencarian, dan pengurutan. |
 
 ---
 
-## License
+## Lisensi
 
 Proyek ini dilisensikan di bawah **MIT License**. Silakan lihat berkas [LICENSE](LICENSE) untuk ketentuan dan informasi hak cipta selengkapnya.
 
@@ -63,8 +60,8 @@ Proyek ini dilisensikan di bawah **MIT License**. Silakan lihat berkas [LICENSE]
 <div align="center">
   <br/>
   <a href="https://github.com/zerabyte88">
-    <img src="https://github.com/zerabyte88.png" width="48" height="48" style="border-radius: 50%; box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);" alt="zerabyte88" />
+    <img src="https://github.com/zerabyte88.png" width="48" height="48" style="border-radius: 50%;" alt="zerabyte88" />
   </a>
   <br/>
-  <sub>Developed with ❤️ for <strong>HS15 - Komunitas Keliling Banjar</strong> by <a href="https://github.com/zerabyte88">zerabyte88</a></sub>
+  <sub>Dikembangkan untuk <strong>HS15 - Komunitas Keliling Banjar</strong> oleh <a href="https://github.com/zerabyte88">zerabyte88</a></sub>
 </div>
