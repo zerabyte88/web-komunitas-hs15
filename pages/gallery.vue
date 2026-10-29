@@ -143,7 +143,7 @@ const displayedPages = computed<(number | string)[]>(() => {
           class="text-xs"
           :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
         >
-          {{ mediaType === 'photo' ? 'Total Foto' : mediaType === 'video' ? 'Total Video' : 'Total Dokumentasi' }}
+          {{ mediaType === 'photo' ? 'Total Foto' : mediaType === 'video' ? 'Total Video' : 'Total Arsip' }}
         </div>
         <div class="text-2xl font-black text-crimson-400">
           {{ mediaResponse?.total ?? 0 }}
