@@ -2,10 +2,10 @@
   <img src="public/img/logo.png" width="120" height="120" alt="HS15 Logo" />
 </p>
 
-<h1 align="center">HS15 - Komunitas Keliling Banjar</h1>
+<h1 align="center">Website Komunitas HS15</h1>
 
 <p align="center">
-  <strong>Portal dokumentasi dan arsip digital kegiatan perjalanan komunitas HS15 di wilayah Kalimantan Selatan.</strong>
+  <strong>Portal dokumentasi dan arsip digital kegiatan komunitas HS15.</strong>
 </p>
 
 <div align="center">
@@ -26,9 +26,9 @@
 
 ## Ringkasan
 
-**HS15 - Komunitas Keliling Banjar** merupakan ruang dokumentasi digital yang didedikasikan untuk mengarsipkan setiap momen perjalanan touring, serta kegiatan kebersamaan seluruh anggota komunitas.
+Website ini merupakan ruang dokumentasi digital yang didedikasikan untuk mengarsipkan setiap momen perjalanan touring, serta kegiatan kebersamaan seluruh anggota komunitas.
 
-Website ini dirancang agar seluruh dokumentasi foto dan rekaman video dari berbagai agenda kegiatan tersusun rapi berdasarkan album perjalanan, mudah ditelusuri kembali, dan dapat diakses maupun diunduh dalam kualitas aslinya melalui perangkat desktop maupun ponsel.
+Website ini dirancang agar seluruh dokumentasi foto dan rekaman video dari berbagai agenda kegiatan tersusun rapi berdasarkan album perjalanan, mudah ditelusuri kembali, dan dapat diakses maupun diunduh dalam kualitas aslinya melalui perangkat desktop maupun mobile.
 
 ---
 
