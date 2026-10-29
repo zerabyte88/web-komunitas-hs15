@@ -36,7 +36,6 @@ Website ini dirancang agar seluruh dokumentasi foto dan rekaman video dari berba
 <div align="center">
   <img src="https://skillicons.dev/icons?i=nuxtjs,vue,tailwind,ts,cloudflare,googlecloud,git" alt="Tech Stack Icons" />
   <br/><br/>
-</div>
 
 | Technology | Role |
 | :--- | :--- |
@@ -47,6 +46,7 @@ Website ini dirancang agar seluruh dokumentasi foto dan rekaman video dari berba
 | ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) | Type Safety & Client/Server Contracts |
 | ![Cloudflare Pages](https://img.shields.io/badge/-Cloudflare%20Pages-F38020?style=flat-square&logo=cloudflare&logoColor=white) | Edge CDN & Cloud Deployment Platform |
 | ![Google Drive](https://img.shields.io/badge/-Google%20Drive-4285F4?style=flat-square&logo=googledrive&logoColor=white) | Headless Media Storage & Archival API |
+
 
 ---
 
