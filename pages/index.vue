@@ -32,47 +32,8 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
   <div class="space-y-12 sm:space-y-16 py-2">
     <!-- Editorial Masthead Section -->
     <header class="space-y-6">
-      <!-- Archival Docket Top Strip -->
-      <div 
-        class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b transition-colors"
-        :class="isDark ? 'border-white/15' : 'border-slate-300'"
-      >
-        <div class="flex items-center gap-2.5 text-xs font-semibold tracking-wider uppercase">
-          <span class="inline-block w-2 h-2 rounded-full bg-crimson-500" />
-          <span :class="isDark ? 'text-neutral-200' : 'text-slate-800'">Dokumentasi</span>
-          <span :class="isDark ? 'text-neutral-500' : 'text-slate-400'">/</span>
-          <span :class="isDark ? 'text-neutral-300' : 'text-slate-600'">Wilayah Kalimantan Selatan</span>
-        </div>
-
-        <!-- Integrated Live Archive Docket Bar -->
-        <div 
-          class="inline-flex items-center gap-2 sm:gap-3 px-3.5 py-1.5 rounded-xl border text-xs font-medium transition-colors"
-          :class="isDark 
-            ? 'bg-neutral-900/70 border-neutral-800 text-neutral-300' 
-            : 'bg-white/90 border-slate-200 text-slate-700 shadow-sm'"
-        >
-          <span class="font-bold text-crimson-500">
-            <span v-if="statsPending" class="loading loading-dots loading-xs" />
-            <span v-else>{{ stats?.photos ?? 0 }}</span>
-          </span>
-          <span>Foto</span>
-          <span :class="isDark ? 'text-neutral-600' : 'text-slate-300'">·</span>
-          <span class="font-bold text-crimson-500">
-            <span v-if="statsPending" class="loading loading-dots loading-xs" />
-            <span v-else>{{ stats?.videos ?? 0 }}</span>
-          </span>
-          <span>Video</span>
-          <span :class="isDark ? 'text-neutral-600' : 'text-slate-300'">·</span>
-          <span class="font-bold text-crimson-500">
-            <span v-if="statsPending" class="loading loading-dots loading-xs" />
-            <span v-else>{{ stats?.folders ?? 0 }}</span>
-          </span>
-          <span>Album</span>
-        </div>
-      </div>
-
       <!-- Main Editorial Headline & Manifesto -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-end pt-2">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-end">
         <div class="lg:col-span-8 space-y-4">
           <h1 
             class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]"
@@ -88,23 +49,53 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
           </p>
         </div>
 
-        <!-- Regional Route Footnotes -->
+        <!-- Regional Route Footnotes & Stats Pill -->
         <div 
-          class="lg:col-span-4 lg:border-l lg:pl-6 space-y-2.5"
+          class="lg:col-span-4 lg:border-l lg:pl-6 space-y-4"
           :class="isDark ? 'lg:border-white/15' : 'lg:border-slate-300'"
         >
-          <span class="text-[11px] font-bold uppercase tracking-wider text-crimson-500">Lintas Perjalanan</span>
-          <div class="flex flex-wrap gap-1.5 text-xs">
-            <span 
-              v-for="route in ['Banjarmasin', 'Banjarbaru', 'Pelaihari']"
-              :key="route"
-              class="px-2.5 py-1 rounded-lg border backdrop-blur-sm"
+          <!-- Integrated Live Archive Docket Bar -->
+          <div>
+            <div 
+              class="inline-flex items-center gap-2 sm:gap-3 px-3.5 py-1.5 rounded-xl border text-xs font-medium transition-colors"
               :class="isDark 
-                ? 'border-white/15 bg-black/40 text-neutral-200' 
-                : 'border-slate-300 bg-white/70 text-slate-700 shadow-sm'"
+                ? 'bg-neutral-900/70 border-neutral-800 text-neutral-300' 
+                : 'bg-white/90 border-slate-200 text-slate-700 shadow-sm'"
             >
-              {{ route }}
-            </span>
+              <span class="font-bold text-crimson-500">
+                <span v-if="statsPending" class="loading loading-dots loading-xs" />
+                <span v-else>{{ stats?.photos ?? 0 }}</span>
+              </span>
+              <span>Foto</span>
+              <span :class="isDark ? 'text-neutral-600' : 'text-slate-300'">·</span>
+              <span class="font-bold text-crimson-500">
+                <span v-if="statsPending" class="loading loading-dots loading-xs" />
+                <span v-else>{{ stats?.videos ?? 0 }}</span>
+              </span>
+              <span>Video</span>
+              <span :class="isDark ? 'text-neutral-600' : 'text-slate-300'">·</span>
+              <span class="font-bold text-crimson-500">
+                <span v-if="statsPending" class="loading loading-dots loading-xs" />
+                <span v-else>{{ stats?.folders ?? 0 }}</span>
+              </span>
+              <span>Album</span>
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-crimson-500">Lintas Perjalanan</span>
+            <div class="flex flex-wrap gap-1.5 text-xs">
+              <span 
+                v-for="route in ['Banjarmasin', 'Banjarbaru', 'Pelaihari']"
+                :key="route"
+                class="px-2.5 py-1 rounded-lg border backdrop-blur-sm"
+                :class="isDark 
+                  ? 'border-white/15 bg-black/40 text-neutral-200' 
+                  : 'border-slate-300 bg-white/70 text-slate-700 shadow-sm'"
+              >
+                {{ route }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -125,39 +116,11 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
               Koleksi potret dan rekaman video dari setiap agenda touring, titik henti, perjalanan di jalanan Kalimantan, serta momen kebersamaan anggota HS15.
             </p>
           </div>
-
-          <!-- Features / Metadata List -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs font-medium" :class="isDark ? 'text-neutral-300' : 'text-slate-700'">
-            <div class="flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>{{ stats?.photos ?? 0 }} Foto Tersedia</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>{{ stats?.videos ?? 0 }} Video Tersedia</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>Filter Foto &amp; Video</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>Filter per Album &amp; Unduh</span>
-            </div>
-          </div>
         </div>
 
         <!-- Bottom Action Bar with Quick Filters -->
         <div 
-          class="mt-8 pt-5 border-t flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          class="mt-6 pt-5 border-t flex flex-col sm:flex-row sm:items-center justify-between gap-4"
           :class="isDark ? 'border-neutral-800' : 'border-slate-100'"
         >
           <NuxtLink
