@@ -36,7 +36,7 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
       >
         <div class="flex items-center gap-2.5 text-xs font-semibold tracking-wider uppercase">
           <span class="inline-block w-2 h-2 rounded-full bg-crimson-500" />
-          <span :class="isDark ? 'text-neutral-200' : 'text-slate-800'">Dokumentasi HS15</span>
+          <span :class="isDark ? 'text-neutral-200' : 'text-slate-800'">Dokumentasi</span>
           <span :class="isDark ? 'text-neutral-500' : 'text-slate-400'">/</span>
           <span :class="isDark ? 'text-neutral-300' : 'text-slate-600'">Wilayah Kalimantan Selatan</span>
         </div>
