@@ -18,6 +18,9 @@ export default defineNuxtConfig({
 
   app: {
     head: {
+      htmlAttrs: {
+        lang: 'id'
+      },
       title: 'HS15 - Arsip Dokumentasi',
       meta: [
         { charset: 'utf-8' },

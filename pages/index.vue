@@ -2,12 +2,14 @@
 const { isDark } = useTheme()
 const { getStats, getMedia } = useGoogleDrive()
 
-const { data: stats, pending: statsPending } = await getStats()
-const { data: recentPhotos, pending: photosPending } = await getMedia({
-  type: 'photo',
-  limit: 4,
-  sort: 'newest'
-})
+const [{ data: stats, pending: statsPending }, { data: recentPhotos, pending: photosPending }] = await Promise.all([
+  getStats(),
+  getMedia({
+    type: 'photo',
+    limit: 4,
+    sort: 'newest'
+  })
+])
 
 const formatDate = (dateStr: string) => {
   if (!dateStr) return ''
@@ -15,7 +17,8 @@ const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('id-ID', {
       day: 'numeric',
       month: 'short',
-      year: 'numeric'
+      year: 'numeric',
+      timeZone: 'Asia/Makassar'
     })
   } catch {
     return ''
@@ -115,16 +118,16 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
 
           <!-- Title & Description -->
           <div class="space-y-2 max-w-2xl">
-            <h3 class="text-2xl font-extrabold" :class="isDark ? 'text-white' : 'text-slate-900'">
+            <h2 class="text-2xl font-extrabold" :class="isDark ? 'text-white' : 'text-slate-900'">
               Galeri Foto &amp; Video Kegiatan
-            </h3>
+            </h2>
             <p class="text-sm leading-relaxed" :class="isDark ? 'text-neutral-300' : 'text-slate-600'">
               Koleksi potret dan rekaman video dari setiap agenda touring, titik henti, perjalanan di jalanan Kalimantan, serta momen kebersamaan anggota HS15.
             </p>
           </div>
 
           <!-- Features / Metadata List -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs font-medium" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs font-medium" :class="isDark ? 'text-neutral-300' : 'text-slate-700'">
             <div class="flex items-center gap-1.5">
               <svg class="w-4 h-4 text-crimson-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />

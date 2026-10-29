@@ -8,10 +8,10 @@ const { isDark } = useTheme()
       <div class="flex items-center gap-2">
         <img src="/img/logo.png" alt="HS15 Logo" class="w-6 h-6 object-contain">
         <span class="font-bold text-sm tracking-wide" :class="isDark ? 'text-white' : 'text-slate-900'">HS15</span>
-        <span :class="isDark ? 'text-neutral-700' : 'text-slate-300'">·</span>
-        <span class="text-xs" :class="isDark ? 'text-neutral-400' : 'text-slate-600'">Komunitas Keliling Banjar</span>
+        <span :class="isDark ? 'text-neutral-400' : 'text-slate-600'">·</span>
+        <span class="text-xs" :class="isDark ? 'text-neutral-300' : 'text-slate-700'">Komunitas Keliling Banjar</span>
       </div>
-      <p class="text-[11px]" :class="isDark ? 'text-neutral-500' : 'text-slate-400'">
+      <p class="text-[11px]" :class="isDark ? 'text-neutral-300' : 'text-slate-700'">
         &copy; {{ new Date().getFullYear() }} HS15. All rights reserved.
       </p>
     </div>

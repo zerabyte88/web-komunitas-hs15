@@ -45,8 +45,10 @@ const filterOptions = computed<MediaFilterOptions>(() => ({
 }))
 
 // Fetch folders and media
-const { data: folders } = await getFolders()
-const { data: mediaResponse, pending: mediaPending } = await getMedia(filterOptions)
+const [{ data: folders }, { data: mediaResponse, pending: mediaPending }] = await Promise.all([
+  getFolders(),
+  getMedia(filterOptions)
+])
 
 // Format duration helper (milliseconds to MM:SS)
 const formatDuration = (ms?: number) => {
@@ -64,7 +66,8 @@ const formatDate = (dateStr?: string) => {
     return new Date(dateStr).toLocaleDateString('id-ID', {
       day: 'numeric',
       month: 'short',
-      year: 'numeric'
+      year: 'numeric',
+      timeZone: 'Asia/Makassar'
     })
   } catch {
     return ''
@@ -263,15 +266,15 @@ const displayedPages = computed<(number | string)[]>(() => {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
       </div>
-      <h3 
+      <h2 
         class="text-lg font-bold"
         :class="isDark ? 'text-white' : 'text-slate-900'"
       >
         Tidak ada dokumentasi ditemukan
-      </h3>
+      </h2>
       <p 
         class="text-xs"
-        :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
+        :class="isDark ? 'text-neutral-300' : 'text-slate-600'"
       >
         Coba ubah kata kunci pencarian, sesuaikan filter media, atau pilih album kegiatan yang lain.
       </p>
@@ -338,12 +341,12 @@ const displayedPages = computed<(number | string)[]>(() => {
           class="p-2.5 sm:p-3.5 flex flex-col justify-between flex-1 transition-colors"
           :class="isDark ? 'bg-neutral-900/40' : 'bg-white/80'"
         >
-          <h4 
+          <h2 
             class="font-bold text-xs sm:text-sm group-hover:text-crimson-500 transition-colors line-clamp-1"
             :class="isDark ? 'text-neutral-100' : 'text-slate-900'"
           >
             {{ item.name || item.title }}
-          </h4>
+          </h2>
           <div 
             class="flex items-center justify-between text-[11px] mt-1.5 sm:mt-2"
             :class="isDark ? 'text-neutral-400' : 'text-slate-500'"

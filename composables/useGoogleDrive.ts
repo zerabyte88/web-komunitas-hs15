@@ -5,16 +5,21 @@ export function useGoogleDrive() {
   const getMedia = (options: Ref<MediaFilterOptions> | MediaFilterOptions) => {
     return useFetch<MediaResponse>('/api/drive/files', {
       query: options,
+      lazy: true,
       watch: [isRef(options) ? options : ref(options)]
     })
   }
 
   const getFolders = () => {
-    return useFetch<DriveFolder[]>('/api/drive/folders')
+    return useFetch<DriveFolder[]>('/api/drive/folders', {
+      lazy: true
+    })
   }
 
   const getStats = () => {
-    return useFetch<DriveStats>('/api/drive/stats')
+    return useFetch<DriveStats>('/api/drive/stats', {
+      lazy: true
+    })
   }
 
   return {

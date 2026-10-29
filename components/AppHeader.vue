@@ -61,6 +61,12 @@ onUnmounted(() => {
 const isActive = (path: string) => {
   return route.path === path
 }
+
+const closeMobileDropdown = () => {
+  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur()
+  }
+}
 </script>
 
 <template>
@@ -157,14 +163,28 @@ const isActive = (path: string) => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <ul tabindex="0" class="dropdown-content z-50 menu p-2 shadow-2xl glass-panel rounded-2xl w-52 mt-3 border border-neutral-700">
+            <ul tabindex="0" class="dropdown-content z-50 flex flex-col gap-1 p-2 shadow-2xl glass-panel rounded-2xl w-52 mt-3 border border-neutral-700">
               <li>
-                <NuxtLink to="/" class="py-2.5 flex items-center gap-2" :class="isActive('/') ? '!text-white font-bold bg-crimson-600 rounded-lg px-3' : (isDark ? 'text-neutral-200' : 'text-slate-800')">
+                <NuxtLink
+                  to="/"
+                  class="py-2.5 px-3 rounded-xl flex items-center gap-2 text-sm transition-colors"
+                  :class="isActive('/')
+                    ? '!bg-crimson-600 !text-white font-bold btn-active-album shadow-sm'
+                    : (isDark ? 'text-neutral-200 hover:bg-white/10' : 'text-slate-800 hover:bg-black/5')"
+                  @click="closeMobileDropdown"
+                >
                   Beranda
                 </NuxtLink>
               </li>
               <li>
-                <NuxtLink to="/gallery" class="py-2.5 flex items-center gap-2" :class="isActive('/gallery') ? '!text-white font-bold bg-crimson-600 rounded-lg px-3' : (isDark ? 'text-neutral-200' : 'text-slate-800')">
+                <NuxtLink
+                  to="/gallery"
+                  class="py-2.5 px-3 rounded-xl flex items-center gap-2 text-sm transition-colors"
+                  :class="isActive('/gallery')
+                    ? '!bg-crimson-600 !text-white font-bold btn-active-album shadow-sm'
+                    : (isDark ? 'text-neutral-200 hover:bg-white/10' : 'text-slate-800 hover:bg-black/5')"
+                  @click="closeMobileDropdown"
+                >
                   Galeri
                 </NuxtLink>
               </li>
