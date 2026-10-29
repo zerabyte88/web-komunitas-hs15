@@ -218,11 +218,11 @@ html.light .gallery-caption-date {
 }
 
 /* Light mode typography & UI fine-tunes */
-html.light h1:not(.keep-white),
-html.light h2:not(.keep-white),
-html.light h3:not(.keep-white),
-html.light h4:not(.keep-white) {
-  color: #0f172a;
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4 {
+  color: #0f172a !important;
 }
 
 html.light .text-neutral-100 {
@@ -257,7 +257,7 @@ html.light .btn-active-album {
 
 /* Inactive album tabs: black in light theme, soft gray in dark theme */
 html.light .album-tab-inactive {
-  color: #000000 !important;
+  color: #0f172a !important;
 }
 
 html.light .album-tab-inactive:hover {
@@ -274,29 +274,48 @@ html.dark .album-tab-inactive:hover {
   background-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Search input & Sort filter controls: ALWAYS white text in both light and dark mode */
-.search-control-white,
-html.light .search-control-white,
-html.dark .search-control-white {
+/* Search input & Sort filter controls: adaptive in light and dark mode */
+html.dark .search-control-white,
+.search-control-white {
   color: #ffffff !important;
 }
 
-.search-control-white::placeholder,
-html.light .search-control-white::placeholder,
-html.dark .search-control-white::placeholder {
-  color: #e2e8f0 !important;
+html.light .search-control-white {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+html.dark .search-control-white::placeholder,
+.search-control-white::placeholder {
+  color: #a3a3a3 !important;
   opacity: 1 !important;
 }
 
-.select-control-white,
-html.light .select-control-white,
-html.dark .select-control-white {
+html.light .search-control-white::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+html.dark .select-control-white,
+.select-control-white {
   color: #ffffff !important;
 }
 
-.select-control-white option {
+html.light .select-control-white {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+html.dark .select-control-white option {
   background-color: #171717 !important;
   color: #ffffff !important;
+}
+
+html.light .select-control-white option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
 }
 
 html.light .border-neutral-800,

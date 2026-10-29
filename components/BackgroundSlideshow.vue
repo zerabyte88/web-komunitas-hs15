@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { isDark } = useTheme()
+
 const backgrounds = [
   '/img/background-1.webp',
   '/img/background-2.webp',
@@ -23,7 +25,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-black">
+  <div 
+    class="fixed inset-0 pointer-events-none z-0 overflow-hidden transition-colors duration-500"
+    :class="isDark ? 'bg-black' : 'bg-slate-100'"
+  >
     <!-- Slideshow Images -->
     <div
       v-for="(bg, idx) in backgrounds"
@@ -33,7 +38,10 @@ onUnmounted(() => {
       :class="idx === currentIndex ? 'opacity-100' : 'opacity-0'"
     />
 
-    <!-- 75% Black Overlay -->
-    <div class="absolute inset-0 bg-black/75" />
+    <!-- Overlay: 75% dark in dark mode, 70% light (white) in light mode -->
+    <div 
+      class="absolute inset-0 transition-colors duration-500" 
+      :class="isDark ? 'bg-black/75' : 'bg-white/70'"
+    />
   </div>
 </template>

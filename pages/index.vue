@@ -57,12 +57,15 @@ const openLightbox = (index: number) => {
     <!-- Editorial Masthead Section -->
     <header class="space-y-6">
       <!-- Archival Docket Top Strip -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-white/15 transition-colors">
+      <div 
+        class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b transition-colors"
+        :class="isDark ? 'border-white/15' : 'border-slate-300'"
+      >
         <div class="flex items-center gap-2.5 text-xs font-semibold tracking-wider uppercase">
           <span class="inline-block w-2 h-2 rounded-full bg-crimson-500" />
-          <span class="text-neutral-200">Dokumentasi HS15</span>
-          <span class="text-neutral-500">/</span>
-          <span class="text-neutral-300">Wilayah Kalimantan Selatan</span>
+          <span :class="isDark ? 'text-neutral-200' : 'text-slate-800'">Dokumentasi HS15</span>
+          <span :class="isDark ? 'text-neutral-500' : 'text-slate-400'">/</span>
+          <span :class="isDark ? 'text-neutral-300' : 'text-slate-600'">Wilayah Kalimantan Selatan</span>
         </div>
 
         <!-- Integrated Live Archive Docket Bar -->
@@ -84,7 +87,7 @@ const openLightbox = (index: number) => {
           </span>
           <span>Video</span>
           <span :class="isDark ? 'text-neutral-600' : 'text-slate-300'">·</span>
-          <span class="font-bold" :class="isDark ? 'text-neutral-200' : 'text-slate-800'">
+          <span class="font-bold text-crimson-500">
             <span v-if="statsPending" class="loading loading-dots loading-xs" />
             <span v-else>{{ stats?.folders ?? 0 }}</span>
           </span>
@@ -95,22 +98,34 @@ const openLightbox = (index: number) => {
       <!-- Main Editorial Headline & Manifesto -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-end pt-2">
         <div class="lg:col-span-8 space-y-4">
-          <h1 class="keep-white text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-white">
-            Jejak Roda Dua di Sepanjang Aspal &amp; Alam <span class="text-crimson-500">Tanah Borneo</span>.
+          <h1 
+            class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]"
+            :class="isDark ? 'text-white' : 'text-slate-900'"
+          >
+            Rekam Jejak Touring dan <span class="text-crimson-500">Momen Kebersamaan.</span>
           </h1>
-          <p class="text-base sm:text-lg leading-relaxed max-w-2xl text-neutral-200">
+          <p 
+            class="text-base sm:text-lg leading-relaxed max-w-2xl"
+            :class="isDark ? 'text-neutral-200' : 'text-slate-700'"
+          >
           Dokumentasi ini didedikasikan untuk mengarsipkan setiap momen perjalanan touring dan pertemuan Komunitas HS15. Website ini menangkap esensi perjalanan di jalanan Kalimantan, dinamika di titik peristirahatan, serta nilai solidaritas yang menyatukan kami.
           </p>
         </div>
 
         <!-- Regional Route Footnotes -->
-        <div class="lg:col-span-4 lg:border-l lg:border-white/15 lg:pl-6 space-y-2.5">
+        <div 
+          class="lg:col-span-4 lg:border-l lg:pl-6 space-y-2.5"
+          :class="isDark ? 'lg:border-white/15' : 'lg:border-slate-300'"
+        >
           <span class="text-[11px] font-bold uppercase tracking-wider text-crimson-500">Lintas Perjalanan</span>
           <div class="flex flex-wrap gap-1.5 text-xs">
             <span 
               v-for="route in ['Banjarmasin', 'Banjarbaru', 'Pelaihari']"
               :key="route"
-              class="px-2.5 py-1 rounded-lg border border-white/15 bg-black/40 text-neutral-200 backdrop-blur-sm"
+              class="px-2.5 py-1 rounded-lg border backdrop-blur-sm"
+              :class="isDark 
+                ? 'border-white/15 bg-black/40 text-neutral-200' 
+                : 'border-slate-300 bg-white/70 text-slate-700 shadow-sm'"
             >
               {{ route }}
             </span>
@@ -233,10 +248,16 @@ const openLightbox = (index: number) => {
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div class="space-y-1">
           <span class="text-xs font-bold uppercase tracking-wider text-crimson-500">Sorotan Terbaru</span>
-          <h2 class="keep-white text-2xl sm:text-3xl font-black tracking-tight text-white">
+          <h2 
+            class="text-2xl sm:text-3xl font-black tracking-tight"
+            :class="isDark ? 'text-white' : 'text-slate-900'"
+          >
             Sorotan Dokumentasi Terkini
           </h2>
-          <p class="text-xs sm:text-sm text-neutral-300">
+          <p 
+            class="text-xs sm:text-sm"
+            :class="isDark ? 'text-neutral-300' : 'text-slate-600'"
+          >
             Cuplikan beberapa dokumentasi terbaru.
           </p>
         </div>
@@ -265,13 +286,6 @@ const openLightbox = (index: number) => {
             loading="lazy"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
           >
-          
-          <!-- Subtle Top Folder Badge -->
-          <div class="absolute top-2.5 left-2.5 z-10">
-            <span class="inline-block px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-[10px] font-semibold text-white/90 border border-white/10">
-              {{ photo.folderName || 'Umum' }}
-            </span>
-          </div>
 
           <!-- Bottom Gradient Caption Overlay -->
           <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-3.5 flex flex-col justify-end">

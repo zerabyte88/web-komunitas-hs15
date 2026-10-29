@@ -5,6 +5,7 @@ import { useDragScroll } from '~/composables/useDragScroll'
 
 const route = useRoute()
 const router = useRouter()
+const { isDark } = useTheme()
 const { getMedia, getFolders } = useGoogleDrive()
 
 const initialType = (route.query.type === 'photo' || route.query.type === 'video') ? route.query.type : 'all'
@@ -147,7 +148,10 @@ const displayedPages = computed<(number | string)[]>(() => {
 <template>
   <div class="space-y-8 py-2">
     <!-- Page Header -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-neutral-800/80 pb-6">
+    <div 
+      class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b pb-6"
+      :class="isDark ? 'border-neutral-800/80' : 'border-slate-300'"
+    >
       <div class="space-y-2">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-crimson-500/10 border border-crimson-500/30 text-crimson-400 text-xs font-semibold">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,10 +159,16 @@ const displayedPages = computed<(number | string)[]>(() => {
           </svg>
           <span>Galeri Dokumentasi</span>
         </div>
-        <h1 class="keep-white text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h1 
+          class="text-3xl sm:text-4xl font-extrabold tracking-tight"
+          :class="isDark ? 'text-white' : 'text-slate-900'"
+        >
           Galeri Foto &amp; Video
         </h1>
-        <p class="text-neutral-300 text-sm max-w-xl">
+        <p 
+          class="text-sm max-w-xl"
+          :class="isDark ? 'text-neutral-300' : 'text-slate-600'"
+        >
           Kumpulan hasil dokumentasi foto dan video dari perjalanan Komunitas HS15.
         </p>
       </div>
@@ -166,18 +176,27 @@ const displayedPages = computed<(number | string)[]>(() => {
       <!-- Quick Total Count -->
       <div class="text-left md:text-right flex items-center md:flex-col gap-4 md:gap-0">
         <div>
-          <div class="text-xs text-neutral-400">
+          <div 
+            class="text-xs"
+            :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
+          >
             {{ mediaType === 'photo' ? 'Total Foto Ditemukan' : mediaType === 'video' ? 'Total Video Ditemukan' : 'Total Dokumentasi' }}
           </div>
           <div class="text-2xl font-black text-crimson-400">
             {{ mediaResponse?.total ?? 0 }}
-            <span class="text-xs text-neutral-400 font-normal">
+            <span 
+              class="text-xs font-normal"
+              :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
+            >
               {{ mediaType === 'photo' ? 'Foto' : mediaType === 'video' ? 'Video' : 'Berkas' }}
             </span>
           </div>
         </div>
         <div class="md:mt-1">
-          <span class="text-xs text-neutral-400">
+          <span 
+            class="text-xs"
+            :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
+          >
             {{ folders?.length ?? 0 }} Album
           </span>
         </div>
@@ -293,8 +312,18 @@ const displayedPages = computed<(number | string)[]>(() => {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
       </div>
-      <h3 class="text-lg font-bold text-white">Tidak ada dokumentasi ditemukan</h3>
-      <p class="text-xs text-neutral-400">Coba ubah kata kunci pencarian, sesuaikan filter media, atau pilih album kegiatan yang lain.</p>
+      <h3 
+        class="text-lg font-bold"
+        :class="isDark ? 'text-white' : 'text-slate-900'"
+      >
+        Tidak ada dokumentasi ditemukan
+      </h3>
+      <p 
+        class="text-xs"
+        :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
+      >
+        Coba ubah kata kunci pencarian, sesuaikan filter media, atau pilih album kegiatan yang lain.
+      </p>
     </div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
@@ -351,21 +380,25 @@ const displayedPages = computed<(number | string)[]>(() => {
               Foto
             </span>
           </template>
-
-          <!-- Album Badge (Top Left) -->
-          <span v-if="item.folderName" class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-black/60 backdrop-blur-md text-crimson-300 border border-crimson-500/20 max-w-[140px] truncate">
-            {{ item.folderName }}
-          </span>
         </div>
 
         <!-- Info Card Footer -->
-        <div class="p-3.5 flex flex-col justify-between flex-1 bg-neutral-900/40">
-          <h4 class="font-bold text-sm text-neutral-100 group-hover:text-crimson-400 transition-colors line-clamp-1">
+        <div 
+          class="p-3.5 flex flex-col justify-between flex-1 transition-colors"
+          :class="isDark ? 'bg-neutral-900/40' : 'bg-white/80'"
+        >
+          <h4 
+            class="font-bold text-sm group-hover:text-crimson-500 transition-colors line-clamp-1"
+            :class="isDark ? 'text-neutral-100' : 'text-slate-900'"
+          >
             {{ item.name || item.title }}
           </h4>
-          <div class="flex items-center justify-between text-[11px] text-neutral-400 mt-2">
+          <div 
+            class="flex items-center justify-between text-[11px] mt-2"
+            :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
+          >
             <span>{{ formatDate(item.createdTime) }}</span>
-            <span class="text-crimson-400 font-medium">
+            <span class="text-crimson-500 font-medium">
               {{ item.type === 'video' ? 'Putar Video ↗' : 'Lihat Foto ↗' }}
             </span>
           </div>
