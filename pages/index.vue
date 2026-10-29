@@ -260,6 +260,8 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
             :src="photo.thumbnailUrl"
             :alt="photo.title || photo.name"
             loading="lazy"
+            width="400"
+            height="300"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
           >
 

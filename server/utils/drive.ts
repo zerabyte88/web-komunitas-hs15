@@ -186,14 +186,14 @@ async function queryGoogleDriveFolder(
       const isVideo = f.mimeType?.includes('video')
       const mediaType: 'photo' | 'video' = isVideo ? 'video' : 'photo'
 
-      // High-res Google thumbnail replacement
+      // Responsive grid thumbnail (s400 is optimal for ~200-300px cards, saving ~75% payload)
       let thumb = f.thumbnailLink || ''
       if (thumb && thumb.includes('=s')) {
-        thumb = thumb.replace(/=s\d+/, '=s800')
+        thumb = thumb.replace(/=s\d+/, '=s400')
       } else if (thumb) {
-        thumb = `${thumb}=s800`
+        thumb = `${thumb}=s400`
       } else {
-        thumb = `https://lh3.googleusercontent.com/d/${f.id}=s800`
+        thumb = `https://lh3.googleusercontent.com/d/${f.id}=s400`
       }
 
       // High quality preview (videos stream natively via /api/drive/video/:id)

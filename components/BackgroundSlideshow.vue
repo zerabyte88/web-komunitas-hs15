@@ -11,11 +11,34 @@ const backgrounds = [
 ]
 
 const currentIndex = ref(0)
+const loadedIndices = ref<number[]>([0])
 let timer: ReturnType<typeof setInterval> | null = null
 
+const preloadImage = (index: number) => {
+  if (loadedIndices.value.includes(index)) return
+  if (import.meta.client) {
+    const img = new Image()
+    img.src = backgrounds[index]
+    img.onload = () => {
+      if (!loadedIndices.value.includes(index)) {
+        loadedIndices.value.push(index)
+      }
+    }
+  }
+}
+
 onMounted(() => {
+  // Preload slide 2 after initial page idle
+  setTimeout(() => preloadImage(1), 2500)
+
   timer = setInterval(() => {
-    currentIndex.value = (currentIndex.value + 1) % backgrounds.length
+    const next = (currentIndex.value + 1) % backgrounds.length
+    preloadImage(next)
+    currentIndex.value = next
+
+    // Preload next upcoming slide 2.5s before it transitions
+    const upcoming = (next + 1) % backgrounds.length
+    setTimeout(() => preloadImage(upcoming), 2500)
   }, 6000)
 })
 
@@ -34,7 +57,7 @@ onUnmounted(() => {
       v-for="(bg, idx) in backgrounds"
       :key="bg"
       class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out scale-105"
-      :style="{ backgroundImage: `url(${bg})` }"
+      :style="loadedIndices.includes(idx) ? { backgroundImage: `url(${bg})` } : undefined"
       :class="idx === currentIndex ? 'opacity-100' : 'opacity-0'"
     />
 

@@ -293,6 +293,8 @@ const displayedPages = computed<(number | string)[]>(() => {
             :src="item.thumbnailUrl"
             :alt="item.title || item.name"
             loading="lazy"
+            width="400"
+            height="300"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
           >
 

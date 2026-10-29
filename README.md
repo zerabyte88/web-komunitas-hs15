@@ -16,8 +16,7 @@
 
   <p>
     <a href="#ringkasan">Ringkasan</a> •
-    <a href="#fitur-utama">Fitur Utama</a> •
-    <a href="#struktur-halaman">Struktur Halaman</a> •
+    <a href="#tech-stack">Tech Stack</a> •
     <a href="#lisensi">Lisensi</a>
   </p>
 </div>
@@ -32,22 +31,22 @@ Website ini dirancang agar seluruh dokumentasi foto dan rekaman video dari berba
 
 ---
 
-## Fitur Utama
+## Tech Stack
 
-- **Galeri Foto & Video Terpadu**: Menampilkan seluruh koleksi dokumentasi foto dan rekaman video dalam satu halaman galeri dengan filter tipe media (*Semua*, *Foto*, dan *Video*).
-- **Pengelompokan Album Kegiatan**: Mengorganisir dokumentasi berdasarkan nama dan tanggal agenda perjalanan sehingga anggota dapat menelusuri arsip per kegiatan dengan mudah.
-- **Pencarian & Pengurutan**: Dilengkapi fitur pencarian berkas secara langsung serta pengurutan berdasarkan waktu (*Terbaru*, *Terlama*) maupun abjad (*Nama A-Z*, *Nama Z-A*).
-- **Peninjau Media Layar Penuh**: Mendukung peninjauan foto resolusi penuh dengan kontrol perbesaran, rotasi, pemutaran video langsung, serta tombol unduh berkas asli.
-- **Dukungan Tema Gelap & Terang**: Antarmuka responsif dengan pilihan mode tampilan gelap dan terang yang menyesuaikan kenyamanan membaca di berbagai kondisi layar.
+<div align="center">
+  <img src="https://skillicons.dev/icons?i=nuxtjs,vue,tailwind,ts,cloudflare,googlecloud,git" alt="Tech Stack Icons" />
+  <br/><br/>
+</div>
 
----
-
-## Struktur Halaman
-
-| Halaman | Rute | Deskripsi |
-| :--- | :--- | :--- |
-| **Beranda** | `/` | Menampilkan ringkasan profil komunitas, jumlah total arsip dokumentasi, pintasan kategori galeri, serta cuplikan dokumentasi terbaru. |
-| **Galeri Dokumentasi** | `/gallery` | Halaman penelusuran utama untuk seluruh arsip foto dan video lengkap dengan filter tipe media, daftar album kegiatan, pencarian, dan pengurutan. |
+| Technology | Role |
+| :--- | :--- |
+| ![Nuxt 3](https://img.shields.io/badge/-Nuxt%203-00DC82?style=flat-square&logo=nuxtdotjs&logoColor=white) | Core Web Framework (SSR + Prerender) |
+| ![Vue 3](https://img.shields.io/badge/-Vue%203-4FC08D?style=flat-square&logo=vuedotjs&logoColor=white) | Progressive Reactive Frontend Engine |
+| ![Tailwind CSS](https://img.shields.io/badge/-Tailwind%20CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white) | Modern Styling & Design Tokens |
+| ![DaisyUI](https://img.shields.io/badge/-DaisyUI-5A0EF8?style=flat-square&logo=daisyui&logoColor=white) | Semantic Tailwind Component Library |
+| ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) | Type Safety & Client/Server Contracts |
+| ![Cloudflare Pages](https://img.shields.io/badge/-Cloudflare%20Pages-F38020?style=flat-square&logo=cloudflare&logoColor=white) | Edge CDN & Cloud Deployment Platform |
+| ![Google Drive](https://img.shields.io/badge/-Google%20Drive-4285F4?style=flat-square&logo=googledrive&logoColor=white) | Headless Media Storage & Archival API |
 
 ---
 
