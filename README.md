@@ -9,10 +9,14 @@
 </p>
 
 <div align="center">
-  <img src="https://img.shields.io/static/v1?label=Framework&message=Nuxt%203%20(Vue%203)&color=00DC82&style=flat-square&logo=nuxtdotjs&logoColor=white" alt="Framework" />
-  <img src="https://img.shields.io/static/v1?label=Styling&message=Tailwind%20CSS%20%2B%20DaisyUI&color=38bdf8&style=flat-square&logo=tailwindcss&logoColor=white" alt="Styling" />
-  <img src="https://img.shields.io/static/v1?label=Lightbox&message=Fancybox%20v5&color=a855f7&style=flat-square" alt="Lightbox" />
-  <a href="LICENSE"><img src="https://img.shields.io/static/v1?label=License&message=MIT&color=334155&style=flat-square" alt="License" /></a>
+  <img src="https://img.shields.io/badge/Nuxt%203-00DC82?style=flat-square&logo=nuxtdotjs&logoColor=white" alt="Nuxt 3" />
+  <img src="https://img.shields.io/badge/Vue%203-4FC08D?style=flat-square&logo=vuedotjs&logoColor=white" alt="Vue 3" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/DaisyUI-5A0EF8?style=flat-square&logo=daisyui&logoColor=white" alt="DaisyUI" />
+  <img src="https://img.shields.io/badge/Cloudflare-F38020?style=flat-square&logo=cloudflare&logoColor=white" alt="Cloudflare" />
+  <img src="https://img.shields.io/badge/Google%20Drive-4285F4?style=flat-square&logo=googledrive&logoColor=white" alt="Google Drive" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-334155?style=flat-square" alt="License" /></a>
 
   <p>
     <a href="#ringkasan">Ringkasan</a> •
@@ -34,7 +38,7 @@ Website ini dirancang agar seluruh dokumentasi foto dan rekaman video dari berba
 ## Tech Stack
 
 <div align="center">
-  <img src="https://skillicons.dev/icons?i=nuxtjs,vue,tailwind,ts,cloudflare,googlecloud,git" alt="Tech Stack Icons" />
+  <img src="https://skillicons.dev/icons?i=nuxtjs,vue,tailwind,ts,cloudflare,googlecloud" alt="Tech Stack Icons" />
   <br/><br/>
 
 | Technology | Role |
