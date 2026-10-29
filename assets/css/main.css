@@ -114,7 +114,8 @@ html.light .skeleton-shimmer {
   --fancybox-bg: rgba(10, 10, 10, 0.96);
   --fancybox-color: #fafafa;
   --fancybox-accent-color: #D7193A;
-  backdrop-filter: blur(16px);
+  --f-backdrop-exit-duration: 0.15s;
+  --f-interface-exit-duration: 0.12s;
 }
 
 html.light .fancybox__container {
@@ -123,12 +124,96 @@ html.light .fancybox__container {
 }
 
 .fancybox__toolbar {
+  --f-button-width: 38px;
+  --f-button-height: 38px;
+  --f-button-border-radius: 10px;
+  --f-button-bg: rgba(23, 23, 23, 0.78);
+  --f-button-hover-bg: #D7193A;
+  --f-button-active-bg: #B01430;
+  --f-button-color: #e5e5e5;
+  --f-button-hover-color: #ffffff;
+  --f-button-svg-width: 18px;
+  --f-button-svg-height: 18px;
+  --f-button-svg-stroke-width: 1.75;
+  --f-button-svg-filter: none;
   background: linear-gradient(to bottom, rgba(10, 10, 10, 0.85), transparent);
-  padding: 12px 20px;
+  padding: 14px 20px;
 }
 
 html.light .fancybox__toolbar {
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), transparent);
+  --f-button-bg: rgba(255, 255, 255, 0.9);
+  --f-button-hover-bg: #D7193A;
+  --f-button-active-bg: #B01430;
+  --f-button-color: #0f172a;
+  --f-button-hover-color: #ffffff;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.88), transparent);
+}
+
+.fancybox__toolbar__column {
+  gap: 6px;
+  align-items: center;
+}
+
+.fancybox__toolbar .f-button {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+}
+
+.fancybox__toolbar .f-button:hover:not([disabled]) {
+  border-color: rgba(244, 63, 94, 0.6);
+}
+
+html.light .fancybox__toolbar .f-button {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Lightbox Left/Right Navigation Arrows (PC) */
+.fancybox__nav {
+  --f-button-width: 44px;
+  --f-button-height: 44px;
+  --f-button-border-radius: 12px;
+  --f-button-bg: rgba(23, 23, 23, 0.78);
+  --f-button-hover-bg: #D7193A;
+  --f-button-active-bg: #B01430;
+  --f-button-color: #f5f5f5;
+  --f-button-hover-color: #ffffff;
+  --f-button-svg-width: 20px;
+  --f-button-svg-height: 20px;
+  --f-button-svg-stroke-width: 2;
+  --f-button-svg-filter: none;
+  --f-button-next-pos: 20px;
+  --f-button-prev-pos: 20px;
+}
+
+html.light .fancybox__nav {
+  --f-button-bg: rgba(255, 255, 255, 0.9);
+  --f-button-hover-bg: #D7193A;
+  --f-button-active-bg: #B01430;
+  --f-button-color: #0f172a;
+  --f-button-hover-color: #ffffff;
+}
+
+.fancybox__nav .f-button {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: all 0.2s ease;
+}
+
+.fancybox__nav .f-button:hover:not([disabled]) {
+  border-color: rgba(244, 63, 94, 0.6);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.fancybox__nav .f-button:disabled {
+  opacity: 0.25;
+}
+
+html.light .fancybox__nav .f-button {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 /* Gallery App Style Lightbox Caption (Top-Left) */
