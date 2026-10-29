@@ -11,11 +11,12 @@ export function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
   const isMobile = window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches
 
   const slides = items.map(item => ({
-    src: item.previewUrl,
+    src: item.type === 'video' ? `/api/drive/video/${item.id}` : item.previewUrl,
     thumb: item.thumbnailUrl,
-    type: item.type === 'video'
-      ? (item.previewUrl.includes('drive.google.com') ? 'iframe' : 'html5video')
-      : 'image',
+    type: item.type === 'video' ? 'html5video' : 'image',
+    videoFormat: item.type === 'video' ? (item.mimeType || 'video/mp4') : undefined,
+    width: item.width,
+    height: item.height,
     caption: `
       <div class="gallery-caption-box">
         <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>

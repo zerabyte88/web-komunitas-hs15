@@ -196,9 +196,9 @@ async function queryGoogleDriveFolder(
         thumb = `https://lh3.googleusercontent.com/d/${f.id}=s800`
       }
 
-      // High quality preview
+      // High quality preview (videos stream natively via /api/drive/video/:id)
       const preview = isVideo 
-        ? `https://drive.google.com/file/d/${f.id}/preview`
+        ? `/api/drive/video/${f.id}`
         : `https://lh3.googleusercontent.com/d/${f.id}=s0`
 
       const download = f.webContentLink || `https://drive.google.com/uc?export=download&id=${f.id}`
@@ -217,8 +217,8 @@ async function queryGoogleDriveFolder(
         folderId,
         folderName: folderName || '',
         size: f.size ? Number(f.size) : undefined,
-        width: f.imageMediaMetadata?.width || f.videoMediaMetadata?.width,
-        height: f.imageMediaMetadata?.height || f.videoMediaMetadata?.height,
+        width: Number(f.imageMediaMetadata?.width || f.videoMediaMetadata?.width) || undefined,
+        height: Number(f.imageMediaMetadata?.height || f.videoMediaMetadata?.height) || undefined,
         durationMillis: f.videoMediaMetadata?.durationMillis ? Number(f.videoMediaMetadata.durationMillis) : undefined
       }
     })

@@ -126,7 +126,7 @@ html.light .fancybox__container {
 /* Remove default white border/padding and optimize video player layout on mobile & desktop */
 .fancybox__slide.has-iframe,
 .fancybox__slide.has-html5video {
-  padding: 64px 8px 16px 8px !important;
+  padding: 64px 12px 20px 12px !important;
 }
 
 @media (min-width: 640px) {
@@ -146,28 +146,18 @@ html.light .fancybox__container {
   overflow: hidden !important;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65) !important;
   margin: auto !important;
-  width: 100% !important;
-  height: calc(100dvh - 80px) !important;
-  max-height: calc(100dvh - 80px) !important;
+  max-width: 100% !important;
+  max-height: calc(100dvh - 96px) !important;
 }
 
-@media (min-width: 640px) {
-  .has-iframe .fancybox__content,
-  .fancybox__container.is-compact .has-iframe .fancybox__content,
-  .has-html5video .fancybox__content {
-    width: min(calc(100vw - 160px), 1024px) !important;
-    height: min(calc(100dvh - 104px), 640px) !important;
-    max-height: calc(100dvh - 104px) !important;
-  }
-}
-
-.has-iframe .fancybox__iframe {
+.fancybox__html5video {
   display: block !important;
   width: 100% !important;
   height: 100% !important;
-  margin: 0 !important;
-  border: 0 !important;
+  max-height: calc(100dvh - 96px) !important;
+  object-fit: contain !important;
   background: #000000 !important;
+  outline: none !important;
 }
 
 /* Hide image-only zoom/rotate controls when viewing a video */
