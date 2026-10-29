@@ -11,8 +11,11 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss'
   ],
 
+  features: {
+    inlineStyles: true
+  },
+
   css: [
-    '@fancyapps/ui/dist/fancybox/fancybox.css',
     '~/assets/css/main.css'
   ],
 

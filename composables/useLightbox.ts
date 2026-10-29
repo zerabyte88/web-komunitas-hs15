@@ -1,12 +1,17 @@
-import { Fancybox } from '@fancyapps/ui'
 import type { DriveMediaItem } from '~/types/drive'
 
 const escapeHtml = (s: string) =>
   s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
 
 // Opens photos and videos in Fancybox; the phone "back" button closes the lightbox instead of leaving the page.
-export function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
+export async function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
   if (!items.length) return
+
+  const [{ Fancybox }] = await Promise.all([
+    import('@fancyapps/ui'),
+    import('@fancyapps/ui/dist/fancybox/fancybox.css'),
+    import('~/assets/css/lightbox.css')
+  ])
 
   const isMobile = window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches
 
