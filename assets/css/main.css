@@ -166,55 +166,100 @@ html.light .fancybox__container {
 }
 
 .fancybox__toolbar {
-  --f-button-width: 38px;
-  --f-button-height: 38px;
-  --f-button-border-radius: 10px;
-  --f-button-bg: rgba(23, 23, 23, 0.78);
-  --f-button-hover-bg: #D7193A;
-  --f-button-active-bg: #B01430;
-  --f-button-color: #e5e5e5;
-  --f-button-hover-color: #ffffff;
-  --f-button-svg-width: 18px;
-  --f-button-svg-height: 18px;
-  --f-button-svg-stroke-width: 1.75;
-  --f-button-svg-filter: none;
-  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.85), transparent);
-  padding: 12px 16px;
+  --f-button-width: 36px !important;
+  --f-button-height: 36px !important;
+  --f-button-border-radius: 11px !important;
+  --f-button-bg: transparent !important;
+  --f-button-hover-bg: rgba(255, 255, 255, 0.12) !important;
+  --f-button-active-bg: rgba(255, 255, 255, 0.18) !important;
+  --f-button-color: #e5e5e5 !important;
+  --f-button-hover-color: #ffffff !important;
+  --f-button-svg-width: 18px !important;
+  --f-button-svg-height: 18px !important;
+  --f-button-svg-stroke-width: 1.8 !important;
+  --f-button-svg-filter: none !important;
+  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.78), transparent) !important;
+  padding: 10px 14px !important;
 }
 
 @media (min-width: 640px) {
   .fancybox__toolbar {
-    padding: 14px 20px;
+    padding: 12px 20px !important;
   }
 }
 
 html.light .fancybox__toolbar {
-  --f-button-bg: rgba(255, 255, 255, 0.9);
-  --f-button-hover-bg: #D7193A;
-  --f-button-active-bg: #B01430;
-  --f-button-color: #0f172a;
-  --f-button-hover-color: #ffffff;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.88), transparent);
+  --f-button-bg: transparent !important;
+  --f-button-hover-bg: rgba(15, 23, 42, 0.08) !important;
+  --f-button-active-bg: rgba(15, 23, 42, 0.14) !important;
+  --f-button-color: #1e293b !important;
+  --f-button-hover-color: #0f172a !important;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), transparent) !important;
 }
 
-.fancybox__toolbar__column {
-  gap: 6px;
-  align-items: center;
+.fancybox__toolbar__column.is-right {
+  flex-grow: 0 !important;
+  flex-basis: auto !important;
+  margin-left: auto !important;
+  gap: 4px !important;
+  align-items: center !important;
+  padding: 5px !important;
+  border-radius: 16px !important;
+  background: rgba(18, 18, 22, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  pointer-events: auto !important;
+}
+
+html.light .fancybox__toolbar__column.is-right {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(15, 23, 42, 0.1) !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 
 .fancybox__toolbar .f-button {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(10px);
-  transition: all 0.2s ease;
+  border: 1px solid transparent !important;
+  border-radius: 11px !important;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 
 .fancybox__toolbar .f-button:hover:not([disabled]) {
-  border-color: rgba(244, 63, 94, 0.6);
+  background: rgba(215, 25, 58, 0.18) !important;
+  border-color: rgba(215, 25, 58, 0.45) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
 }
 
-html.light .fancybox__toolbar .f-button {
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+html.light .fancybox__toolbar .f-button:hover:not([disabled]) {
+  background: rgba(215, 25, 58, 0.12) !important;
+  border-color: rgba(215, 25, 58, 0.35) !important;
+  color: #D7193A !important;
+}
+
+.fancybox__toolbar .f-button:active:not([disabled]) {
+  transform: scale(0.93);
+}
+
+.fancybox__toolbar .f-button[data-fancybox-close] {
+  background: rgba(215, 25, 58, 0.16) !important;
+  border-color: rgba(215, 25, 58, 0.32) !important;
+  color: #fb7185 !important;
+  margin-left: 2px !important;
+}
+
+html.light .fancybox__toolbar .f-button[data-fancybox-close] {
+  background: rgba(215, 25, 58, 0.1) !important;
+  border-color: rgba(215, 25, 58, 0.25) !important;
+  color: #D7193A !important;
+}
+
+.fancybox__toolbar .f-button[data-fancybox-close]:hover {
+  background: #D7193A !important;
+  border-color: #f43f5e !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 16px rgba(215, 25, 58, 0.5) !important;
 }
 
 /* Lightbox Left/Right Navigation Arrows (PC) */

@@ -12,8 +12,8 @@ export default defineNuxtConfig({
   ],
 
   css: [
-    '~/assets/css/main.css',
-    '@fancyapps/ui/dist/fancybox/fancybox.css'
+    '@fancyapps/ui/dist/fancybox/fancybox.css',
+    '~/assets/css/main.css'
   ],
 
   app: {

@@ -37,7 +37,20 @@ export function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
   const syncSlideUi = (fb: any) => {
     const slide = fb?.getSlide?.()
     const isVideo = slide?.type === 'iframe' || slide?.type === 'html5video'
-    fb?.container?.classList.toggle('is-video-slide', !!isVideo)
+    const container = fb?.container as HTMLElement | undefined
+    if (!container) return
+    container.classList.toggle('is-video-slide', !!isVideo)
+
+    const ccw = container.querySelector('[data-panzoom-action="rotateCCW"]')
+    if (ccw && !ccw.hasAttribute('data-custom-icon')) {
+      ccw.setAttribute('data-custom-icon', '1')
+      ccw.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>'
+    }
+    const cw = container.querySelector('[data-panzoom-action="rotateCW"]')
+    if (cw && !cw.hasAttribute('data-custom-icon')) {
+      cw.setAttribute('data-custom-icon', '1')
+      cw.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>'
+    }
   }
 
   Fancybox.show(slides as any, {
