@@ -8,22 +8,27 @@ const escapeHtml = (s: string) =>
 export function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
   if (!items.length) return
 
-  const isMobile = window.matchMedia('(max-width: 640px)').matches
+  const isMobile = window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches
 
-  const slides = items.map(item => ({
-    src: item.previewUrl,
-    thumb: item.thumbnailUrl,
-    type: item.type === 'video'
-      ? (item.previewUrl.includes('drive.google.com') ? 'iframe' : 'html5video')
-      : 'image',
-    caption: `
-      <div class="gallery-caption-box">
-        <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>
-        <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-      </div>
-    `,
-    downloadSrc: item.downloadUrl
-  }))
+  const slides = items.map(item => {
+    const isVideo = item.type === 'video'
+    const isPortraitVideo = isVideo && item.height && item.width && item.height > item.width
+    return {
+      src: item.previewUrl,
+      thumb: item.thumbnailUrl,
+      type: isVideo
+        ? (item.previewUrl.includes('drive.google.com') ? 'iframe' : 'html5video')
+        : 'image',
+      customClass: isVideo ? (isPortraitVideo ? 'is-portrait-video' : 'is-landscape-video') : '',
+      caption: `
+        <div class="gallery-caption-box">
+          <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>
+          <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+        </div>
+      `,
+      downloadSrc: item.downloadUrl
+    }
+  })
 
   history.pushState({ ...history.state, lightbox: true }, '')
   let closedByBack = false
@@ -33,15 +38,22 @@ export function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
   }
   window.addEventListener('popstate', onPopState, { once: true })
 
+  const syncSlideUi = (fb: any) => {
+    const slide = fb?.getSlide?.()
+    const isVideo = slide?.type === 'iframe' || slide?.type === 'html5video'
+    fb?.container?.classList.toggle('is-video-slide', !!isVideo)
+  }
+
   Fancybox.show(slides as any, {
     startIndex,
     hideClass: false,
     closeButton: false,
     commonCaption: true,
     Html: { videoAutoplay: true },
-    Carousel: isMobile ? { Navigation: false } : {},
+    Carousel: {},
     Thumbs: false,
     Toolbar: {
+      enabled: true,
       absolute: true,
       display: isMobile
         ? { left: [], middle: [], right: ['download', 'close'] }
@@ -52,6 +64,8 @@ export function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
           }
     },
     on: {
+      'Carousel.ready': syncSlideUi,
+      'Carousel.change': syncSlideUi,
       destroy: () => {
         window.removeEventListener('popstate', onPopState)
         if (!closedByBack && history.state?.lightbox) history.back()
