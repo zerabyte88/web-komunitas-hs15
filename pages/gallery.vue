@@ -145,6 +145,12 @@ const displayedPages = computed<(number | string)[]>(() => {
           </div>
           <div class="text-2xl font-black text-crimson-400">
             {{ mediaResponse?.total ?? 0 }}
+            <span 
+              class="text-xs font-normal"
+              :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
+            >
+              {{ mediaType === 'photo' ? 'Foto' : mediaType === 'video' ? 'Video' : 'Berkas' }}
+            </span>
           </div>
         </div>
         <div class="md:mt-1">
