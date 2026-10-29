@@ -123,6 +123,16 @@ html.light .fancybox__container {
   --fancybox-color: #0f172a;
 }
 
+/* Remove default white border/padding on video iframe & html5video in lightbox */
+.has-iframe .fancybox__content,
+.has-html5video .fancybox__content {
+  padding: 0 !important;
+  background: #000000 !important;
+  border: none !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
 .fancybox__toolbar {
   --f-button-width: 38px;
   --f-button-height: 38px;
@@ -247,9 +257,9 @@ html.light .fancybox__nav .f-button {
   .fancybox__caption,
   .fancybox__slide .fancybox__caption,
   .fancybox__footer .fancybox__caption {
-    top: 8px !important;
+    top: 14px !important;
     left: 20px !important;
-    max-width: calc(50vw - 160px) !important;
+    max-width: calc(100vw - 320px) !important;
   }
 }
 

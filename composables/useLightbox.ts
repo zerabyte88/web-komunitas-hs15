@@ -36,18 +36,19 @@ export function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
   Fancybox.show(slides as any, {
     startIndex,
     hideClass: false,
+    closeButton: false,
     commonCaption: true,
     Html: { videoAutoplay: true },
     Carousel: isMobile ? { Navigation: false } : {},
-    Thumbs: isMobile ? false : { showOnStart: false },
+    Thumbs: false,
     Toolbar: {
       absolute: true,
       display: isMobile
         ? { left: [], middle: [], right: ['download', 'close'] }
         : {
             left: [],
-            middle: ['zoomIn', 'zoomOut', 'toggle1to1', 'rotateCCW', 'rotateCW'],
-            right: ['slideshow', 'thumbs', 'download', 'close']
+            middle: [],
+            right: ['zoomIn', 'zoomOut', 'rotateCCW', 'rotateCW', 'download', 'close']
           }
     },
     on: {
