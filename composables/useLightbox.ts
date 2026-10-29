@@ -60,6 +60,9 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
 
   Fancybox.show(slides as any, {
     startIndex,
+    dragToClose: true,
+    animated: true,
+    Hash: false,
     hideClass: false,
     closeButton: false,
     commonCaption: true,
