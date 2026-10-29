@@ -135,30 +135,20 @@ const displayedPages = computed<(number | string)[]>(() => {
       </div>
 
       <!-- Quick Total Count -->
-      <div class="text-left md:text-right flex items-center md:flex-col gap-4 md:gap-0">
-        <div>
-          <div 
-            class="text-xs"
-            :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
-          >
-            {{ mediaType === 'photo' ? 'Total Foto Ditemukan' : mediaType === 'video' ? 'Total Video Ditemukan' : 'Total Dokumentasi' }}
-          </div>
-          <div class="text-2xl font-black text-crimson-400">
-            {{ mediaResponse?.total ?? 0 }}
-            <span 
-              class="text-xs font-normal"
-              :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
-            >
-              {{ mediaType === 'photo' ? 'Foto' : mediaType === 'video' ? 'Video' : 'Berkas' }}
-            </span>
-          </div>
+      <div class="text-left md:text-right">
+        <div 
+          class="text-xs"
+          :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
+        >
+          {{ mediaType === 'photo' ? 'Total Foto' : mediaType === 'video' ? 'Total Video' : 'Total Dokumentasi' }}
         </div>
-        <div class="md:mt-1">
+        <div class="text-2xl font-black text-crimson-400">
+          {{ mediaResponse?.total ?? 0 }}
           <span 
-            class="text-xs"
+            class="text-xs font-normal"
             :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
           >
-            {{ folders?.length ?? 0 }} Album
+            {{ mediaType === 'photo' ? 'Foto' : mediaType === 'video' ? 'Video' : 'Arsip' }}
           </span>
         </div>
       </div>
