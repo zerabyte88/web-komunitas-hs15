@@ -1,6 +1,9 @@
 import type { Config } from 'tailwindcss'
 
 export default <Config>{
+  future: {
+    hoverOnlyWhenSupported: true
+  },
   darkMode: 'class',
   content: [
     './components/**/*.{js,vue,ts}',

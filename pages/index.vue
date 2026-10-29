@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Fancybox } from '@fancyapps/ui'
-
 const { isDark } = useTheme()
 const { getStats, getMedia } = useGoogleDrive()
 
@@ -24,32 +22,7 @@ const formatDate = (dateStr: string) => {
   }
 }
 
-const openLightbox = (index: number) => {
-  if (!recentPhotos.value?.items?.length) return
-
-  const galleryItems = recentPhotos.value.items.map(item => ({
-    src: item.previewUrl,
-    thumb: item.thumbnailUrl,
-    caption: `
-      <div class="gallery-caption-box">
-        <div class="gallery-caption-title">${item.name}</div>
-        <div class="gallery-caption-date">${formatDate(item.createdTime)}</div>
-      </div>
-    `,
-    downloadSrc: item.downloadUrl
-  }))
-
-  Fancybox.show(galleryItems, {
-    startIndex: index,
-    Toolbar: {
-      display: {
-        left: [],
-        middle: ['zoomIn', 'zoomOut', 'toggle1to1', 'rotateCCW', 'rotateCW'],
-        right: ['slideshow', 'thumbs', 'download', 'close']
-      }
-    }
-  })
-}
+const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.items ?? [], index)
 </script>
 
 <template>
@@ -264,7 +237,7 @@ const openLightbox = (index: number) => {
       </div>
 
       <!-- Loading Skeleton State -->
-      <div v-if="photosPending" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div v-if="photosPending" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div 
           v-for="n in 4" 
           :key="n"
@@ -273,7 +246,7 @@ const openLightbox = (index: number) => {
       </div>
 
       <!-- Photos Grid -->
-      <div v-else-if="recentPhotos?.items?.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div v-else-if="recentPhotos?.items?.length" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div
           v-for="(photo, idx) in recentPhotos.items"
           :key="photo.id"
@@ -299,7 +272,7 @@ const openLightbox = (index: number) => {
                 </svg>
               </span>
             </div>
-            <span class="text-[10px] text-neutral-300 mt-0.5">
+            <span class="text-[10px] text-white/80 mt-0.5">
               {{ formatDate(photo.createdTime) }}
             </span>
           </div>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Fancybox } from '@fancyapps/ui'
 import type { MediaFilterOptions } from '~/types/drive'
 import { useDragScroll } from '~/composables/useDragScroll'
 
@@ -72,45 +71,7 @@ const formatDate = (dateStr?: string) => {
   }
 }
 
-// Open Fancybox v5 Lightbox (both Photo and Video)
-const openLightbox = (startIndex: number) => {
-  if (!mediaResponse.value?.items?.length) return
-
-  const galleryItems = mediaResponse.value.items.map(item => {
-    const isVideo = item.type === 'video'
-    const isDrivePreview = item.previewUrl?.includes('drive.google.com')
-    const fancyboxType: 'image' | 'iframe' | 'html5video' = isVideo
-      ? (isDrivePreview ? 'iframe' : 'html5video')
-      : 'image'
-
-    return {
-      src: item.previewUrl,
-      thumb: item.thumbnailUrl,
-      type: fancyboxType,
-      caption: `
-        <div class="gallery-caption-box">
-          <div class="gallery-caption-title">${item.name || item.title}</div>
-          <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-        </div>
-      `,
-      downloadSrc: item.downloadUrl
-    }
-  })
-
-  Fancybox.show(galleryItems as any, {
-    startIndex,
-    Html: {
-      videoAutoplay: true
-    },
-    Toolbar: {
-      display: {
-        left: [],
-        middle: ['zoomIn', 'zoomOut', 'toggle1to1', 'rotateCCW', 'rotateCW'],
-        right: ['slideshow', 'thumbs', 'download', 'close']
-      }
-    }
-  })
-}
+const openLightbox = (startIndex: number) => openMediaLightbox(mediaResponse.value?.items ?? [], startIndex)
 
 // Watch filters to reset page to 1
 watch([mediaType, currentFolder, searchTerm, sortBy], () => {
@@ -302,7 +263,7 @@ const displayedPages = computed<(number | string)[]>(() => {
     </div>
 
     <!-- Media Grid -->
-    <div v-if="mediaPending" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+    <div v-if="mediaPending" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
       <div v-for="n in 8" :key="n" class="skeleton-shimmer aspect-[4/3] rounded-2xl" />
     </div>
 
@@ -326,7 +287,7 @@ const displayedPages = computed<(number | string)[]>(() => {
       </p>
     </div>
 
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+    <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
       <div
         v-for="(item, idx) in mediaResponse.items"
         :key="item.id"
@@ -384,21 +345,21 @@ const displayedPages = computed<(number | string)[]>(() => {
 
         <!-- Info Card Footer -->
         <div 
-          class="p-3.5 flex flex-col justify-between flex-1 transition-colors"
+          class="p-2.5 sm:p-3.5 flex flex-col justify-between flex-1 transition-colors"
           :class="isDark ? 'bg-neutral-900/40' : 'bg-white/80'"
         >
           <h4 
-            class="font-bold text-sm group-hover:text-crimson-500 transition-colors line-clamp-1"
+            class="font-bold text-xs sm:text-sm group-hover:text-crimson-500 transition-colors line-clamp-1"
             :class="isDark ? 'text-neutral-100' : 'text-slate-900'"
           >
             {{ item.name || item.title }}
           </h4>
           <div 
-            class="flex items-center justify-between text-[11px] mt-2"
+            class="flex items-center justify-between text-[11px] mt-1.5 sm:mt-2"
             :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
           >
             <span>{{ formatDate(item.createdTime) }}</span>
-            <span class="text-crimson-500 font-medium">
+            <span class="hidden sm:inline text-crimson-500 font-medium">
               {{ item.type === 'video' ? 'Putar Video ↗' : 'Lihat Foto ↗' }}
             </span>
           </div>
@@ -414,7 +375,7 @@ const displayedPages = computed<(number | string)[]>(() => {
           :disabled="currentPage <= 1"
           @click="currentPage--"
         >
-          &laquo; Sebelumnya
+          &laquo;<span class="hidden sm:inline">&nbsp;Sebelumnya</span>
         </button>
         <template v-for="(p, i) in displayedPages" :key="i">
           <span v-if="p === '...'" class="join-item btn btn-sm btn-disabled btn-ghost text-neutral-500 font-bold px-2 pointer-events-none">...</span>
@@ -434,7 +395,7 @@ const displayedPages = computed<(number | string)[]>(() => {
           :disabled="currentPage >= mediaResponse.pages"
           @click="currentPage++"
         >
-          Selanjutnya &raquo;
+          <span class="hidden sm:inline">Selanjutnya&nbsp;</span>&raquo;
         </button>
       </div>
     </div>
