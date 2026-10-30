@@ -49,22 +49,20 @@ onUnmounted(() => {
 
 <template>
   <div 
-    class="fixed inset-0 pointer-events-none z-0 overflow-hidden transition-colors duration-500"
-    :class="isDark ? 'bg-black' : 'bg-slate-100'"
+    class="slideshow-bg-base transition-colors duration-500"
   >
     <!-- Slideshow Images -->
     <div
       v-for="(bg, idx) in backgrounds"
       :key="bg"
-      class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out scale-105"
+      class="absolute -inset-1 bg-cover bg-center transition-opacity duration-1000 ease-in-out scale-105"
       :style="loadedIndices.includes(idx) ? { backgroundImage: `url(${bg})` } : undefined"
       :class="idx === currentIndex ? 'opacity-100' : 'opacity-0'"
     />
 
-    <!-- Overlay: 75% dark in dark mode, 70% light (white) in light mode -->
+    <!-- Overlay: 50% opacity in dark and light modes (driven by CSS class html.light) -->
     <div 
-      class="absolute inset-0 transition-colors duration-500" 
-      :class="isDark ? 'bg-black/75' : 'bg-white/70'"
+      class="absolute inset-0 transition-colors duration-500 slideshow-overlay" 
     />
   </div>
 </template>

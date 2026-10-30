@@ -1,5 +1,11 @@
 export const useTheme = () => {
-  const isDark = useState<boolean>('theme-dark', () => true)
+  // Sync initial state from <html> class on client if present to prevent any mismatch
+  const isDark = useState<boolean>('theme-dark', () => {
+    if (import.meta.client) {
+      return !document.documentElement.classList.contains('light')
+    }
+    return true
+  })
 
   const initTheme = () => {
     if (import.meta.client) {

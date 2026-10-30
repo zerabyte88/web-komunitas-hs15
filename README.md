@@ -66,5 +66,5 @@ Proyek ini dilisensikan di bawah **MIT License**. Silakan lihat berkas [LICENSE]
     <img src="https://github.com/zerabyte88.png" width="48" height="48" style="border-radius: 50%;" alt="zerabyte88" />
   </a>
   <br/>
-  <sub>Dikembangkan untuk <strong>HS15 - Komunitas Keliling Banjar</strong> oleh <a href="https://github.com/zerabyte88">zerabyte88</a></sub>
+  <sub>Dikembangkan untuk <strong>HS15</strong> oleh <a href="https://github.com/zerabyte88">zerabyte88</a></sub>
 </div>
