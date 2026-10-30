@@ -140,10 +140,10 @@ const closeMobileDropdown = () => {
           <!-- Theme Toggle Button -->
           <button
             type="button"
-            class="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 border hover:scale-105 active:scale-95 shrink-0"
+            class="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 border hover:scale-105 active:scale-95 shrink-0 theme-toggle-btn shadow-sm"
             :class="isDark 
-              ? 'bg-neutral-900/80 hover:bg-neutral-800 text-amber-400 border-neutral-700/80 hover:border-amber-400/40 shadow-sm' 
-              : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-300 shadow-sm'"
+              ? 'bg-neutral-900/80 hover:bg-neutral-800 text-amber-400 border-neutral-700/80 hover:border-amber-400/40' 
+              : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-300'"
             :title="isDark ? 'Ganti ke Tema Terang' : 'Ganti ke Tema Gelap'"
             aria-label="Toggle theme"
             @click="toggleTheme"

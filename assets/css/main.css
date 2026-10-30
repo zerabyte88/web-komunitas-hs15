@@ -79,6 +79,60 @@ html.dark .slideshow-bg-base {
   background-color: #000000 !important;
 }
 
+/* Theme toggle button in light mode */
+html.light .theme-toggle-btn {
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.dark .theme-toggle-btn {
+  background-color: rgba(23, 23, 23, 0.8) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(64, 64, 64, 0.8) !important;
+}
+
+/* Home Stats Pill (Foto, Video, Album) */
+.home-stats-pill {
+  background-color: rgba(23, 23, 23, 0.7);
+  border-color: rgba(64, 64, 64, 0.8);
+  color: #d4d4d4;
+}
+
+html.light .home-stats-pill {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Route Badges (Banjarmasin, Banjarbaru, Pelaihari) */
+.home-route-badge {
+  border-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #e5e5e5;
+}
+
+html.light .home-route-badge {
+  border-color: #cbd5e1 !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Media Card Footer in Gallery */
+.media-card-footer {
+  background-color: rgba(23, 23, 23, 0.4);
+}
+
+html.light .media-card-footer {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+html.dark .media-card-footer {
+  background-color: rgba(23, 23, 23, 0.4) !important;
+}
+
 /* Glass & Flat panels */
 .glass-panel {
   background: rgba(10, 10, 10, 0.85);
@@ -152,7 +206,8 @@ html.light .skeleton-shimmer {
 html.light h1,
 html.light h2,
 html.light h3,
-html.light h4 {
+html.light h4,
+html.light .home-subheading {
   color: #0f172a !important;
 }
 

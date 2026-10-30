@@ -57,10 +57,10 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
           <!-- Integrated Live Archive Docket Bar -->
           <div>
             <div 
-              class="inline-flex items-center gap-2 sm:gap-3 px-3.5 py-1.5 rounded-xl border text-xs font-medium transition-colors"
+              class="inline-flex items-center gap-2 sm:gap-3 px-3.5 py-1.5 rounded-xl border text-xs font-medium transition-colors home-stats-pill"
               :class="isDark 
                 ? 'bg-neutral-900/70 border-neutral-800 text-neutral-300' 
-                : 'bg-white/90 border-slate-200 text-slate-700 shadow-sm'"
+                : 'bg-white border-slate-200 text-slate-700 shadow-sm'"
             >
               <span class="font-bold text-crimson-500">
                 <span v-if="statsPending" class="loading loading-dots loading-xs" />
@@ -88,7 +88,7 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
               <span 
                 v-for="route in ['Banjarmasin', 'Banjarbaru', 'Pelaihari']"
                 :key="route"
-                class="px-2.5 py-1 rounded-lg border backdrop-blur-sm"
+                class="px-2.5 py-1 rounded-lg border backdrop-blur-sm home-route-badge"
                 :class="isDark 
                   ? 'border-white/15 bg-black/40 text-neutral-200' 
                   : 'border-slate-300 bg-white/70 text-slate-700 shadow-sm'"
@@ -154,7 +154,7 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
         <div class="space-y-2">
-          <div class="text-xs font-bold uppercase tracking-wide" :class="isDark ? 'text-white' : 'text-slate-900'">
+          <div class="text-xs font-bold uppercase tracking-wide home-subheading" :class="isDark ? 'text-white' : 'text-slate-900'">
             Rute Aspal &amp; Alam
           </div>
           <p class="text-xs sm:text-sm leading-relaxed" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
@@ -163,7 +163,7 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
         </div>
 
         <div class="space-y-2">
-          <div class="text-xs font-bold uppercase tracking-wide" :class="isDark ? 'text-white' : 'text-slate-900'">
+          <div class="text-xs font-bold uppercase tracking-wide home-subheading" :class="isDark ? 'text-white' : 'text-slate-900'">
             Dokumentasi Lapangan
           </div>
           <p class="text-xs sm:text-sm leading-relaxed" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
@@ -172,7 +172,7 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
         </div>
 
         <div class="space-y-2">
-          <div class="text-xs font-bold uppercase tracking-wide" :class="isDark ? 'text-white' : 'text-slate-900'">
+          <div class="text-xs font-bold uppercase tracking-wide home-subheading" :class="isDark ? 'text-white' : 'text-slate-900'">
             Penyimpanan Terbuka &amp; Terarsip
           </div>
           <p class="text-xs sm:text-sm leading-relaxed" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">

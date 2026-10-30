@@ -1,15 +1,21 @@
 export const useTheme = () => {
-  // Sync initial state from <html> class on client if present to prevent any mismatch
+  // Use a cookie so SSR and client immediately agree on the theme, preventing hydration mismatch
+  const themeCookie = useCookie<string>('hs15-theme', {
+    default: () => 'dark',
+    watch: true,
+    maxAge: 31536000 // 1 year
+  })
+
   const isDark = useState<boolean>('theme-dark', () => {
-    if (import.meta.client) {
-      return !document.documentElement.classList.contains('light')
+    if (import.meta.client && document.documentElement.classList.contains('light')) {
+      return false
     }
-    return true
+    return themeCookie.value !== 'light'
   })
 
   const initTheme = () => {
     if (import.meta.client) {
-      const stored = localStorage.getItem('hs15-theme')
+      const stored = localStorage.getItem('hs15-theme') || themeCookie.value
       if (stored) {
         isDark.value = stored === 'dark'
       } else {
@@ -22,16 +28,18 @@ export const useTheme = () => {
   const applyTheme = () => {
     if (import.meta.client) {
       const html = document.documentElement
+      const mode = isDark.value ? 'dark' : 'light'
+      themeCookie.value = mode
+      localStorage.setItem('hs15-theme', mode)
+
       if (isDark.value) {
         html.classList.add('dark')
         html.classList.remove('light')
         html.setAttribute('data-theme', 'hs15dark')
-        localStorage.setItem('hs15-theme', 'dark')
       } else {
         html.classList.remove('dark')
         html.classList.add('light')
         html.setAttribute('data-theme', 'hs15light')
-        localStorage.setItem('hs15-theme', 'light')
       }
     }
   }

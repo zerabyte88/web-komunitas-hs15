@@ -117,7 +117,7 @@ const displayedPages = computed<(number | string)[]>(() => {
       :class="isDark ? 'border-neutral-800/80' : 'border-slate-300'"
     >
       <div class="space-y-2">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-crimson-500/10 border border-crimson-500/30 text-crimson-400 text-xs font-semibold">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-crimson-600 text-white border border-crimson-400 text-xs font-semibold shadow-sm">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
@@ -139,20 +139,22 @@ const displayedPages = computed<(number | string)[]>(() => {
 
       <!-- Quick Total Count -->
       <div class="text-left md:text-right">
-        <div 
-          class="text-xs"
-          :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
-        >
-          {{ mediaType === 'photo' ? 'Total Foto' : mediaType === 'video' ? 'Total Video' : 'Total Arsip' }}
-        </div>
-        <div class="text-2xl font-black text-crimson-400">
-          {{ mediaResponse?.total ?? 0 }}
-          <span 
-            class="text-xs font-normal"
-            :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
+        <div class="inline-flex flex-col items-start md:items-end px-3.5 py-1.5 rounded-2xl border border-white/60 bg-white/40 dark:bg-black/20 dark:border-white/15 backdrop-blur-sm shadow-sm">
+          <div 
+            class="text-[11px] font-medium"
+            :class="isDark ? 'text-neutral-400' : 'text-slate-600'"
           >
-            {{ mediaType === 'photo' ? 'Foto' : mediaType === 'video' ? 'Video' : 'Arsip' }}
-          </span>
+            {{ mediaType === 'photo' ? 'Total Foto' : mediaType === 'video' ? 'Total Video' : 'Total Arsip' }}
+          </div>
+          <div class="text-2xl font-black text-crimson-500">
+            {{ mediaResponse?.total ?? 0 }}
+            <span 
+              class="text-xs font-normal"
+              :class="isDark ? 'text-neutral-400' : 'text-slate-600'"
+            >
+              {{ mediaType === 'photo' ? 'Foto' : mediaType === 'video' ? 'Video' : 'Arsip' }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -330,8 +332,8 @@ const displayedPages = computed<(number | string)[]>(() => {
 
         <!-- Info Card Footer -->
         <div 
-          class="p-2.5 sm:p-3.5 flex flex-col justify-between flex-1 transition-colors"
-          :class="isDark ? 'bg-neutral-900/40' : 'bg-white/80'"
+          class="p-2.5 sm:p-3.5 flex flex-col justify-between flex-1 transition-colors media-card-footer"
+          :class="isDark ? 'bg-neutral-900/40' : 'bg-white/90'"
         >
           <h2 
             class="font-bold text-xs sm:text-sm group-hover:text-crimson-500 transition-colors line-clamp-1"
@@ -341,7 +343,7 @@ const displayedPages = computed<(number | string)[]>(() => {
           </h2>
           <div 
             class="flex items-center justify-between text-[11px] mt-1.5 sm:mt-2"
-            :class="isDark ? 'text-neutral-400' : 'text-slate-500'"
+            :class="isDark ? 'text-neutral-400' : 'text-slate-600'"
           >
             <span>{{ formatDate(item.createdTime) }}</span>
             <span class="hidden sm:inline text-crimson-500 font-medium">
