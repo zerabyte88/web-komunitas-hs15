@@ -313,11 +313,6 @@ const displayedPages = computed<(number | string)[]>(() => {
             <span v-if="item.durationMillis" class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-black/80 text-white backdrop-blur-sm">
               {{ formatDuration(item.durationMillis) }}
             </span>
-
-            <!-- Video Type Badge -->
-            <span class="absolute top-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-crimson-600/90 text-white backdrop-blur-sm shadow-sm">
-              Video
-            </span>
           </template>
 
           <!-- Photo Overlays -->
@@ -330,11 +325,6 @@ const displayedPages = computed<(number | string)[]>(() => {
                 </svg>
               </div>
             </div>
-
-            <!-- Photo Type Badge on Hover -->
-            <span class="absolute top-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-black/70 text-neutral-200 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
-              Foto
-            </span>
           </template>
         </div>
 
