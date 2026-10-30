@@ -3,22 +3,6 @@ import type { DriveMediaItem } from '~/types/drive'
 const escapeHtml = (s: string) =>
   s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
 
-// Detect if a video format is reliably playable via native HTML5 <video> in browsers.
-// Formats like .mkv, .avi, .3gp, .mov, or raw TS streams often lack browser decoder support
-// and need to be served via Google Drive's transcoded preview player.
-function isNativePlayableVideo(item: DriveMediaItem): boolean {
-  if (item.type !== 'video') return false
-  const name = (item.name || item.title || '').toLowerCase()
-  const mime = (item.mimeType || '').toLowerCase()
-
-  // Strict allowlist for universal HTML5 browser playback
-  const isMp4 = name.endsWith('.mp4') || mime === 'video/mp4'
-  const isWebm = name.endsWith('.webm') || mime === 'video/webm'
-  const isOgg = name.endsWith('.ogv') || mime === 'video/ogg'
-
-  return isMp4 || isWebm || isOgg
-}
-
 // Opens photos and videos in Fancybox; the phone "back" button closes the lightbox instead of leaving the page.
 export async function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
   if (!items.length) return
@@ -31,41 +15,22 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
 
   const isMobile = window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches
 
-  const slides = items.map(item => {
-    const isVideo = item.type === 'video'
-    const isNativeVideo = isVideo && isNativePlayableVideo(item)
-
-    // For web-native formats (.mp4, .webm), stream directly via HTML5 video.
-    // For non-standard formats (.mkv, .avi, .mov, etc.), fallback to Google Drive's transcoded preview player.
-    let src = item.previewUrl
-    let type: 'image' | 'html5video' | 'iframe' = 'image'
-
-    if (isVideo) {
-      if (isNativeVideo) {
-        src = `/api/drive/video/${item.id}`
-        type = 'html5video'
-      } else {
-        src = `https://drive.google.com/file/d/${item.id}/preview`
-        type = 'iframe'
-      }
-    }
-
-    return {
-      src,
-      thumb: item.thumbnailUrl,
-      type,
-      videoFormat: isNativeVideo ? (item.mimeType || 'video/mp4') : undefined,
-      width: item.width,
-      height: item.height,
-      caption: `
-        <div class="gallery-caption-box">
-          <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>
-          <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-        </div>
-      `,
-      downloadSrc: item.downloadUrl
-    }
-  })
+  const slides = items.map(item => ({
+    src: item.type === 'video' ? `/api/drive/video/${item.id}` : item.previewUrl,
+    thumb: item.thumbnailUrl,
+    type: item.type === 'video' ? 'html5video' : 'image',
+    videoFormat: item.type === 'video' ? item.mimeType : undefined,
+    width: item.width,
+    height: item.height,
+    caption: `
+      <div class="gallery-caption-box">
+        <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>
+        <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+      </div>
+    `,
+    downloadSrc: item.downloadUrl,
+    itemData: item
+  }))
 
   history.pushState({ ...history.state, lightbox: true }, '')
   let closedByBack = false
@@ -75,12 +40,54 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
   }
   window.addEventListener('popstate', onPopState, { once: true })
 
+  const handleVideoError = (container: HTMLElement, item: DriveMediaItem) => {
+    const content = container.querySelector('.fancybox__content')
+    if (!content || content.querySelector('.video-fallback-card')) return
+
+    const fileName = escapeHtml(item.name || item.title || 'Video')
+    const downloadUrl = escapeHtml(item.downloadUrl || `/api/drive/video/${item.id}`)
+
+    content.innerHTML = `
+      <div class="video-fallback-card">
+        <div class="video-fallback-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+          </svg>
+        </div>
+        <div class="video-fallback-title">Format Tidak Didukung</div>
+        <div class="video-fallback-desc">
+          Browser tidak dapat memutar video ini secara langsung.
+        </div>
+        <a href="${downloadUrl}" target="_blank" rel="noopener noreferrer" class="video-fallback-btn" download>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Unduh Video</span>
+        </a>
+      </div>
+    `
+  }
+
   const syncSlideUi = (fb: any) => {
     const slide = fb?.getSlide?.()
     const isVideo = slide?.type === 'iframe' || slide?.type === 'html5video'
     const container = fb?.container as HTMLElement | undefined
     if (!container) return
     container.classList.toggle('is-video-slide', !!isVideo)
+
+    if (isVideo && slide?.itemData) {
+      const videoEl = container.querySelector('video')
+      if (videoEl && !videoEl.hasAttribute('data-error-handled')) {
+        videoEl.setAttribute('data-error-handled', '1')
+        videoEl.addEventListener('error', () => {
+          handleVideoError(container, slide.itemData)
+        }, { once: true })
+      }
+    }
 
     const ccw = container.querySelector('[data-panzoom-action="rotateCCW"]')
     if (ccw && !ccw.hasAttribute('data-custom-icon')) {
