@@ -3,6 +3,22 @@ import type { DriveMediaItem } from '~/types/drive'
 const escapeHtml = (s: string) =>
   s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
 
+// Detect if a video format is reliably playable via native HTML5 <video> in browsers.
+// Formats like .mkv, .avi, .3gp, .mov, or raw TS streams often lack browser decoder support
+// and need to be served via Google Drive's transcoded preview player.
+function isNativePlayableVideo(item: DriveMediaItem): boolean {
+  if (item.type !== 'video') return false
+  const name = (item.name || item.title || '').toLowerCase()
+  const mime = (item.mimeType || '').toLowerCase()
+
+  // Strict allowlist for universal HTML5 browser playback
+  const isMp4 = name.endsWith('.mp4') || mime === 'video/mp4'
+  const isWebm = name.endsWith('.webm') || mime === 'video/webm'
+  const isOgg = name.endsWith('.ogv') || mime === 'video/ogg'
+
+  return isMp4 || isWebm || isOgg
+}
+
 // Opens photos and videos in Fancybox; the phone "back" button closes the lightbox instead of leaving the page.
 export async function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
   if (!items.length) return
@@ -15,21 +31,41 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
 
   const isMobile = window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches
 
-  const slides = items.map(item => ({
-    src: item.type === 'video' ? `/api/drive/video/${item.id}` : item.previewUrl,
-    thumb: item.thumbnailUrl,
-    type: item.type === 'video' ? 'html5video' : 'image',
-    videoFormat: item.type === 'video' ? (item.mimeType || 'video/mp4') : undefined,
-    width: item.width,
-    height: item.height,
-    caption: `
-      <div class="gallery-caption-box">
-        <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>
-        <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-      </div>
-    `,
-    downloadSrc: item.downloadUrl
-  }))
+  const slides = items.map(item => {
+    const isVideo = item.type === 'video'
+    const isNativeVideo = isVideo && isNativePlayableVideo(item)
+
+    // For web-native formats (.mp4, .webm), stream directly via HTML5 video.
+    // For non-standard formats (.mkv, .avi, .mov, etc.), fallback to Google Drive's transcoded preview player.
+    let src = item.previewUrl
+    let type: 'image' | 'html5video' | 'iframe' = 'image'
+
+    if (isVideo) {
+      if (isNativeVideo) {
+        src = `/api/drive/video/${item.id}`
+        type = 'html5video'
+      } else {
+        src = `https://drive.google.com/file/d/${item.id}/preview`
+        type = 'iframe'
+      }
+    }
+
+    return {
+      src,
+      thumb: item.thumbnailUrl,
+      type,
+      videoFormat: isNativeVideo ? (item.mimeType || 'video/mp4') : undefined,
+      width: item.width,
+      height: item.height,
+      caption: `
+        <div class="gallery-caption-box">
+          <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>
+          <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+        </div>
+      `,
+      downloadSrc: item.downloadUrl
+    }
+  })
 
   history.pushState({ ...history.state, lightbox: true }, '')
   let closedByBack = false
