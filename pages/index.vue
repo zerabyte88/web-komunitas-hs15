@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { openMediaLightbox } from '~/composables/useLightbox'
+
 const { isDark } = useTheme()
 const { getStats, getMedia } = useGoogleDrive()
 

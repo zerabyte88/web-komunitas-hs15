@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { MediaFilterOptions } from '~/types/drive'
 import { useDragScroll } from '~/composables/useDragScroll'
+import { openMediaLightbox } from '~/composables/useLightbox'
 
 const route = useRoute()
 const router = useRouter()
