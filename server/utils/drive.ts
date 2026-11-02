@@ -45,7 +45,7 @@ interface CacheEntry<T> {
 }
 
 const cache = new Map<string, CacheEntry<any>>()
-const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+const CACHE_TTL = 15 * 60 * 1000 // 15 minutes
 
 function getCached<T>(key: string): T | null {
   const item = cache.get(key)
@@ -154,15 +154,21 @@ export async function fetchGoogleDriveStats(): Promise<DriveStats> {
   const folders = await fetchGoogleDriveFolders()
 
   if (apiKey && rootFolderId) {
+    const cacheKey = `drive-stats-${rootFolderId}`
+    const cachedStats = getCached<DriveStats>(cacheKey)
+    if (cachedStats) return cachedStats
+
     const allFiles = await getAllDriveFiles(apiKey, rootFolderId)
     const photos = allFiles.filter(item => item.type === 'photo').length
     const videos = allFiles.filter(item => item.type === 'video').length
 
-    return {
+    const stats: DriveStats = {
       photos,
       videos,
       folders: folders.length
     }
+    setCache(cacheKey, stats)
+    return stats
   }
 
   return {
@@ -224,7 +230,7 @@ async function queryGoogleDriveFolder(
       }
 
       // High quality preview
-      const preview = isVideo 
+      const preview = isVideo
         ? `/api/drive/video/${f.id}`
         : `https://lh3.googleusercontent.com/d/${f.id}=s0`
 
@@ -258,30 +264,6 @@ async function queryGoogleDriveFolder(
   }
 }
 
-async function queryFolderHierarchy(
-  apiKey: string,
-  folderId: string,
-  folderName: string,
-  type?: 'photo' | 'video' | 'all'
-): Promise<DriveMediaItem[]> {
-  const currentItems = await queryGoogleDriveFolder(apiKey, folderId, folderName, type)
-
-  // Recursively inspect child folders if any exist within this album/folder
-  try {
-    const subfolders = await fetchFoldersInParent(apiKey, folderId)
-    if (subfolders.length > 0) {
-      const subResults = await mapConcurrent(subfolders, 3, async (sub) => {
-        return await queryFolderHierarchy(apiKey, sub.id, folderName || sub.name, type)
-      })
-      return [...currentItems, ...subResults.flat()]
-    }
-  } catch (err: any) {
-    console.warn(`Subfolder traversal failed for ${folderName} (${folderId}):`, err.message)
-  }
-
-  return currentItems
-}
-
 async function getAllDriveFiles(apiKey: string, rootFolderId: string): Promise<DriveMediaItem[]> {
   const cacheKey = `drive-all-files-${rootFolderId}`
   const cached = getCached<DriveMediaItem[]>(cacheKey)
@@ -295,18 +277,20 @@ async function getAllDriveFiles(apiKey: string, rootFolderId: string): Promise<D
     try {
       const folders = await fetchGoogleDriveFolders()
 
-      // Target folders: root folder itself + all top-level album folders
-      const targetFolders = [
-        { id: rootFolderId, name: '' },
-        ...folders.map(f => ({ id: f.id, name: f.name }))
-      ]
+      // 1. Fetch files directly located in root folder
+      const rootFilesPromise = queryGoogleDriveFolder(apiKey, rootFolderId, '', 'all')
 
-      // Fetch folder hierarchies with controlled concurrency
-      const results = await mapConcurrent(targetFolders, 3, async (f) => {
-        return await queryFolderHierarchy(apiKey, f.id, f.name, 'all')
+      // 2. Fetch files in each top-level album folder concurrently (max 4 concurrent)
+      const folderFilesPromise = mapConcurrent(folders, 4, async (f) => {
+        return await queryGoogleDriveFolder(apiKey, f.id, f.name, 'all')
       })
 
-      const allFiles = results.flat()
+      const [rootFiles, folderFilesNested] = await Promise.all([
+        rootFilesPromise,
+        folderFilesPromise
+      ])
+
+      const allFiles = [...rootFiles, ...folderFilesNested.flat()]
 
       // Deduplicate files by id
       const uniqueMap = new Map<string, DriveMediaItem>()
@@ -341,15 +325,12 @@ export async function fetchGoogleDriveFiles(options: MediaFilterOptions = {}): P
       if (requestedFolderId) {
         const cachedAll = getCached<DriveMediaItem[]>(`drive-all-files-${rootFolderId}`)
         if (cachedAll) {
-          const folders = await fetchGoogleDriveFolders()
-          const targetFolder = folders.find(f => f.id === requestedFolderId)
-          const targetName = targetFolder?.name || ''
-          allFiles = cachedAll.filter(item => item.folderId === requestedFolderId || item.folderName === targetName)
+          allFiles = cachedAll.filter(item => item.folderId === requestedFolderId)
         } else {
           const folders = await fetchGoogleDriveFolders()
           const targetFolder = folders.find(f => f.id === requestedFolderId)
           const folderName = targetFolder?.name || ''
-          allFiles = await queryFolderHierarchy(apiKey, requestedFolderId, folderName, 'all')
+          allFiles = await queryGoogleDriveFolder(apiKey, requestedFolderId, folderName, 'all')
         }
       } else {
         allFiles = await getAllDriveFiles(apiKey, rootFolderId)
@@ -375,7 +356,7 @@ function processAndPaginate(allFiles: DriveMediaItem[], options: MediaFilterOpti
   // Search filter
   if (options.search && options.search.trim()) {
     const term = options.search.toLowerCase().trim()
-    list = list.filter(item => 
+    list = list.filter(item =>
       item.title.toLowerCase().includes(term) ||
       item.name.toLowerCase().includes(term) ||
       (item.description && item.description.toLowerCase().includes(term))

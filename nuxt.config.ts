@@ -15,6 +15,18 @@ export default defineNuxtConfig({
     inlineStyles: true
   },
 
+  routeRules: {
+    '/api/drive/**': {
+      cache: {
+        maxAge: 60 * 15,
+        staleMaxAge: 60 * 60 * 24
+      },
+      headers: {
+        'Cache-Control': 'public, max-age=300, s-maxage=900, stale-while-revalidate=86400'
+      }
+    }
+  },
+
   css: [
     '~/assets/css/main.css'
   ],

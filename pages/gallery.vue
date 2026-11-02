@@ -46,10 +46,8 @@ const filterOptions = computed<MediaFilterOptions>(() => ({
 }))
 
 // Fetch folders and media
-const [{ data: folders }, { data: mediaResponse, pending: mediaPending }] = await Promise.all([
-  getFolders(),
-  getMedia(filterOptions)
-])
+const { data: folders } = getFolders()
+const { data: mediaResponse, pending: mediaPending } = getMedia(filterOptions)
 
 // Format duration helper (milliseconds to MM:SS)
 const formatDuration = (ms?: number) => {

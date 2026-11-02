@@ -4,14 +4,12 @@ import { openMediaLightbox } from '~/composables/useLightbox'
 const { isDark } = useTheme()
 const { getStats, getMedia } = useGoogleDrive()
 
-const [{ data: stats, pending: statsPending }, { data: recentPhotos, pending: photosPending }] = await Promise.all([
-  getStats(),
-  getMedia({
-    type: 'photo',
-    limit: 4,
-    sort: 'newest'
-  })
-])
+const { data: stats, pending: statsPending } = getStats()
+const { data: recentPhotos, pending: photosPending } = getMedia({
+  type: 'photo',
+  limit: 4,
+  sort: 'newest'
+})
 
 const formatDate = (dateStr: string) => {
   if (!dateStr) return ''

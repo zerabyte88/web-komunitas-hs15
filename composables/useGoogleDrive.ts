@@ -6,7 +6,7 @@ export function useGoogleDrive() {
     return useFetch<MediaResponse>('/api/drive/files', {
       query: options,
       lazy: true,
-      watch: [isRef(options) ? options : ref(options)]
+      watch: isRef(options) ? [options] : false
     })
   }
 
