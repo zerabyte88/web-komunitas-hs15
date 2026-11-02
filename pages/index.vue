@@ -108,10 +108,10 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
       <div class="max-w-3xl space-y-2">
         <span class="text-xs font-medium text-crimson-500">Mengenal HS15</span>
         <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight" :class="isDark ? 'text-white' : 'text-slate-900'">
-          HS15 — Komunitas Keliling Banjar
+          HS15 - Komunitas Keliling Banjar
         </h2>
         <p class="text-sm sm:text-base leading-relaxed" :class="isDark ? 'text-neutral-300' : 'text-slate-600'">
-          Komunitas HS15 bukan sebatas kelompok pengendara roda dua, melainkan wadah berkumpul untuk menyusuri alam, merekam perjalanan, dan menjaga silaturahmi sesama anggota di setiap sudut banua.
+          Komunitas HS15 bukan sebatas kelompok touring, melainkan wadah berkumpul untuk menyusuri alam, merekam perjalanan, dan menjaga silaturahmi sesama anggota di setiap sudut banua.
         </p>
       </div>
 
