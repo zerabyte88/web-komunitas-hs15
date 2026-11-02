@@ -70,20 +70,25 @@ const closeMobileDropdown = () => {
 </script>
 
 <template>
-  <header class="sticky top-0 z-40 w-full glass-panel border-b border-neutral-800/80 shadow-lg">
+  <header 
+    class="sticky top-0 z-40 w-full border-b transition-colors duration-200"
+    :class="isDark 
+      ? 'bg-neutral-950/90 border-neutral-800/80 backdrop-blur-md' 
+      : 'bg-white/95 border-slate-200 shadow-sm backdrop-blur-md'"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-3 items-center h-16">
         <!-- Brand Logo (Left Column) -->
         <div class="flex items-center justify-start">
           <NuxtLink to="/" class="flex items-center gap-3 group">
-            <div class="relative w-10 h-10 group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 shrink-0">
+            <div class="relative w-9 h-9 shrink-0">
               <img src="/img/logo.png" alt="HS15 Logo" class="w-full h-full object-contain">
             </div>
             <div class="flex flex-col">
-              <span class="font-extrabold text-lg tracking-wide group-hover:text-crimson-400 transition-colors" :class="isDark ? 'text-white' : 'text-slate-900'">
+              <span class="font-semibold text-lg tracking-tight group-hover:text-crimson-500 transition-colors" :class="isDark ? 'text-white' : 'text-slate-900'">
                 HS15
               </span>
-              <span class="text-[11px] font-medium hidden sm:inline -mt-1" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
+              <span class="text-[11px] font-medium hidden sm:inline -mt-0.5" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
                 Komunitas Keliling Banjar
               </span>
             </div>
@@ -94,17 +99,17 @@ const closeMobileDropdown = () => {
         <nav class="hidden md:flex items-center justify-center">
           <div 
             ref="navContainerRef"
-            class="relative flex items-center p-1 rounded-2xl border transition-colors duration-300"
+            class="relative flex items-center p-1 rounded-2xl border transition-colors duration-200"
             :class="isDark 
-              ? 'bg-neutral-900/60 border-neutral-800/80 shadow-inner' 
-              : 'bg-slate-100/80 border-slate-200/80 shadow-inner'"
+              ? 'bg-neutral-900/90 border-neutral-800' 
+              : 'bg-slate-100/90 border-slate-200'"
           >
-            <!-- Sliding Indicator Pill -->
+            <!-- Sliding Indicator Pill with Clean 1px Hairline Border (No Neon Glow) -->
             <div
-              class="absolute top-1 bottom-1 rounded-xl transition-all duration-300 ease-out pointer-events-none"
+              class="absolute top-1 bottom-1 rounded-xl transition-[transform,width,opacity] duration-200 ease-out pointer-events-none"
               :class="isDark 
-                ? 'bg-crimson-600 border border-crimson-400 shadow-[0_0_20px_rgba(215,25,58,0.45)]' 
-                : 'bg-crimson-600 border border-crimson-400 shadow-md'"
+                ? 'bg-crimson-600 border border-crimson-500/60 shadow-sm' 
+                : 'bg-crimson-600 border border-crimson-500 shadow-sm'"
               :style="indicatorStyle"
             />
 
@@ -114,7 +119,7 @@ const closeMobileDropdown = () => {
               :key="link.path"
               :ref="(el) => { if (el) linkRefs[idx] = (el as any).$el || el }"
               :to="link.path"
-              class="relative z-10 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 group whitespace-nowrap"
+              class="relative z-10 px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 flex items-center gap-2 whitespace-nowrap"
               :class="isActive(link.path)
                 ? '!text-white' 
                 : (isDark 
@@ -122,7 +127,7 @@ const closeMobileDropdown = () => {
                     : 'text-slate-600 hover:text-slate-900')"
             >
               <svg 
-                class="w-4 h-4 transition-transform duration-200 group-hover:scale-110" 
+                class="w-4 h-4 shrink-0" 
                 :class="isActive(link.path) ? '!text-white' : ''"
                 fill="none" 
                 stroke="currentColor" 
@@ -140,19 +145,19 @@ const closeMobileDropdown = () => {
           <!-- Theme Toggle Button -->
           <button
             type="button"
-            class="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 border hover:scale-105 active:scale-95 shrink-0 theme-toggle-btn shadow-sm"
+            class="w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-200 border shrink-0 theme-toggle-btn shadow-sm"
             :class="isDark 
-              ? 'bg-neutral-900/80 hover:bg-neutral-800 text-amber-400 border-neutral-700/80 hover:border-amber-400/40' 
+              ? 'bg-neutral-900/90 hover:bg-neutral-800 text-amber-400 border-neutral-800 hover:border-neutral-700' 
               : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-300'"
             :title="isDark ? 'Ganti ke Tema Terang' : 'Ganti ke Tema Gelap'"
             aria-label="Toggle theme"
             @click="toggleTheme"
           >
-            <svg v-if="isDark" class="w-4 h-4 transition-transform hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            <svg v-if="isDark" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
-            <svg v-else class="w-4 h-4 text-slate-700 transition-transform hover:-rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            <svg v-else class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
           </button>
 
@@ -163,14 +168,18 @@ const closeMobileDropdown = () => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <ul tabindex="0" class="dropdown-content z-50 flex flex-col gap-1 p-2 shadow-2xl glass-panel rounded-2xl w-52 mt-3 border border-neutral-700">
+            <ul 
+              tabindex="0" 
+              class="dropdown-content z-50 flex flex-col gap-1 p-2 shadow-lg rounded-2xl w-52 mt-3 border"
+              :class="isDark ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-slate-200'"
+            >
               <li>
                 <NuxtLink
                   to="/"
-                  class="py-2.5 px-3 rounded-xl flex items-center gap-2 text-sm transition-colors"
+                  class="py-2.5 px-3 rounded-xl flex items-center gap-2 text-sm transition-colors duration-200"
                   :class="isActive('/')
-                    ? '!bg-crimson-600 !text-white font-bold btn-active-album shadow-sm'
-                    : (isDark ? 'text-neutral-200 hover:bg-white/10' : 'text-slate-800 hover:bg-black/5')"
+                    ? '!bg-crimson-600 !text-white font-medium shadow-sm'
+                    : (isDark ? 'text-neutral-200 hover:bg-neutral-800' : 'text-slate-800 hover:bg-slate-100')"
                   @click="closeMobileDropdown"
                 >
                   Beranda
@@ -179,10 +188,10 @@ const closeMobileDropdown = () => {
               <li>
                 <NuxtLink
                   to="/gallery"
-                  class="py-2.5 px-3 rounded-xl flex items-center gap-2 text-sm transition-colors"
+                  class="py-2.5 px-3 rounded-xl flex items-center gap-2 text-sm transition-colors duration-200"
                   :class="isActive('/gallery')
-                    ? '!bg-crimson-600 !text-white font-bold btn-active-album shadow-sm'
-                    : (isDark ? 'text-neutral-200 hover:bg-white/10' : 'text-slate-800 hover:bg-black/5')"
+                    ? '!bg-crimson-600 !text-white font-medium shadow-sm'
+                    : (isDark ? 'text-neutral-200 hover:bg-neutral-800' : 'text-slate-800 hover:bg-slate-100')"
                   @click="closeMobileDropdown"
                 >
                   Galeri

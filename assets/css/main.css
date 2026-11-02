@@ -94,8 +94,8 @@ html.dark .theme-toggle-btn {
 
 /* Home Stats Pill (Foto, Video, Album) */
 .home-stats-pill {
-  background-color: rgba(23, 23, 23, 0.7);
-  border-color: rgba(64, 64, 64, 0.8);
+  background-color: rgba(23, 23, 23, 0.9);
+  border-color: #262626;
   color: #d4d4d4;
 }
 
@@ -103,19 +103,19 @@ html.light .home-stats-pill {
   background-color: #ffffff !important;
   border-color: #e2e8f0 !important;
   color: #334155 !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Route Badges (Banjarmasin, Banjarbaru, Pelaihari) */
 .home-route-badge {
-  border-color: rgba(255, 255, 255, 0.15);
-  background-color: rgba(0, 0, 0, 0.4);
+  border-color: #262626;
+  background-color: rgba(23, 23, 23, 0.9);
   color: #e5e5e5;
 }
 
 html.light .home-route-badge {
-  border-color: #cbd5e1 !important;
-  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: #e2e8f0 !important;
+  background-color: #ffffff !important;
   color: #334155 !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
 }
@@ -133,41 +133,40 @@ html.dark .media-card-footer {
   background-color: rgba(23, 23, 23, 0.4) !important;
 }
 
-/* Glass & Flat panels */
+/* Surface Panels */
 .glass-panel {
-  background: rgba(10, 10, 10, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  background: rgba(14, 14, 14, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid #262626;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 html.light .glass-panel {
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
 .glass-card {
-  background: rgba(17, 17, 17, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.3s ease;
+  background: rgba(23, 23, 23, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid #262626;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 html.light .glass-card {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
 }
 
 @media (hover: hover) {
   .glass-card:hover {
-    border-color: rgba(215, 25, 58, 0.6);
-    transform: translateY(-2px);
+    border-color: rgba(215, 25, 58, 0.5);
   }
 }
 
@@ -176,29 +175,26 @@ html.light .glass-card {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
 }
 
 .skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.04) 25%,
-    rgba(255, 255, 255, 0.09) 37%,
-    rgba(255, 255, 255, 0.04) 63%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.04) 25%,
+      rgba(255, 255, 255, 0.09) 37%,
+      rgba(255, 255, 255, 0.04) 63%);
   background-size: 200% 100%;
   animation: shimmer 1.6s infinite ease-in-out;
 }
 
 html.light .skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.04) 25%,
-    rgba(0, 0, 0, 0.08) 37%,
-    rgba(0, 0, 0, 0.04) 63%
-  );
+  background: linear-gradient(90deg,
+      rgba(0, 0, 0, 0.04) 25%,
+      rgba(0, 0, 0, 0.08) 37%,
+      rgba(0, 0, 0, 0.04) 63%);
   background-size: 200% 100%;
 }
 
@@ -321,8 +317,10 @@ html.light .hover\:bg-neutral-800\/50:hover {
 /* Hide scrollbar utility for clean swipeable buttons without visible bars or arrows */
 .scrollbar-none,
 .no-scrollbar {
-  -ms-overflow-style: none !important; /* IE and Edge */
-  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important;
+  /* IE and Edge */
+  scrollbar-width: none !important;
+  /* Firefox */
   -webkit-overflow-scrolling: touch;
 }
 
