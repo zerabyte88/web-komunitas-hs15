@@ -1,5 +1,10 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
+const driveJsonCacheRule = {
+  cache: { maxAge: 60 * 15, staleMaxAge: 60 * 60 * 24 },
+  headers: { 'Cache-Control': 'public, max-age=300, s-maxage=900, stale-while-revalidate=86400' }
+}
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -16,15 +21,9 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/api/drive/**': {
-      cache: {
-        maxAge: 60 * 15,
-        staleMaxAge: 60 * 60 * 24
-      },
-      headers: {
-        'Cache-Control': 'public, max-age=300, s-maxage=900, stale-while-revalidate=86400'
-      }
-    }
+    '/api/drive/files': driveJsonCacheRule,
+    '/api/drive/folders': driveJsonCacheRule,
+    '/api/drive/stats': driveJsonCacheRule
   },
 
   css: [
