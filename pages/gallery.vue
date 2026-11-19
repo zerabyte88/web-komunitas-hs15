@@ -17,6 +17,31 @@ const currentPage = ref<number>(1)
 const albumTabsRef = ref<HTMLElement | null>(null)
 useDragScroll(albumTabsRef)
 
+const canScrollLeft = ref(false)
+const canScrollRight = ref(false)
+
+const updateAlbumScrollState = () => {
+  const el = albumTabsRef.value
+  if (!el) return
+  canScrollLeft.value = el.scrollLeft > 2
+  canScrollRight.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 2
+}
+
+const scrollAlbums = (direction: -1 | 1) => {
+  const el = albumTabsRef.value
+  if (!el) return
+  el.scrollBy({ left: direction * Math.max(200, Math.round(el.clientWidth * 0.65)), behavior: 'smooth' })
+}
+
+const onAlbumWheel = (e: WheelEvent) => {
+  const el = albumTabsRef.value
+  if (!el || el.scrollWidth <= el.clientWidth) return
+  if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+    e.preventDefault()
+    el.scrollLeft += e.deltaY
+  }
+}
+
 watch(() => route.query.type, (newType) => {
   if (newType === 'photo' || newType === 'video') {
     mediaType.value = newType
@@ -46,6 +71,19 @@ const filterOptions = computed<MediaFilterOptions>(() => ({
 
 const { data: folders } = getFolders()
 const { data: mediaResponse, pending: mediaPending } = getMedia(filterOptions)
+
+watch(folders, () => {
+  nextTick(updateAlbumScrollState)
+})
+
+onMounted(() => {
+  nextTick(updateAlbumScrollState)
+  window.addEventListener('resize', updateAlbumScrollState)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateAlbumScrollState)
+})
 
 const formatDuration = (ms?: number) => {
   if (!ms) return ''
@@ -160,31 +198,61 @@ const totalLabel = computed(() => {
           </button>
         </div>
 
-        <div
-          ref="albumTabsRef"
-          class="flex items-center gap-2 overflow-x-auto overflow-y-hidden w-full lg:w-auto no-scrollbar cursor-grab active:cursor-grabbing select-none touch-pan-x"
-        >
+        <div class="flex items-center gap-1.5 min-w-0 flex-1 w-full lg:w-auto">
           <button
+            v-if="canScrollLeft || canScrollRight"
             type="button"
-            class="h-9 px-3 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-colors duration-150"
-            :class="currentFolder === 'all'
-              ? 'bg-[var(--accent)] text-white'
-              : 'bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]'"
-            @click="currentFolder = 'all'"
+            class="w-8 h-8 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] hover:bg-[var(--bg-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center justify-center shrink-0 transition-colors duration-150 disabled:opacity-30 disabled:pointer-events-none"
+            :disabled="!canScrollLeft"
+            aria-label="Geser daftar album ke kiri"
+            @click="scrollAlbums(-1)"
           >
-            Semua Album
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
+            </svg>
           </button>
-          <button
-            v-for="folder in folders || []"
-            :key="folder.id"
-            type="button"
-            class="h-9 px-3 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-colors duration-150"
-            :class="currentFolder === folder.id
-              ? 'bg-[var(--accent)] text-white'
-              : 'bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]'"
-            @click="currentFolder = folder.id"
+
+          <div
+            ref="albumTabsRef"
+            class="flex items-center gap-2 overflow-x-auto overflow-y-hidden flex-1 min-w-0 no-scrollbar cursor-grab active:cursor-grabbing select-none touch-pan-x"
+            @scroll.passive="updateAlbumScrollState"
+            @wheel="onAlbumWheel"
           >
-            {{ folder.name }}
+            <button
+              type="button"
+              class="h-9 px-3 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-colors duration-150"
+              :class="currentFolder === 'all'
+                ? 'bg-[var(--accent)] text-white'
+                : 'bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]'"
+              @click="currentFolder = 'all'"
+            >
+              Semua Album
+            </button>
+            <button
+              v-for="folder in folders || []"
+              :key="folder.id"
+              type="button"
+              class="h-9 px-3 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-colors duration-150"
+              :class="currentFolder === folder.id
+                ? 'bg-[var(--accent)] text-white'
+                : 'bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]'"
+              @click="currentFolder = folder.id"
+            >
+              {{ folder.name }}
+            </button>
+          </div>
+
+          <button
+            v-if="canScrollLeft || canScrollRight"
+            type="button"
+            class="w-8 h-8 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] hover:bg-[var(--bg-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center justify-center shrink-0 transition-colors duration-150 disabled:opacity-30 disabled:pointer-events-none"
+            :disabled="!canScrollRight"
+            aria-label="Geser daftar album ke kanan"
+            @click="scrollAlbums(1)"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
       </div>
