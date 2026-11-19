@@ -17,9 +17,9 @@ export default <Config>{
     extend: {
       colors: {
         hs15: {
-          bg: '#0a0a0a',
-          card: '#111111',
-          border: 'rgba(255,255,255,0.1)',
+          bg: '#11100f',
+          card: '#181715',
+          border: 'rgba(242,239,233,0.09)',
           red: '#D7193A',
           'red-hover': '#B01430'
         },
@@ -28,7 +28,8 @@ export default <Config>{
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif']
+        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace']
       }
     }
   },
@@ -42,13 +43,13 @@ export default <Config>{
           primary: '#D7193A',
           'primary-focus': '#B01430',
           'primary-content': '#ffffff',
-          secondary: '#ffffff',
+          secondary: '#f2efe9',
           accent: '#D7193A',
-          neutral: '#171717',
-          'base-100': '#0a0a0a',
-          'base-200': '#111111',
-          'base-300': '#1a1a1a',
-          'base-content': '#fafafa',
+          neutral: '#22201d',
+          'base-100': '#11100f',
+          'base-200': '#181715',
+          'base-300': '#22201d',
+          'base-content': '#f2efe9',
           info: '#38bdf8',
           success: '#22c55e',
           warning: '#f59e0b',
@@ -58,13 +59,13 @@ export default <Config>{
           primary: '#D7193A',
           'primary-focus': '#B01430',
           'primary-content': '#ffffff',
-          secondary: '#171717',
+          secondary: '#181614',
           accent: '#D7193A',
-          neutral: '#e5e7eb',
-          'base-100': '#f8fafc',
+          neutral: '#ede9e2',
+          'base-100': '#f6f4f0',
           'base-200': '#ffffff',
-          'base-300': '#f1f5f9',
-          'base-content': '#0f172a',
+          'base-300': '#ede9e2',
+          'base-content': '#181614',
           info: '#0284c7',
           success: '#16a34a',
           warning: '#d97706',

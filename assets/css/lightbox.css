@@ -1,18 +1,16 @@
-/* Fancybox v5 UI Theme Customization */
 .fancybox__container {
-  --fancybox-bg: rgba(10, 10, 10, 0.96);
-  --fancybox-color: #fafafa;
+  --fancybox-bg: rgba(17, 16, 15, 0.96);
+  --fancybox-color: #f2efe9;
   --fancybox-accent-color: #D7193A;
   --f-backdrop-exit-duration: 0.15s;
   --f-interface-exit-duration: 0.12s;
 }
 
 html.light .fancybox__container {
-  --fancybox-bg: rgba(255, 255, 255, 0.97);
-  --fancybox-color: #0f172a;
+  --fancybox-bg: rgba(246, 244, 240, 0.97);
+  --fancybox-color: #181614;
 }
 
-/* Remove default white border/padding and optimize video player layout on mobile & desktop */
 .fancybox__slide.has-iframe,
 .fancybox__slide.has-html5video {
   padding: 64px 12px 20px 12px !important;
@@ -49,68 +47,65 @@ html.light .fancybox__container {
   outline: none !important;
 }
 
-/* Fallback card when browser cannot decode a video format (e.g. raw MKV/AVI/HEVC without license) */
 .video-fallback-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 2.25rem 1.5rem;
+  padding: 2rem 1.5rem;
   max-width: 440px;
   width: 90%;
   margin: auto;
-  border-radius: 20px;
-  background: rgba(18, 18, 22, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
-  color: #fafafa;
+  border-radius: 16px;
+  background: #181715;
+  border: 1px solid rgba(242, 239, 233, 0.14);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
+  color: #f2efe9;
 }
 
 html.light .video-fallback-card {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  color: #0f172a;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+  border: 1px solid rgba(24, 22, 20, 0.12);
+  color: #181614;
+  box-shadow: 0 16px 40px rgba(24, 22, 20, 0.12);
 }
 
 .video-fallback-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  background: rgba(215, 25, 58, 0.15);
-  color: #fb7185;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: rgba(215, 25, 58, 0.14);
+  color: #ec5470;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
-  border: 1px solid rgba(215, 25, 58, 0.3);
+  border: 1px solid rgba(215, 25, 58, 0.28);
 }
 
 html.light .video-fallback-icon {
-  background: rgba(215, 25, 58, 0.1);
+  background: rgba(215, 25, 58, 0.08);
   color: #D7193A;
-  border-color: rgba(215, 25, 58, 0.25);
+  border-color: rgba(215, 25, 58, 0.22);
 }
 
 .video-fallback-title {
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 600;
   line-height: 1.3;
   margin-bottom: 0.5rem;
 }
 
 .video-fallback-desc {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   line-height: 1.5;
-  color: #a3a3a3;
+  color: #b5afa6;
   margin-bottom: 1.25rem;
 }
 
 html.light .video-fallback-desc {
-  color: #64748b;
+  color: #534d45;
 }
 
 .video-fallback-btn {
@@ -118,28 +113,20 @@ html.light .video-fallback-desc {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.65rem 1.4rem;
-  border-radius: 12px;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
   background: #D7193A;
   color: #ffffff !important;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 500;
   text-decoration: none;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(215, 25, 58, 0.4);
+  transition: background-color 150ms ease;
 }
 
 .video-fallback-btn:hover {
-  background: #b01430;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(215, 25, 58, 0.5);
+  background: #B01430;
 }
 
-.video-fallback-btn:active {
-  transform: scale(0.97);
-}
-
-/* Hide image-only zoom/rotate controls when viewing a video */
 .fancybox__container.is-video-slide .fancybox__toolbar [data-panzoom-action] {
   display: none !important;
 }
@@ -147,18 +134,18 @@ html.light .video-fallback-desc {
 .fancybox__toolbar {
   --f-button-width: 36px !important;
   --f-button-height: 36px !important;
-  --f-button-border-radius: 11px !important;
+  --f-button-border-radius: 8px !important;
   --f-button-bg: transparent !important;
-  --f-button-hover-bg: rgba(255, 255, 255, 0.12) !important;
-  --f-button-active-bg: rgba(255, 255, 255, 0.18) !important;
-  --f-button-color: #e5e5e5 !important;
+  --f-button-hover-bg: rgba(242, 239, 233, 0.1) !important;
+  --f-button-active-bg: rgba(242, 239, 233, 0.16) !important;
+  --f-button-color: #f2efe9 !important;
   --f-button-hover-color: #ffffff !important;
   --f-button-svg-width: 18px !important;
   --f-button-svg-height: 18px !important;
-  --f-button-svg-stroke-width: 1.8 !important;
+  --f-button-svg-stroke-width: 1.75 !important;
   --f-button-svg-filter: none !important;
-  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.78), transparent) !important;
-  padding: 10px 14px !important;
+  background: linear-gradient(to bottom, rgba(17, 16, 15, 0.78), transparent) !important;
+  padding: 12px 16px !important;
 }
 
 @media (min-width: 640px) {
@@ -169,11 +156,11 @@ html.light .video-fallback-desc {
 
 html.light .fancybox__toolbar {
   --f-button-bg: transparent !important;
-  --f-button-hover-bg: rgba(15, 23, 42, 0.08) !important;
-  --f-button-active-bg: rgba(15, 23, 42, 0.14) !important;
-  --f-button-color: #1e293b !important;
-  --f-button-hover-color: #0f172a !important;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), transparent) !important;
+  --f-button-hover-bg: rgba(24, 22, 20, 0.08) !important;
+  --f-button-active-bg: rgba(24, 22, 20, 0.14) !important;
+  --f-button-color: #181614 !important;
+  --f-button-hover-color: #181614 !important;
+  background: linear-gradient(to bottom, rgba(246, 244, 240, 0.9), transparent) !important;
 }
 
 .fancybox__toolbar__column.is-right {
@@ -182,101 +169,90 @@ html.light .fancybox__toolbar {
   margin-left: auto !important;
   gap: 4px !important;
   align-items: center !important;
-  padding: 5px !important;
-  border-radius: 16px !important;
-  background: rgba(18, 18, 22, 0.75) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  padding: 4px !important;
+  border-radius: 12px !important;
+  background: rgba(24, 23, 21, 0.92) !important;
+  border: 1px solid rgba(242, 239, 233, 0.12) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
   pointer-events: auto !important;
 }
 
 html.light .fancybox__toolbar__column.is-right {
-  background: rgba(255, 255, 255, 0.85) !important;
-  border: 1px solid rgba(15, 23, 42, 0.1) !important;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(24, 22, 20, 0.1) !important;
+  box-shadow: 0 6px 20px rgba(24, 22, 20, 0.08) !important;
 }
 
 .fancybox__toolbar .f-button {
   border: 1px solid transparent !important;
-  border-radius: 11px !important;
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  border-radius: 8px !important;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease !important;
 }
 
 .fancybox__toolbar .f-button:hover:not([disabled]) {
-  background: rgba(215, 25, 58, 0.18) !important;
-  border-color: rgba(215, 25, 58, 0.45) !important;
+  background: rgba(242, 239, 233, 0.12) !important;
+  border-color: rgba(242, 239, 233, 0.18) !important;
   color: #ffffff !important;
-  transform: translateY(-1px);
 }
 
 html.light .fancybox__toolbar .f-button:hover:not([disabled]) {
-  background: rgba(215, 25, 58, 0.12) !important;
-  border-color: rgba(215, 25, 58, 0.35) !important;
-  color: #D7193A !important;
-}
-
-.fancybox__toolbar .f-button:active:not([disabled]) {
-  transform: scale(0.93);
+  background: rgba(24, 22, 20, 0.08) !important;
+  border-color: rgba(24, 22, 20, 0.15) !important;
+  color: #181614 !important;
 }
 
 .fancybox__toolbar .f-button[data-fancybox-close] {
   background: rgba(215, 25, 58, 0.16) !important;
-  border-color: rgba(215, 25, 58, 0.32) !important;
-  color: #fb7185 !important;
+  border-color: rgba(215, 25, 58, 0.3) !important;
+  color: #f493a5 !important;
   margin-left: 2px !important;
 }
 
 html.light .fancybox__toolbar .f-button[data-fancybox-close] {
-  background: rgba(215, 25, 58, 0.1) !important;
-  border-color: rgba(215, 25, 58, 0.25) !important;
+  background: rgba(215, 25, 58, 0.08) !important;
+  border-color: rgba(215, 25, 58, 0.22) !important;
   color: #D7193A !important;
 }
 
 .fancybox__toolbar .f-button[data-fancybox-close]:hover {
   background: #D7193A !important;
-  border-color: #f43f5e !important;
+  border-color: #D7193A !important;
   color: #ffffff !important;
-  box-shadow: 0 0 16px rgba(215, 25, 58, 0.5) !important;
 }
 
-/* Lightbox Left/Right Navigation Arrows (PC) */
 .fancybox__nav {
   --f-button-width: 44px !important;
   --f-button-height: 44px !important;
-  --f-button-border-radius: 12px !important;
-  --f-button-bg: rgba(23, 23, 23, 0.78) !important;
-  --f-button-hover-bg: #D7193A !important;
-  --f-button-active-bg: #B01430 !important;
-  --f-button-color: #f5f5f5 !important;
+  --f-button-border-radius: 10px !important;
+  --f-button-bg: rgba(24, 23, 21, 0.88) !important;
+  --f-button-hover-bg: #22201d !important;
+  --f-button-active-bg: #181715 !important;
+  --f-button-color: #f2efe9 !important;
   --f-button-hover-color: #ffffff !important;
   --f-button-svg-width: 20px !important;
   --f-button-svg-height: 20px !important;
-  --f-button-svg-stroke-width: 2 !important;
+  --f-button-svg-stroke-width: 1.75 !important;
   --f-button-svg-filter: none !important;
   --f-button-next-pos: 20px !important;
   --f-button-prev-pos: 20px !important;
 }
 
 html.light .fancybox__nav {
-  --f-button-bg: rgba(255, 255, 255, 0.9) !important;
-  --f-button-hover-bg: #D7193A !important;
-  --f-button-active-bg: #B01430 !important;
-  --f-button-color: #0f172a !important;
-  --f-button-hover-color: #ffffff !important;
+  --f-button-bg: rgba(255, 255, 255, 0.92) !important;
+  --f-button-hover-bg: #ede9e2 !important;
+  --f-button-active-bg: #e2ddd4 !important;
+  --f-button-color: #181614 !important;
+  --f-button-hover-color: #181614 !important;
 }
 
 .fancybox__nav .f-button {
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(10px) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
-  transition: all 0.2s ease !important;
+  border: 1px solid rgba(242, 239, 233, 0.14) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease !important;
 }
 
 .fancybox__nav .f-button:hover:not([disabled]) {
-  border-color: rgba(244, 63, 94, 0.6) !important;
-  transform: translateY(-50%) scale(1.05);
+  border-color: rgba(242, 239, 233, 0.28) !important;
 }
 
 .fancybox__nav .f-button:disabled {
@@ -284,8 +260,12 @@ html.light .fancybox__nav {
 }
 
 html.light .fancybox__nav .f-button {
-  border: 1px solid rgba(15, 23, 42, 0.12) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(24, 22, 20, 0.12) !important;
+  box-shadow: 0 4px 16px rgba(24, 22, 20, 0.08) !important;
+}
+
+html.light .fancybox__nav .f-button:hover:not([disabled]) {
+  border-color: rgba(24, 22, 20, 0.24) !important;
 }
 
 @media (max-width: 768px), (hover: none) and (pointer: coarse) {
@@ -294,7 +274,6 @@ html.light .fancybox__nav .f-button {
   }
 }
 
-/* Gallery App Style Lightbox Caption (Top-Left) */
 .fancybox__toolbar {
   position: absolute !important;
   top: 0 !important;
@@ -356,38 +335,41 @@ html.light .fancybox__nav .f-button {
 
 .gallery-caption-title {
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.25;
-  color: #ffffff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.5);
+  color: #f2efe9;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 html.light .gallery-caption-title {
-  color: #0f172a;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  color: #181614;
+  text-shadow: 0 1px 2px rgba(246, 244, 240, 0.85);
 }
 
 .gallery-caption-date {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  font-variant-numeric: tabular-nums;
   font-size: 0.75rem;
   line-height: 1.2;
-  color: rgba(255, 255, 255, 0.75);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+  color: rgba(242, 239, 233, 0.75);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 html.light .gallery-caption-date {
-  color: #64748b;
+  color: #534d45;
   text-shadow: none;
 }
 
 @media (min-width: 640px) {
   .gallery-caption-title {
-    font-size: 1.05rem;
+    font-size: 1rem;
   }
+
   .gallery-caption-date {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -395,10 +377,9 @@ html.light .gallery-caption-date {
   border-radius: 4px;
   overflow: hidden;
   border: 2px solid transparent;
-  transition: border-color 0.2s ease;
+  transition: border-color 150ms ease;
 }
 
 .fancybox__thumb.is-selected {
   border-color: #D7193A;
 }
-

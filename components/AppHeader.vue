@@ -3,64 +3,11 @@ const route = useRoute()
 const { isDark, toggleTheme } = useTheme()
 
 const navLinks = [
-  {
-    path: '/',
-    label: 'Beranda',
-    icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'
-  },
-  {
-    path: '/gallery',
-    label: 'Galeri',
-    icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
-  }
+  { path: '/', label: 'Beranda' },
+  { path: '/gallery', label: 'Galeri' }
 ]
 
-const navContainerRef = ref<HTMLElement | null>(null)
-const linkRefs = ref<HTMLElement[]>([])
-
-// Indicator pill style (sliding bubble indicator)
-const indicatorStyle = ref({
-  width: '0px',
-  transform: 'translateX(0px)',
-  opacity: 0
-})
-
-const updateIndicator = () => {
-  nextTick(() => {
-    const activeIndex = navLinks.findIndex(link => link.path === route.path)
-    if (activeIndex !== -1 && linkRefs.value[activeIndex] && navContainerRef.value) {
-      const activeEl = linkRefs.value[activeIndex]
-      const containerLeft = navContainerRef.value.getBoundingClientRect().left
-      const elLeft = activeEl.getBoundingClientRect().left
-      const left = elLeft - containerLeft
-
-      indicatorStyle.value = {
-        width: `${activeEl.offsetWidth}px`,
-        transform: `translateX(${left}px)`,
-        opacity: 1
-      }
-    } else {
-      indicatorStyle.value.opacity = 0
-    }
-  })
-}
-
-watch(() => route.path, () => {
-  updateIndicator()
-})
-
-onMounted(() => {
-  updateIndicator()
-  window.addEventListener('resize', updateIndicator)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', updateIndicator)
-})
-
-const isActive = (path: string) => {
-  return route.path === path
-}
+const isActive = (path: string) => route.path === path
 
 const closeMobileDropdown = () => {
   if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
@@ -70,135 +17,86 @@ const closeMobileDropdown = () => {
 </script>
 
 <template>
-  <header 
-    class="sticky top-0 z-40 w-full border-b transition-colors duration-200"
-    :class="isDark 
-      ? 'bg-neutral-950/90 border-neutral-800/80 backdrop-blur-md' 
-      : 'bg-white/95 border-slate-200 shadow-sm backdrop-blur-md'"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-3 items-center h-16">
-        <!-- Brand Logo (Left Column) -->
-        <div class="flex items-center justify-start">
-          <NuxtLink to="/" class="flex items-center gap-3 group">
-            <div class="relative w-9 h-9 shrink-0">
-              <img src="/img/logo.png" alt="HS15 Logo" class="w-full h-full object-contain">
-            </div>
-            <div class="flex flex-col">
-              <span class="font-semibold text-lg tracking-tight group-hover:text-crimson-500 transition-colors" :class="isDark ? 'text-white' : 'text-slate-900'">
-                HS15
-              </span>
-              <span class="text-[11px] font-medium hidden sm:inline -mt-0.5" :class="isDark ? 'text-neutral-400' : 'text-slate-500'">
-                Komunitas Keliling Banjar
-              </span>
-            </div>
-          </NuxtLink>
+  <header class="sticky top-0 z-40 w-full h-16 bg-[var(--bg-header)] backdrop-blur-sm border-b border-[var(--border-subtle)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
+      <NuxtLink to="/" class="flex items-center gap-3 shrink-0">
+        <img src="/img/logo.png" alt="Logo HS15" class="w-8 h-8 object-contain shrink-0">
+        <div class="flex flex-col leading-tight">
+          <span class="font-semibold text-base tracking-tight text-[var(--text-primary)]">
+            HS15
+          </span>
+          <span class="text-xs text-[var(--text-muted)] hidden sm:inline">
+            Komunitas Keliling Banjar
+          </span>
         </div>
+      </NuxtLink>
 
-        <!-- Navigation Links with Sliding Pill Indicator (Center Column) -->
-        <nav class="hidden md:flex items-center justify-center">
-          <div 
-            ref="navContainerRef"
-            class="relative flex items-center p-1 rounded-2xl border transition-colors duration-200"
-            :class="isDark 
-              ? 'bg-neutral-900/90 border-neutral-800' 
-              : 'bg-slate-100/90 border-slate-200'"
-          >
-            <!-- Sliding Indicator Pill with Clean 1px Hairline Border (No Neon Glow) -->
-            <div
-              class="absolute top-1 bottom-1 rounded-xl transition-[transform,width,opacity] duration-200 ease-out pointer-events-none"
-              :class="isDark 
-                ? 'bg-crimson-600 border border-crimson-500/60 shadow-sm' 
-                : 'bg-crimson-600 border border-crimson-500 shadow-sm'"
-              :style="indicatorStyle"
-            />
+      <nav class="hidden md:flex items-center gap-6 h-full" aria-label="Navigasi utama">
+        <NuxtLink
+          v-for="link in navLinks"
+          :key="link.path"
+          :to="link.path"
+          class="relative h-full inline-flex items-center text-sm transition-colors duration-150"
+          :class="isActive(link.path)
+            ? 'text-[var(--text-primary)] font-medium'
+            : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'"
+        >
+          {{ link.label }}
+          <span
+            v-if="isActive(link.path)"
+            class="absolute inset-x-0 bottom-0 h-0.5 bg-[var(--accent)]"
+          />
+        </NuxtLink>
+      </nav>
 
-            <!-- Nav Links -->
-            <NuxtLink
-              v-for="(link, idx) in navLinks"
-              :key="link.path"
-              :ref="(el) => { if (el) linkRefs[idx] = (el as any).$el || el }"
-              :to="link.path"
-              class="relative z-10 px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 flex items-center gap-2 whitespace-nowrap"
-              :class="isActive(link.path)
-                ? '!text-white' 
-                : (isDark 
-                    ? 'text-neutral-400 hover:text-white' 
-                    : 'text-slate-600 hover:text-slate-900')"
-            >
-              <svg 
-                class="w-4 h-4 shrink-0" 
-                :class="isActive(link.path) ? '!text-white' : ''"
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="link.icon" />
-              </svg>
-              <span>{{ link.label }}</span>
-            </NuxtLink>
-          </div>
-        </nav>
+      <div class="flex items-center gap-2 shrink-0">
+        <button
+          type="button"
+          class="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] flex items-center justify-center transition-colors duration-150 shrink-0"
+          :title="isDark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap'"
+          :aria-label="isDark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap'"
+          @click="toggleTheme"
+        >
+          <svg v-if="isDark" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
 
-        <!-- Right Side: Theme Toggle & Mobile Menu (Right Column) -->
-        <div class="flex items-center justify-end gap-2 col-start-3">
-          <!-- Theme Toggle Button -->
+        <div class="dropdown dropdown-end md:hidden">
           <button
             type="button"
-            class="w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-200 border shrink-0 theme-toggle-btn shadow-sm"
-            :class="isDark 
-              ? 'bg-neutral-900/90 hover:bg-neutral-800 text-amber-400 border-neutral-800 hover:border-neutral-700' 
-              : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200 hover:border-slate-300'"
-            :title="isDark ? 'Ganti ke Tema Terang' : 'Ganti ke Tema Gelap'"
-            aria-label="Toggle theme"
-            @click="toggleTheme"
+            tabindex="0"
+            aria-label="Buka menu navigasi"
+            class="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] flex items-center justify-center transition-colors duration-150"
           >
-            <svg v-if="isDark" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-            <svg v-else class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-
-          <!-- Mobile Dropdown Navigation -->
-          <div class="dropdown dropdown-end md:hidden">
-            <button tabindex="0" class="btn btn-sm btn-circle btn-ghost" :class="isDark ? 'text-neutral-300' : 'text-slate-700'">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <ul 
-              tabindex="0" 
-              class="dropdown-content z-50 flex flex-col gap-1 p-2 shadow-lg rounded-2xl w-52 mt-3 border"
-              :class="isDark ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-slate-200'"
-            >
-              <li>
-                <NuxtLink
-                  to="/"
-                  class="py-2.5 px-3 rounded-xl flex items-center gap-2 text-sm transition-colors duration-200"
-                  :class="isActive('/')
-                    ? '!bg-crimson-600 !text-white font-medium shadow-sm'
-                    : (isDark ? 'text-neutral-200 hover:bg-neutral-800' : 'text-slate-800 hover:bg-slate-100')"
-                  @click="closeMobileDropdown"
-                >
-                  Beranda
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink
-                  to="/gallery"
-                  class="py-2.5 px-3 rounded-xl flex items-center gap-2 text-sm transition-colors duration-200"
-                  :class="isActive('/gallery')
-                    ? '!bg-crimson-600 !text-white font-medium shadow-sm'
-                    : (isDark ? 'text-neutral-200 hover:bg-neutral-800' : 'text-slate-800 hover:bg-slate-100')"
-                  @click="closeMobileDropdown"
-                >
-                  Galeri
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
+          <ul
+            tabindex="0"
+            class="dropdown-content z-50 flex flex-col gap-1 p-1.5 shadow-lg rounded-xl w-48 mt-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)]"
+          >
+            <li v-for="link in navLinks" :key="link.path">
+              <NuxtLink
+                :to="link.path"
+                class="py-2 px-3 rounded-lg flex items-center justify-between text-sm transition-colors duration-150"
+                :class="isActive(link.path)
+                  ? 'bg-[var(--bg-raised)] text-[var(--text-primary)] font-medium'
+                  : 'text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]'"
+                @click="closeMobileDropdown"
+              >
+                <span>{{ link.label }}</span>
+                <span
+                  v-if="isActive(link.path)"
+                  class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"
+                />
+              </NuxtLink>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
