@@ -54,16 +54,16 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
   <div class="space-y-16 sm:space-y-20 py-4 sm:py-8">
     <section class="space-y-8">
       <div class="space-y-4 max-w-3xl">
-        <h1 class="text-3xl sm:text-5xl font-medium tracking-[-0.02em] leading-[1.08] text-[var(--text-primary)]">
+        <h1 class="anim-fade-up text-3xl sm:text-5xl font-medium tracking-[-0.02em] leading-[1.08] text-[var(--text-primary)]" style="--delay: 0ms">
           Arsip perjalanan Komunitas HS15
         </h1>
-        <p class="text-base sm:text-lg text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+        <p class="anim-fade-up text-base sm:text-lg text-[var(--text-secondary)] max-w-2xl leading-relaxed" style="--delay: 50ms">
           Jejak foto dan video perjalanan Komunitas HS15, tersimpan terbuka untuk anggota dan siapa saja yang ingin melihatnya.
         </p>
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2">
+        <div class="anim-fade-up flex flex-wrap items-center gap-x-6 gap-y-3 pt-2" style="--delay: 100ms">
           <NuxtLink
             to="/gallery"
-            class="inline-flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150"
+            class="inline-flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-[background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100"
           >
             Buka Galeri
           </NuxtLink>
@@ -74,10 +74,10 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
         </div>
       </div>
 
-      <BackgroundSlideshow />
+      <BackgroundSlideshow class="anim-fade-up" style="--delay: 150ms" />
     </section>
 
-    <section class="border-t border-[var(--border-subtle)] pt-10 sm:pt-12">
+    <section v-reveal class="border-t border-[var(--border-subtle)] pt-10 sm:pt-12">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         <div class="lg:col-span-5 space-y-8">
           <div class="space-y-3">
@@ -126,7 +126,7 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
       </div>
     </section>
 
-    <section class="border-t border-[var(--border-subtle)] pt-10 sm:pt-12 space-y-6">
+    <section v-reveal class="border-t border-[var(--border-subtle)] pt-10 sm:pt-12 space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div class="space-y-1">
           <h2 class="text-xl sm:text-2xl font-medium tracking-[-0.015em] text-[var(--text-primary)]">
@@ -139,10 +139,10 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
 
         <NuxtLink
           to="/gallery"
-          class="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-150 shrink-0"
+          class="group inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-150 ease-[var(--ease-out)] shrink-0"
         >
           <span>Lihat semua galeri</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 transition-transform duration-150 ease-[var(--ease-out)] group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14m-6-6l6 6-6 6" />
           </svg>
         </NuxtLink>
@@ -161,7 +161,7 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
           v-for="(photo, idx) in recentPhotos.items"
           :key="photo.id"
           type="button"
-          class="group relative rounded-xl overflow-hidden aspect-[4/3] text-left cursor-pointer border border-[var(--border-subtle)] hover:border-[var(--border-strong)] bg-[var(--bg-surface)] transition-colors duration-150"
+          class="group relative rounded-xl overflow-hidden aspect-[4/3] text-left cursor-pointer border border-[var(--border-subtle)] hover:border-[var(--border-strong)] bg-[var(--bg-surface)] hover:-translate-y-0.5 transition-[border-color,transform] duration-200 ease-[var(--ease-out)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
           @click="openLightbox(idx)"
         >
           <img
@@ -192,7 +192,7 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
       </div>
     </section>
 
-    <section class="border-t border-[var(--border-subtle)] pt-10 sm:pt-12">
+    <section v-reveal class="border-t border-[var(--border-subtle)] pt-10 sm:pt-12">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         <div class="lg:col-span-5 space-y-4">
           <h2 class="text-xl sm:text-2xl font-medium tracking-[-0.015em] text-[var(--text-primary)]">
@@ -209,10 +209,10 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
               href="https://www.google.com/maps/search/?api=1&query=WARKOP+EDON+STMIK+MHWP%2BMJG+Jl.+Pangeran+Banjarmasin"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-[var(--border-strong)] bg-[var(--bg-surface)] hover:bg-[var(--bg-raised)] text-sm font-medium text-[var(--text-primary)] transition-colors duration-150"
+              class="group inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-[var(--border-strong)] bg-[var(--bg-surface)] hover:bg-[var(--bg-raised)] text-sm font-medium text-[var(--text-primary)] transition-[background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100"
             >
               <span>Buka di Google Maps</span>
-              <svg class="w-4 h-4 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-[var(--text-muted)] transition-transform duration-150 ease-[var(--ease-out)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 17L17 7M7 7h10v10" />
               </svg>
             </a>

@@ -107,25 +107,29 @@ onUnmounted(() => {
         :fetchpriority="idx === 0 ? 'high' : undefined"
         :loading="idx === 0 ? 'eager' : 'lazy'"
         decoding="async"
-        class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out motion-reduce:transition-none"
-        :class="idx === currentIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+        class="absolute inset-0 w-full h-full object-cover transition-[opacity,transform] duration-700 ease-[var(--ease-out)] motion-reduce:transition-none motion-reduce:scale-100"
+        :class="idx === currentIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.02] pointer-events-none'"
         :aria-hidden="idx !== currentIndex"
       >
     </template>
 
     <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-4 sm:px-6 pt-12 pb-4 flex items-end justify-between gap-4">
-      <p class="text-xs sm:text-sm font-medium text-white/90 truncate">
-        {{ slides[currentIndex].label }}
-      </p>
+      <Transition name="caption-fade" mode="out-in">
+        <p :key="slides[currentIndex].label" class="text-xs sm:text-sm font-medium text-white/90 truncate">
+          {{ slides[currentIndex].label }}
+        </p>
+      </Transition>
 
       <div class="flex items-center gap-3 shrink-0">
-        <span class="font-mono text-xs text-white/85 tabular-nums">
-          {{ formattedCounter }}
-        </span>
+        <Transition name="caption-fade" mode="out-in">
+          <span :key="formattedCounter" class="font-mono text-xs text-white/85 tabular-nums">
+            {{ formattedCounter }}
+          </span>
+        </Transition>
         <div class="flex items-center gap-1.5">
           <button
             type="button"
-            class="w-8 h-8 rounded-lg bg-black/45 hover:bg-black/65 border border-white/15 text-white flex items-center justify-center transition-colors duration-150"
+            class="w-8 h-8 rounded-lg bg-black/45 hover:bg-black/65 border border-white/15 text-white flex items-center justify-center transition-[background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.96] motion-reduce:transition-none motion-reduce:active:scale-100"
             aria-label="Foto sebelumnya"
             @click="prevSlide"
           >
@@ -135,7 +139,7 @@ onUnmounted(() => {
           </button>
           <button
             type="button"
-            class="w-8 h-8 rounded-lg bg-black/45 hover:bg-black/65 border border-white/15 text-white flex items-center justify-center transition-colors duration-150"
+            class="w-8 h-8 rounded-lg bg-black/45 hover:bg-black/65 border border-white/15 text-white flex items-center justify-center transition-[background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.96] motion-reduce:transition-none motion-reduce:active:scale-100"
             aria-label="Foto berikutnya"
             @click="nextSlide"
           >

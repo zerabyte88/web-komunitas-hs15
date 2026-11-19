@@ -148,7 +148,7 @@ const totalLabel = computed(() => {
 
 <template>
   <div class="space-y-8 py-4 sm:py-8">
-    <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-6">
+    <header class="anim-fade-up flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-6" style="--delay: 0ms">
       <div class="space-y-1.5">
         <h1 class="text-2xl sm:text-4xl font-medium tracking-[-0.02em] text-[var(--text-primary)]">
           Galeri Foto &amp; Video
@@ -163,12 +163,12 @@ const totalLabel = computed(() => {
       </p>
     </header>
 
-    <div class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 space-y-4">
+    <div class="anim-fade-up bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 space-y-4" style="--delay: 60ms">
       <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
         <div class="inline-flex items-center gap-1 p-1 rounded-lg bg-[var(--bg-raised)] border border-[var(--border-subtle)] shrink-0 self-start">
           <button
             type="button"
-            class="h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-colors duration-150"
+            class="h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-[color,background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
             :class="mediaType === 'all'
               ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm'
               : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'"
@@ -178,7 +178,7 @@ const totalLabel = computed(() => {
           </button>
           <button
             type="button"
-            class="h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-colors duration-150"
+            class="h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-[color,background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
             :class="mediaType === 'photo'
               ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm'
               : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'"
@@ -188,7 +188,7 @@ const totalLabel = computed(() => {
           </button>
           <button
             type="button"
-            class="h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-colors duration-150"
+            class="h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-[color,background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
             :class="mediaType === 'video'
               ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm'
               : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'"
@@ -202,7 +202,7 @@ const totalLabel = computed(() => {
           <button
             v-if="canScrollLeft || canScrollRight"
             type="button"
-            class="w-8 h-8 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] hover:bg-[var(--bg-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center justify-center shrink-0 transition-colors duration-150 disabled:opacity-30 disabled:pointer-events-none"
+            class="w-8 h-8 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] hover:bg-[var(--bg-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center justify-center shrink-0 transition-[color,background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100 disabled:opacity-30 disabled:pointer-events-none"
             :disabled="!canScrollLeft"
             aria-label="Geser daftar album ke kiri"
             @click="scrollAlbums(-1)"
@@ -220,7 +220,7 @@ const totalLabel = computed(() => {
           >
             <button
               type="button"
-              class="h-9 px-3 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-colors duration-150"
+              class="h-9 px-3 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-[color,background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
               :class="currentFolder === 'all'
                 ? 'bg-[var(--accent)] text-white'
                 : 'bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]'"
@@ -232,7 +232,7 @@ const totalLabel = computed(() => {
               v-for="folder in folders || []"
               :key="folder.id"
               type="button"
-              class="h-9 px-3 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-colors duration-150"
+              class="h-9 px-3 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-[color,background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
               :class="currentFolder === folder.id
                 ? 'bg-[var(--accent)] text-white'
                 : 'bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]'"
@@ -245,7 +245,7 @@ const totalLabel = computed(() => {
           <button
             v-if="canScrollLeft || canScrollRight"
             type="button"
-            class="w-8 h-8 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] hover:bg-[var(--bg-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center justify-center shrink-0 transition-colors duration-150 disabled:opacity-30 disabled:pointer-events-none"
+            class="w-8 h-8 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-page)] hover:bg-[var(--bg-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center justify-center shrink-0 transition-[color,background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100 disabled:opacity-30 disabled:pointer-events-none"
             :disabled="!canScrollRight"
             aria-label="Geser daftar album ke kanan"
             @click="scrollAlbums(1)"
@@ -314,7 +314,7 @@ const totalLabel = computed(() => {
         v-for="(item, idx) in mediaResponse.items"
         :key="item.id"
         type="button"
-        class="rounded-xl overflow-hidden bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] transition-colors duration-150 cursor-pointer flex flex-col group text-left"
+        class="rounded-xl overflow-hidden bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] hover:-translate-y-0.5 transition-[border-color,transform] duration-200 ease-[var(--ease-out)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 cursor-pointer flex flex-col group text-left"
         @click="openLightbox(idx)"
       >
         <div class="relative aspect-[4/3] w-full overflow-hidden bg-[var(--bg-raised)]">
@@ -372,7 +372,7 @@ const totalLabel = computed(() => {
       <div class="flex items-center flex-wrap justify-center gap-1.5">
         <button
           type="button"
-          class="h-9 min-w-9 px-3 rounded-lg text-xs font-mono tabular-nums transition-colors duration-150 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] disabled:opacity-40 disabled:pointer-events-none"
+          class="h-9 min-w-9 px-3 rounded-lg text-xs font-mono tabular-nums transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] disabled:opacity-40 disabled:pointer-events-none"
           :disabled="currentPage <= 1"
           @click="currentPage--"
         >
@@ -389,7 +389,7 @@ const totalLabel = computed(() => {
           <button
             v-else
             type="button"
-            class="h-9 min-w-9 px-3 rounded-lg text-xs font-mono tabular-nums transition-colors duration-150"
+            class="h-9 min-w-9 px-3 rounded-lg text-xs font-mono tabular-nums transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
             :class="p === currentPage
               ? 'bg-[var(--accent)] text-white'
               : 'bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)]'"
@@ -402,7 +402,7 @@ const totalLabel = computed(() => {
 
         <button
           type="button"
-          class="h-9 min-w-9 px-3 rounded-lg text-xs font-mono tabular-nums transition-colors duration-150 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] disabled:opacity-40 disabled:pointer-events-none"
+          class="h-9 min-w-9 px-3 rounded-lg text-xs font-mono tabular-nums transition-[color,background-color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100 bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] disabled:opacity-40 disabled:pointer-events-none"
           :disabled="currentPage >= mediaResponse.pages"
           @click="currentPage++"
         >

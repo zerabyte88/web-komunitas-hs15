@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ComponentPublicInstance } from 'vue'
+
 const route = useRoute()
 const { isDark, toggleTheme } = useTheme()
 
@@ -8,6 +10,49 @@ const navLinks = [
 ]
 
 const isActive = (path: string) => route.path === path
+
+const navRef = ref<HTMLElement | null>(null)
+const linkRefs = new Map<string, HTMLElement>()
+const indicator = ref<{ left: number; width: number } | null>(null)
+const indicatorAnimated = ref(false)
+
+const setLinkRef = (path: string, el: Element | ComponentPublicInstance | null) => {
+  const domEl = el && '$el' in el ? (el.$el as HTMLElement | null) : (el as HTMLElement | null)
+  if (domEl instanceof HTMLElement) {
+    linkRefs.set(path, domEl)
+  } else {
+    linkRefs.delete(path)
+  }
+}
+
+const updateIndicator = () => {
+  const activeEl = linkRefs.get(route.path)
+  if (!navRef.value || !activeEl || activeEl.offsetWidth === 0) {
+    indicator.value = null
+    return
+  }
+  indicator.value = {
+    left: activeEl.offsetLeft,
+    width: activeEl.offsetWidth
+  }
+}
+
+watch(() => route.path, () => {
+  nextTick(updateIndicator)
+})
+
+onMounted(() => {
+  updateIndicator()
+  requestAnimationFrame(() => {
+    indicatorAnimated.value = true
+  })
+  window.addEventListener('resize', updateIndicator, { passive: true })
+  document.fonts?.ready.then(updateIndicator)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateIndicator)
+})
 
 const closeMobileDropdown = () => {
   if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
@@ -31,36 +76,47 @@ const closeMobileDropdown = () => {
         </div>
       </NuxtLink>
 
-      <nav class="hidden md:flex items-center gap-6 h-full" aria-label="Navigasi utama">
+      <nav ref="navRef" class="relative hidden md:flex items-center gap-6 h-full" aria-label="Navigasi utama">
         <NuxtLink
           v-for="link in navLinks"
           :key="link.path"
+          :ref="(el) => setLinkRef(link.path, el)"
           :to="link.path"
-          class="relative h-full inline-flex items-center text-sm transition-colors duration-150"
+          class="relative h-full inline-flex items-center text-sm transition-colors duration-150 ease-[var(--ease-out)]"
           :class="isActive(link.path)
             ? 'text-[var(--text-primary)] font-medium'
             : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'"
         >
           {{ link.label }}
           <span
-            v-if="isActive(link.path)"
+            v-if="!indicator && isActive(link.path)"
             class="absolute inset-x-0 bottom-0 h-0.5 bg-[var(--accent)]"
           />
         </NuxtLink>
+        <span
+          v-if="indicator"
+          aria-hidden="true"
+          class="pointer-events-none absolute bottom-0 left-0 h-0.5 bg-[var(--accent)] motion-reduce:transition-none"
+          :class="indicatorAnimated ? 'transition-[transform,width] duration-[240ms] ease-[cubic-bezier(0.22,1,0.36,1)]' : ''"
+          :style="{
+            transform: `translateX(${indicator.left}px)`,
+            width: `${indicator.width}px`
+          }"
+        />
       </nav>
 
       <div class="flex items-center gap-2 shrink-0">
         <button
           type="button"
-          class="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] flex items-center justify-center transition-colors duration-150 shrink-0"
+          class="group w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] flex items-center justify-center transition-[color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.96] motion-reduce:transition-none motion-reduce:active:scale-100 shrink-0"
           :title="isDark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap'"
           :aria-label="isDark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap'"
           @click="toggleTheme"
         >
-          <svg v-if="isDark" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg v-if="isDark" class="w-4 h-4 transition-transform duration-200 ease-[var(--ease-out)] group-hover:rotate-12 motion-reduce:transition-none motion-reduce:group-hover:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
-          <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg v-else class="w-4 h-4 transition-transform duration-200 ease-[var(--ease-out)] group-hover:rotate-12 motion-reduce:transition-none motion-reduce:group-hover:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
           </svg>
         </button>
@@ -70,7 +126,7 @@ const closeMobileDropdown = () => {
             type="button"
             tabindex="0"
             aria-label="Buka menu navigasi"
-            class="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] flex items-center justify-center transition-colors duration-150"
+            class="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] flex items-center justify-center transition-[color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.96] motion-reduce:transition-none motion-reduce:active:scale-100"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
