@@ -3,7 +3,6 @@ import type { DriveMediaItem } from '~/types/drive'
 const escapeHtml = (s: string) =>
   s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
 
-// Opens photos and videos in Fancybox; the phone "back" button closes the lightbox instead of leaving the page.
 export async function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
   if (!items.length) return
 
@@ -32,6 +31,7 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
     itemData: item
   }))
 
+  // Push history state so mobile back closes the lightbox instead of leaving the page
   history.pushState({ ...history.state, lightbox: true }, '')
   let closedByBack = false
   const onPopState = () => {
@@ -44,7 +44,6 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
     const content = container.querySelector('.fancybox__content')
     if (!content || content.querySelector('.video-fallback-card')) return
 
-    const fileName = escapeHtml(item.name || item.title || 'Video')
     const downloadUrl = escapeHtml(item.downloadUrl || `/api/drive/video/${item.id}`)
 
     content.innerHTML = `
@@ -133,4 +132,3 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
     }
   } as any)
 }
-

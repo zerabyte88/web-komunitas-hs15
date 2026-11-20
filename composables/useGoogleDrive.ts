@@ -1,4 +1,4 @@
-import { ref, isRef, type Ref } from 'vue'
+import { isRef, type Ref } from 'vue'
 import type { MediaFilterOptions, MediaResponse, DriveFolder, DriveStats } from '../types/drive'
 
 export function useGoogleDrive() {

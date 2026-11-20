@@ -41,4 +41,3 @@ export default defineEventHandler(async (event) => {
     headers: resHeaders
   })
 })
-

@@ -5,7 +5,6 @@ const driveJsonCacheRule = {
   headers: { 'Cache-Control': 'public, max-age=300, s-maxage=900, stale-while-revalidate=86400' }
 }
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: false },

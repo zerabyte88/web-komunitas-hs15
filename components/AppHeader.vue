@@ -3,6 +3,7 @@ import type { ComponentPublicInstance } from 'vue'
 
 const route = useRoute()
 const { isDark, toggleTheme } = useTheme()
+const { isRainEnabled, toggleRain } = useRainEffect()
 
 const navLinks = [
   { path: '/', label: 'Beranda' },
@@ -106,6 +107,40 @@ const closeMobileDropdown = () => {
       </nav>
 
       <div class="flex items-center gap-2 shrink-0">
+        <button
+          type="button"
+          class="group w-9 h-9 rounded-lg border bg-[var(--bg-surface)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] flex items-center justify-center transition-[color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.96] motion-reduce:transition-none motion-reduce:active:scale-100 shrink-0"
+          :class="isRainEnabled
+            ? 'text-[var(--text-primary)] border-[var(--border-strong)]'
+            : 'text-[var(--text-muted)] border-[var(--border-subtle)]'"
+          :title="isRainEnabled ? 'Matikan efek hujan' : 'Aktifkan efek hujan'"
+          :aria-label="isRainEnabled ? 'Matikan efek hujan' : 'Aktifkan efek hujan'"
+          :aria-pressed="isRainEnabled"
+          @click="toggleRain"
+        >
+          <svg
+            class="w-4 h-4 transition-transform duration-200 ease-[var(--ease-out)] group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M12 3.25C12 3.25 6.5 9.7 6.5 14a5.5 5.5 0 0011 0c0-4.3-5.5-10.75-5.5-10.75z"
+            />
+            <path
+              v-if="!isRainEnabled"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M4.5 4.5l15 15"
+            />
+          </svg>
+        </button>
+
         <button
           type="button"
           class="group w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] flex items-center justify-center transition-[color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.96] motion-reduce:transition-none motion-reduce:active:scale-100 shrink-0"

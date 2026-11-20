@@ -45,7 +45,6 @@ export function useDragScroll(elRef: Ref<HTMLElement | null>) {
   const onWheel = (e: WheelEvent) => {
     const el = elRef.value
     if (!el) return
-    // Allow horizontal wheel scrolling if content overflows
     if (e.deltaY !== 0 && el.scrollWidth > el.clientWidth) {
       e.preventDefault()
       el.scrollLeft += e.deltaY

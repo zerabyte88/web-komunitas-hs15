@@ -29,7 +29,7 @@ export function getDriveConfig(): DriveConfig {
     runtimeConfigApiKey = (config?.googleDriveApiKey as string) || ''
     runtimeConfigFolderId = (config?.googleDriveFolderId as string) || ''
   } catch {
-    // Fallback if accessed outside Nitro request context
+    // Outside Nitro request context
   }
 
   return {
@@ -38,14 +38,14 @@ export function getDriveConfig(): DriveConfig {
   }
 }
 
-// In-memory cache to stay fast and avoid exceeding Google API quota
+// In-memory cache to stay within Google Drive API quota
 interface CacheEntry<T> {
   data: T
   expiry: number
 }
 
 const cache = new Map<string, CacheEntry<any>>()
-const CACHE_TTL = 15 * 60 * 1000 // 15 minutes
+const CACHE_TTL = 15 * 60 * 1000
 
 function getCached<T>(key: string): T | null {
   const item = cache.get(key)
@@ -61,10 +61,10 @@ function setCache<T>(key: string, data: T) {
   cache.set(key, { data, expiry: Date.now() + CACHE_TTL })
 }
 
-// Single-flight in-memory promise to prevent duplicate concurrent network fetch storms
+// Single-flight promise to dedupe concurrent full-archive fetches
 let inFlightAllFiles: Promise<DriveMediaItem[]> | null = null
 
-// Fetch with automatic retry and exponential backoff for rate limits (429/403/5xx)
+// Retry with exponential backoff on rate limits (429/403) and transient errors
 async function fetchWithRetry<T>(url: string, retries = 3): Promise<T> {
   let attempt = 0
   while (attempt < retries) {
@@ -84,7 +84,7 @@ async function fetchWithRetry<T>(url: string, retries = 3): Promise<T> {
   throw new Error(`Failed to fetch after ${retries} attempts: ${url}`)
 }
 
-// Controlled concurrency executor to prevent burst quota violations
+// Cap concurrency to avoid Drive API burst quota limits
 async function mapConcurrent<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
   const results: R[] = new Array(items.length)
   let index = 0
@@ -219,7 +219,6 @@ async function queryGoogleDriveFolder(
       const isVideo = f.mimeType?.includes('video') || ['mp4', 'mov', 'webm', 'mkv', 'avi', '3gp'].includes(ext)
       const mediaType: 'photo' | 'video' = isVideo ? 'video' : 'photo'
 
-      // Responsive grid thumbnail
       let thumb = f.thumbnailLink || ''
       if (thumb && thumb.includes('=s')) {
         thumb = thumb.replace(/=s\d+/, '=s400')
@@ -229,7 +228,6 @@ async function queryGoogleDriveFolder(
         thumb = `https://lh3.googleusercontent.com/d/${f.id}=s400`
       }
 
-      // High quality preview
       const preview = isVideo
         ? `/api/drive/video/${f.id}`
         : `https://lh3.googleusercontent.com/d/${f.id}=s0`
@@ -276,11 +274,7 @@ async function getAllDriveFiles(apiKey: string, rootFolderId: string): Promise<D
   inFlightAllFiles = (async () => {
     try {
       const folders = await fetchGoogleDriveFolders()
-
-      // 1. Fetch files directly located in root folder
       const rootFilesPromise = queryGoogleDriveFolder(apiKey, rootFolderId, '', 'all')
-
-      // 2. Fetch files in each top-level album folder concurrently (max 4 concurrent)
       const folderFilesPromise = mapConcurrent(folders, 4, async (f) => {
         return await queryGoogleDriveFolder(apiKey, f.id, f.name, 'all')
       })
@@ -291,8 +285,6 @@ async function getAllDriveFiles(apiKey: string, rootFolderId: string): Promise<D
       ])
 
       const allFiles = [...rootFiles, ...folderFilesNested.flat()]
-
-      // Deduplicate files by id
       const uniqueMap = new Map<string, DriveMediaItem>()
       for (const item of allFiles) {
         if (!uniqueMap.has(item.id)) {
@@ -348,12 +340,10 @@ export async function fetchGoogleDriveFiles(options: MediaFilterOptions = {}): P
 function processAndPaginate(allFiles: DriveMediaItem[], options: MediaFilterOptions): MediaResponse {
   let list = [...allFiles]
 
-  // Filter by media type (photo | video)
   if (options.type === 'photo' || options.type === 'video') {
     list = list.filter(item => item.type === options.type)
   }
 
-  // Search filter
   if (options.search && options.search.trim()) {
     const term = options.search.toLowerCase().trim()
     list = list.filter(item =>
@@ -363,7 +353,6 @@ function processAndPaginate(allFiles: DriveMediaItem[], options: MediaFilterOpti
     )
   }
 
-  // Sort
   if (options.sort === 'oldest') {
     list.sort((a, b) => new Date(a.createdTime).getTime() - new Date(b.createdTime).getTime())
   } else if (options.sort === 'name-asc') {
@@ -371,7 +360,6 @@ function processAndPaginate(allFiles: DriveMediaItem[], options: MediaFilterOpti
   } else if (options.sort === 'name-desc') {
     list.sort((a, b) => b.title.localeCompare(a.title))
   } else {
-    // default: newest
     list.sort((a, b) => new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime())
   }
 

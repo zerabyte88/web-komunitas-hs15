@@ -1,5 +1,5 @@
 export const useTheme = () => {
-  // Use a cookie so SSR and client immediately agree on the theme, preventing hydration mismatch
+  // Cookie keeps SSR and client theme in sync to prevent hydration mismatch
   const themeCookie = useCookie<string>('hs15-theme', {
     default: () => 'dark',
     watch: true,

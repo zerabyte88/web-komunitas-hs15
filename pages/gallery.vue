@@ -7,12 +7,70 @@ const route = useRoute()
 const router = useRouter()
 const { getMedia, getFolders } = useGoogleDrive()
 
+const mediaTypeOptions = [
+  { value: 'all', label: 'Semua' },
+  { value: 'photo', label: 'Foto' },
+  { value: 'video', label: 'Video' }
+] as const
+
+const sortOptions = [
+  { value: 'newest', label: 'Terbaru' },
+  { value: 'oldest', label: 'Terlama' },
+  { value: 'name-asc', label: 'Nama A-Z' },
+  { value: 'name-desc', label: 'Nama Z-A' }
+] as const
+
 const initialType = (route.query.type === 'photo' || route.query.type === 'video') ? route.query.type : 'all'
 const mediaType = ref<'all' | 'photo' | 'video'>(initialType)
 const currentFolder = ref<string>('all')
 const searchTerm = ref<string>('')
 const sortBy = ref<'newest' | 'oldest' | 'name-asc' | 'name-desc'>('newest')
 const currentPage = ref<number>(1)
+
+const mediaSegRef = ref<HTMLElement | null>(null)
+const mediaBtnRefs = new Map<string, HTMLElement>()
+const mediaIndicator = ref<{ left: number; width: number } | null>(null)
+const mediaIndicatorAnimated = ref(false)
+
+const setMediaBtnRef = (value: string, el: unknown) => {
+  if (el instanceof HTMLElement) {
+    mediaBtnRefs.set(value, el)
+  } else {
+    mediaBtnRefs.delete(value)
+  }
+}
+
+const updateMediaIndicator = () => {
+  const container = mediaSegRef.value
+  const btn = mediaBtnRefs.get(mediaType.value)
+  if (!container || !btn) return
+  mediaIndicator.value = {
+    left: btn.offsetLeft,
+    width: btn.offsetWidth
+  }
+}
+
+const sortOpen = ref(false)
+const sortDropdownRef = ref<HTMLElement | null>(null)
+const currentSortLabel = computed(() => sortOptions.find(opt => opt.value === sortBy.value)?.label ?? 'Terbaru')
+
+const selectSort = (val: (typeof sortOptions)[number]['value']) => {
+  sortBy.value = val
+  sortOpen.value = false
+}
+
+const onDocumentPointerDown = (e: PointerEvent) => {
+  if (!sortOpen.value) return
+  if (sortDropdownRef.value && !sortDropdownRef.value.contains(e.target as Node)) {
+    sortOpen.value = false
+  }
+}
+
+const onDocumentKeyDown = (e: KeyboardEvent) => {
+  if (e.key === 'Escape' && sortOpen.value) {
+    sortOpen.value = false
+  }
+}
 
 const albumTabsRef = ref<HTMLElement | null>(null)
 useDragScroll(albumTabsRef)
@@ -76,13 +134,33 @@ watch(folders, () => {
   nextTick(updateAlbumScrollState)
 })
 
+watch(mediaType, () => {
+  nextTick(updateMediaIndicator)
+})
+
+const onWindowResize = () => {
+  updateAlbumScrollState()
+  updateMediaIndicator()
+}
+
 onMounted(() => {
-  nextTick(updateAlbumScrollState)
-  window.addEventListener('resize', updateAlbumScrollState)
+  nextTick(() => {
+    updateAlbumScrollState()
+    updateMediaIndicator()
+    requestAnimationFrame(() => {
+      mediaIndicatorAnimated.value = true
+    })
+  })
+  window.addEventListener('resize', onWindowResize)
+  document.addEventListener('pointerdown', onDocumentPointerDown)
+  document.addEventListener('keydown', onDocumentKeyDown)
+  document.fonts?.ready.then(updateMediaIndicator)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('resize', updateAlbumScrollState)
+  window.removeEventListener('resize', onWindowResize)
+  document.removeEventListener('pointerdown', onDocumentPointerDown)
+  document.removeEventListener('keydown', onDocumentKeyDown)
 })
 
 const formatDuration = (ms?: number) => {
@@ -163,38 +241,34 @@ const totalLabel = computed(() => {
       </p>
     </header>
 
-    <div class="anim-fade-up bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 space-y-4" style="--delay: 60ms">
+    <div class="anim-fade-up relative z-20 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 space-y-4" style="--delay: 60ms">
       <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-        <div class="inline-flex items-center gap-1 p-1 rounded-lg bg-[var(--bg-raised)] border border-[var(--border-subtle)] shrink-0 self-start">
+        <div
+          ref="mediaSegRef"
+          class="relative inline-flex items-center gap-1 p-1 rounded-lg bg-[var(--bg-raised)] border border-[var(--border-subtle)] shrink-0 self-start"
+        >
+          <span
+            v-if="mediaIndicator"
+            aria-hidden="true"
+            class="pointer-events-none absolute top-1 bottom-1 left-0 rounded-md bg-[var(--bg-surface)] border border-[var(--border-strong)] shadow-sm motion-reduce:transition-none"
+            :class="mediaIndicatorAnimated ? 'transition-[transform,width] duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)]' : ''"
+            :style="{ transform: `translateX(${mediaIndicator.left}px)`, width: `${mediaIndicator.width}px` }"
+          />
           <button
+            v-for="opt in mediaTypeOptions"
+            :key="opt.value"
+            :ref="(el) => setMediaBtnRef(opt.value, el)"
             type="button"
-            class="h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-[color,background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
-            :class="mediaType === 'all'
-              ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm'
-              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'"
-            @click="setMediaType('all')"
+            class="relative z-10 h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-[color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+            :class="[
+              mediaType === opt.value
+                ? 'text-[var(--text-primary)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
+              !mediaIndicator && mediaType === opt.value ? 'bg-[var(--bg-surface)] shadow-sm' : ''
+            ]"
+            @click="setMediaType(opt.value)"
           >
-            Semua
-          </button>
-          <button
-            type="button"
-            class="h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-[color,background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
-            :class="mediaType === 'photo'
-              ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm'
-              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'"
-            @click="setMediaType('photo')"
-          >
-            Foto
-          </button>
-          <button
-            type="button"
-            class="h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-[color,background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
-            :class="mediaType === 'video'
-              ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm'
-              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'"
-            @click="setMediaType('video')"
-          >
-            Video
+            {{ opt.label }}
           </button>
         </div>
 
@@ -271,16 +345,63 @@ const totalLabel = computed(() => {
           </svg>
         </div>
 
-        <select
-          v-model="sortBy"
-          aria-label="Urutkan dokumentasi"
-          class="h-9 bg-[var(--bg-page)] border border-[var(--border-subtle)] focus:border-[var(--border-strong)] focus:outline-none rounded-lg px-3 text-sm text-[var(--text-primary)] transition-colors duration-150 w-full sm:w-auto"
-        >
-          <option value="newest">Terbaru</option>
-          <option value="oldest">Terlama</option>
-          <option value="name-asc">Nama A-Z</option>
-          <option value="name-desc">Nama Z-A</option>
-        </select>
+        <div ref="sortDropdownRef" class="relative w-full sm:w-auto">
+          <button
+            type="button"
+            aria-haspopup="listbox"
+            :aria-expanded="sortOpen"
+            aria-label="Urutkan dokumentasi"
+            class="h-9 px-3 rounded-lg bg-[var(--bg-page)] border border-[var(--border-subtle)] hover:border-[var(--border-strong)] text-sm text-[var(--text-primary)] flex items-center justify-between gap-3 w-full sm:w-44 transition-[border-color,background-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.98] motion-reduce:transition-none"
+            @click="sortOpen = !sortOpen"
+          >
+            <span class="truncate">{{ currentSortLabel }}</span>
+            <svg
+              class="w-4 h-4 text-[var(--text-muted)] shrink-0 transition-transform duration-200 ease-[var(--ease-out)] motion-reduce:transition-none"
+              :class="sortOpen ? 'rotate-180' : ''"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <Transition
+            enter-active-class="transition-[opacity,transform] duration-[180ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+            enter-from-class="opacity-0 -translate-y-1.5 scale-[0.98]"
+            enter-to-class="opacity-100 translate-y-0 scale-100"
+            leave-active-class="transition-[opacity,transform] duration-[140ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+            leave-from-class="opacity-100 translate-y-0 scale-100"
+            leave-to-class="opacity-0 -translate-y-1.5 scale-[0.98]"
+          >
+            <div
+              v-if="sortOpen"
+              role="listbox"
+              class="absolute right-0 mt-1.5 w-full sm:w-44 z-30 p-1 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-strong)] shadow-lg origin-top-right"
+            >
+              <button
+                v-for="opt in sortOptions"
+                :key="opt.value"
+                type="button"
+                role="option"
+                :aria-selected="sortBy === opt.value"
+                class="w-full px-3 py-2 rounded-lg text-left text-sm flex items-center justify-between transition-colors duration-150"
+                :class="sortBy === opt.value
+                  ? 'bg-[var(--bg-raised)] text-[var(--text-primary)] font-medium'
+                  : 'text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]'"
+                @click="selectSort(opt.value)"
+              >
+                <span>{{ opt.label }}</span>
+                <span
+                  v-if="sortBy === opt.value"
+                  aria-hidden="true"
+                  class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"
+                />
+              </button>
+            </div>
+          </Transition>
+        </div>
       </div>
     </div>
 
