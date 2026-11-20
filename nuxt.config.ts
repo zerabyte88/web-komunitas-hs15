@@ -39,6 +39,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'color-scheme', content: 'light dark' },
         { name: 'description', content: 'Website galeri dan arsip digital komunitas HS15.' }
       ],
       link: [
@@ -55,7 +56,7 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          innerHTML: `(function(){try{var t=localStorage.getItem('hs15-theme');var isD=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;var d=document.documentElement;if(isD){d.classList.add('dark');d.classList.remove('light');d.setAttribute('data-theme','hs15dark');}else{d.classList.remove('dark');d.classList.add('light');d.setAttribute('data-theme','hs15light');}}catch(e){}})();`
+          innerHTML: `(function(){try{var t=localStorage.getItem('hs15-theme');var m=document.querySelector('meta[name="color-scheme"]');if(m){m.setAttribute('content',t==='light'||t==='dark'?t:'light dark');}var isD=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;var d=document.documentElement;if(isD){d.classList.add('dark');d.classList.remove('light');d.setAttribute('data-theme','hs15dark');}else{d.classList.remove('dark');d.classList.add('light');d.setAttribute('data-theme','hs15light');}}catch(e){}})();`
         }
       ]
     }

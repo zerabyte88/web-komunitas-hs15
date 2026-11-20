@@ -38,7 +38,32 @@ const updateIndicator = () => {
   }
 }
 
+const mobileMenuOpen = ref(false)
+const mobileMenuRef = ref<HTMLElement | null>(null)
+
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value
+}
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false
+}
+
+const handleOutsidePointerDown = (event: PointerEvent) => {
+  if (!mobileMenuOpen.value || !mobileMenuRef.value) return
+  if (event.target instanceof Node && !mobileMenuRef.value.contains(event.target)) {
+    mobileMenuOpen.value = false
+  }
+}
+
+const handleKeyDown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && mobileMenuOpen.value) {
+    mobileMenuOpen.value = false
+  }
+}
+
 watch(() => route.path, () => {
+  mobileMenuOpen.value = false
   nextTick(updateIndicator)
 })
 
@@ -48,18 +73,16 @@ onMounted(() => {
     indicatorAnimated.value = true
   })
   window.addEventListener('resize', updateIndicator, { passive: true })
+  document.addEventListener('pointerdown', handleOutsidePointerDown)
+  document.addEventListener('keydown', handleKeyDown)
   document.fonts?.ready.then(updateIndicator)
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateIndicator)
+  document.removeEventListener('pointerdown', handleOutsidePointerDown)
+  document.removeEventListener('keydown', handleKeyDown)
 })
-
-const closeMobileDropdown = () => {
-  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
-    document.activeElement.blur()
-  }
-}
 </script>
 
 <template>
@@ -156,38 +179,53 @@ const closeMobileDropdown = () => {
           </svg>
         </button>
 
-        <div class="dropdown dropdown-end md:hidden">
+        <div ref="mobileMenuRef" class="relative md:hidden">
           <button
             type="button"
-            tabindex="0"
-            aria-label="Buka menu navigasi"
+            :aria-label="mobileMenuOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'"
+            :aria-expanded="mobileMenuOpen"
+            aria-controls="mobile-nav-menu"
             class="w-9 h-9 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] flex items-center justify-center transition-[color,border-color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.96] motion-reduce:transition-none motion-reduce:active:scale-100"
+            @click="toggleMobileMenu"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg v-if="!mobileMenuOpen" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
+            <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
-          <ul
-            tabindex="0"
-            class="dropdown-content z-50 flex flex-col gap-1 p-1.5 shadow-lg rounded-xl w-48 mt-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)]"
+          <Transition
+            enter-active-class="transition-[opacity,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+            enter-from-class="opacity-0 -translate-y-1.5 scale-[0.98]"
+            enter-to-class="opacity-100 translate-y-0 scale-100"
+            leave-active-class="transition-[opacity,transform] duration-120 ease-in motion-reduce:transition-none"
+            leave-from-class="opacity-100 translate-y-0 scale-100"
+            leave-to-class="opacity-0 -translate-y-1.5 scale-[0.98]"
           >
-            <li v-for="link in navLinks" :key="link.path">
-              <NuxtLink
-                :to="link.path"
-                class="py-2 px-3 rounded-lg flex items-center justify-between text-sm transition-colors duration-150"
-                :class="isActive(link.path)
-                  ? 'bg-[var(--bg-raised)] text-[var(--text-primary)] font-medium'
-                  : 'text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]'"
-                @click="closeMobileDropdown"
-              >
-                <span>{{ link.label }}</span>
-                <span
-                  v-if="isActive(link.path)"
-                  class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"
-                />
-              </NuxtLink>
-            </li>
-          </ul>
+            <ul
+              v-if="mobileMenuOpen"
+              id="mobile-nav-menu"
+              class="absolute right-0 top-full z-50 flex flex-col gap-1 p-1.5 shadow-lg rounded-xl w-48 mt-2 bg-[var(--bg-surface)] border border-[var(--border-strong)] origin-top-right"
+            >
+              <li v-for="link in navLinks" :key="link.path">
+                <NuxtLink
+                  :to="link.path"
+                  class="py-2 px-3 rounded-lg flex items-center justify-between text-sm transition-colors duration-150"
+                  :class="isActive(link.path)
+                    ? 'bg-[var(--bg-raised)] text-[var(--text-primary)] font-medium'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-raised)] hover:text-[var(--text-primary)]'"
+                  @click="closeMobileMenu"
+                >
+                  <span>{{ link.label }}</span>
+                  <span
+                    v-if="isActive(link.path)"
+                    class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"
+                  />
+                </NuxtLink>
+              </li>
+            </ul>
+          </Transition>
         </div>
       </div>
     </div>

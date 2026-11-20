@@ -590,8 +590,17 @@ const resizeCanvas = () => {
   const canvas = canvasRef.value
   if (!canvas) return
 
-  width = window.innerWidth
-  height = window.innerHeight
+  const nextWidth = window.innerWidth
+  const nextHeight = window.innerHeight
+  const widthChanged = nextWidth !== width
+
+  // Ignore mobile address-bar shrink/expand jitter during vertical scroll
+  if (!widthChanged && nextWidth < 1024) {
+    if (nextHeight <= height) return
+  }
+
+  width = nextWidth
+  height = nextHeight
   dpr = Math.min(window.devicePixelRatio || 1, 2)
 
   canvas.width = Math.round(width * dpr)
@@ -606,7 +615,9 @@ const resizeCanvas = () => {
 
   syncDropPool()
   syncFishPool()
-  buildLilyPads()
+  if (widthChanged || lilyPads.length === 0) {
+    buildLilyPads()
+  }
 }
 
 const shouldRun = () =>
@@ -709,7 +720,7 @@ onUnmounted(() => {
   <canvas
     ref="canvasRef"
     aria-hidden="true"
-    class="fixed inset-0 z-0 pointer-events-none transition-opacity duration-300"
+    class="fixed top-0 left-0 z-0 pointer-events-none transition-opacity duration-300"
     :class="isRainEnabled ? 'opacity-100' : 'opacity-0'"
   />
 </template>
