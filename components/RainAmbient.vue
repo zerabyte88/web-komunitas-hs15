@@ -683,8 +683,11 @@ const handlePointerDown = (event: PointerEvent) => {
   if (event.target instanceof Element && event.target.closest(INTERACTIVE_SELECTOR)) {
     return
   }
-  spawnRipple(event.clientX, event.clientY, { gentle: true })
-  nudgeNearbyFish(event.clientX, event.clientY)
+  const rect = containerRef.value?.getBoundingClientRect()
+  const x = rect ? event.clientX - rect.left : event.clientX
+  const y = rect ? event.clientY - rect.top : event.clientY
+  spawnRipple(x, y, { gentle: true })
+  nudgeNearbyFish(x, y)
 }
 
 watch(isRainEnabled, () => {
@@ -720,7 +723,7 @@ onUnmounted(() => {
   <div
     ref="containerRef"
     aria-hidden="true"
-    class="fixed top-0 left-0 w-full h-[100lvh] z-0 pointer-events-none overflow-hidden [transform:translate3d(0,0,0)] transition-opacity duration-300"
+    class="fixed bottom-0 left-0 w-full h-[100lvh] z-0 pointer-events-none overflow-hidden [transform:translate3d(0,0,0)] transition-opacity duration-300"
     :class="isRainEnabled ? 'opacity-100' : 'opacity-0'"
   >
     <canvas ref="canvasRef" class="block w-full h-full" />

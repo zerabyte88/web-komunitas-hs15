@@ -1,3 +1,7 @@
+let transitionTimer: ReturnType<typeof setTimeout> | null = null
+let activeTransitionId = 0
+let activeTransition: { skipTransition?: () => void } | null = null
+
 export const useTheme = () => {
   // Cookie keeps SSR and client theme in sync to prevent hydration mismatch
   const themeCookie = useCookie<string | null>('hs15-theme', {
@@ -55,8 +59,6 @@ export const useTheme = () => {
     applyTheme(override)
   }
 
-  let transitionTimer: ReturnType<typeof setTimeout> | null = null
-
   const runFallbackColorTransition = () => {
     const html = document.documentElement
     html.classList.add('theme-transitioning')
@@ -99,28 +101,14 @@ export const useTheme = () => {
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const startViewTransition = (document as Document & {
-      startViewTransition?: (cb: () => void | Promise<void>) => { ready: Promise<void>; finished: Promise<void> }
+      startViewTransition?: (cb: () => void | Promise<void>) => {
+        finished: Promise<void>
+        skipTransition?: () => void
+      }
     }).startViewTransition?.bind(document)
-
-    const commitThemeAsync = async () => {
-      commitTheme()
-      await nextTick()
-    }
 
     if (!reducedMotion && startViewTransition) {
       const html = document.documentElement
-      const isCoarseMobile =
-        window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches
-
-      if (isCoarseMobile) {
-        html.classList.add('theme-view-fade')
-        const transition = startViewTransition(commitThemeAsync)
-        transition.finished.finally(() => {
-          html.classList.remove('theme-view-fade')
-        })
-        return
-      }
-
       const x = event?.clientX ?? window.innerWidth - 36
       const y = event?.clientY ?? 32
       const endRadius = Math.hypot(
@@ -128,29 +116,25 @@ export const useTheme = () => {
         Math.max(y, window.innerHeight - y)
       )
 
-      html.classList.add('theme-view-transition')
-      const transition = startViewTransition(commitThemeAsync)
+      activeTransition?.skipTransition?.()
+      const myId = ++activeTransitionId
 
-      transition.ready
-        .then(() => {
-          html.animate(
-            {
-              clipPath: [
-                `circle(0px at ${x}px ${y}px)`,
-                `circle(${endRadius}px at ${x}px ${y}px)`
-              ]
-            },
-            {
-              duration: 340,
-              easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-              pseudoElement: '::view-transition-new(root)'
-            }
-          )
-        })
-        .catch(() => {})
+      html.style.setProperty('--vt-x', `${x}px`)
+      html.style.setProperty('--vt-y', `${y}px`)
+      html.style.setProperty('--vt-r', `${Math.ceil(endRadius)}px`)
+      html.classList.add('theme-view-transition')
+
+      const transition = startViewTransition(async () => {
+        commitTheme()
+        await nextTick()
+      })
+      activeTransition = transition
 
       transition.finished.finally(() => {
-        html.classList.remove('theme-view-transition')
+        if (myId === activeTransitionId) {
+          html.classList.remove('theme-view-transition')
+          activeTransition = null
+        }
       })
       return
     }
