@@ -50,9 +50,23 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 240ms var(--ease-out), color 240ms var(--ease-out);
+}
+
+html.theme-view-fade *,
+html.theme-view-fade *::before,
+html.theme-view-fade *::after,
+html.theme-view-transition *,
+html.theme-view-transition *::before,
+html.theme-view-transition *::after {
+  transition: none !important;
+}
+
+html.theme-view-fade::view-transition-old(root),
+html.theme-view-fade::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: var(--ease-out);
 }
 
 html.theme-view-transition::view-transition-old(root),

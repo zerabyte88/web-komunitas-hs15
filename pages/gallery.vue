@@ -109,13 +109,15 @@ watch(() => route.query.type, (newType) => {
 })
 
 const setMediaType = (type: 'all' | 'photo' | 'video') => {
+  if (mediaType.value === type) return
   mediaType.value = type
-  router.replace({
-    query: {
-      ...route.query,
-      type: type === 'all' ? undefined : type
-    }
-  })
+  const nextQuery = { ...route.query }
+  if (type === 'all') {
+    delete nextQuery.type
+  } else {
+    nextQuery.type = type
+  }
+  router.replace({ query: nextQuery })
 }
 
 const filterOptions = computed<MediaFilterOptions>(() => ({
@@ -259,7 +261,7 @@ const totalLabel = computed(() => {
             :key="opt.value"
             :ref="(el) => setMediaBtnRef(opt.value, el)"
             type="button"
-            class="relative z-10 h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-[color,transform] duration-150 ease-[var(--ease-out)] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+            class="relative z-10 h-8 px-3 rounded-md text-xs font-medium whitespace-nowrap transition-colors duration-150 ease-[var(--ease-out)] motion-reduce:transition-none"
             :class="[
               mediaType === opt.value
                 ? 'text-[var(--text-primary)]'
@@ -405,7 +407,7 @@ const totalLabel = computed(() => {
       </div>
     </div>
 
-    <div v-if="mediaPending" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div v-if="mediaPending && !mediaResponse" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <div
         v-for="n in 8"
         :key="n"
@@ -430,7 +432,11 @@ const totalLabel = computed(() => {
       </p>
     </div>
 
-    <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div
+      v-else
+      class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 transition-opacity duration-150 ease-[var(--ease-out)]"
+      :class="mediaPending ? 'opacity-60 pointer-events-none' : 'opacity-100'"
+    >
       <button
         v-for="(item, idx) in mediaResponse.items"
         :key="item.id"

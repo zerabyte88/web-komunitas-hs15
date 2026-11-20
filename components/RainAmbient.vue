@@ -74,6 +74,7 @@ const INTERACTIVE_SELECTOR = 'button, a, input, select, textarea, video, iframe'
 const { isDark } = useTheme()
 const { isRainEnabled, initRain } = useRainEffect()
 
+const containerRef = ref<HTMLDivElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 
 let ctx: CanvasRenderingContext2D | null = null
@@ -587,16 +588,17 @@ const clearCanvas = () => {
 }
 
 const resizeCanvas = () => {
+  const container = containerRef.value
   const canvas = canvasRef.value
-  if (!canvas) return
+  if (!container || !canvas) return
 
-  const nextWidth = window.innerWidth
-  const nextHeight = window.innerHeight
+  const nextWidth = container.clientWidth || window.innerWidth
+  const nextHeight = container.clientHeight || window.innerHeight
   const widthChanged = nextWidth !== width
 
-  // Ignore mobile address-bar shrink/expand jitter during vertical scroll
-  if (!widthChanged && nextWidth < 1024) {
-    if (nextHeight <= height) return
+  // Lock height to 100lvh on mobile so address-bar collapse/expand never shifts the canvas
+  if (!widthChanged && nextWidth < 1024 && height > 0) {
+    return
   }
 
   width = nextWidth
@@ -605,8 +607,6 @@ const resizeCanvas = () => {
 
   canvas.width = Math.round(width * dpr)
   canvas.height = Math.round(height * dpr)
-  canvas.style.width = `${width}px`
-  canvas.style.height = `${height}px`
 
   ctx = canvas.getContext('2d')
   if (ctx) {
@@ -717,10 +717,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <canvas
-    ref="canvasRef"
+  <div
+    ref="containerRef"
     aria-hidden="true"
-    class="fixed top-0 left-0 z-0 pointer-events-none transition-opacity duration-300"
+    class="fixed top-0 left-0 w-full h-[100lvh] z-0 pointer-events-none overflow-hidden [transform:translate3d(0,0,0)] transition-opacity duration-300"
     :class="isRainEnabled ? 'opacity-100' : 'opacity-0'"
-  />
+  >
+    <canvas ref="canvasRef" class="block w-full h-full" />
+  </div>
 </template>

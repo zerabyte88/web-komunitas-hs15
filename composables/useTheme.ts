@@ -99,11 +99,28 @@ export const useTheme = () => {
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const startViewTransition = (document as Document & {
-      startViewTransition?: (cb: () => void) => { ready: Promise<void>; finished: Promise<void> }
+      startViewTransition?: (cb: () => void | Promise<void>) => { ready: Promise<void>; finished: Promise<void> }
     }).startViewTransition?.bind(document)
+
+    const commitThemeAsync = async () => {
+      commitTheme()
+      await nextTick()
+    }
 
     if (!reducedMotion && startViewTransition) {
       const html = document.documentElement
+      const isCoarseMobile =
+        window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches
+
+      if (isCoarseMobile) {
+        html.classList.add('theme-view-fade')
+        const transition = startViewTransition(commitThemeAsync)
+        transition.finished.finally(() => {
+          html.classList.remove('theme-view-fade')
+        })
+        return
+      }
+
       const x = event?.clientX ?? window.innerWidth - 36
       const y = event?.clientY ?? 32
       const endRadius = Math.hypot(
@@ -112,7 +129,7 @@ export const useTheme = () => {
       )
 
       html.classList.add('theme-view-transition')
-      const transition = startViewTransition(commitTheme)
+      const transition = startViewTransition(commitThemeAsync)
 
       transition.ready
         .then(() => {
@@ -124,8 +141,8 @@ export const useTheme = () => {
               ]
             },
             {
-              duration: 420,
-              easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+              duration: 340,
+              easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
               pseudoElement: '::view-transition-new(root)'
             }
           )
