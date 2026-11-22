@@ -9,6 +9,13 @@ const getDrivePreviewUrl = (id: string) =>
 const isHighResVideo = (item: DriveMediaItem) =>
   Math.max(item.width ?? 0, item.height ?? 0) > 1920
 
+const getVideoAspectRatio = (item: DriveMediaItem) => {
+  if (item.width && item.height) {
+    return Math.min(2.4, Math.max(0.45, item.width / item.height))
+  }
+  return 16 / 9
+}
+
 export async function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
   if (!items.length) return
 
@@ -30,8 +37,8 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
       type: item.type === 'video' ? (useAdaptiveIframe ? 'iframe' : 'html5video') : 'image',
       videoFormat: item.type === 'video' && !useAdaptiveIframe ? item.mimeType : undefined,
       preload: useAdaptiveIframe ? false : undefined,
-      width: item.width,
-      height: item.height,
+      width: useAdaptiveIframe ? undefined : item.width,
+      height: useAdaptiveIframe ? undefined : item.height,
       caption: `
         <div class="gallery-caption-box">
           <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>
@@ -52,14 +59,21 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
   }
   window.addEventListener('popstate', onPopState, { once: true })
 
+  const applyVideoRatio = (slide: any) => {
+    if (slide?.type !== 'iframe' || !slide?.itemData) return
+    const slideEl = slide.el as HTMLElement | undefined
+    slideEl?.style.setProperty('--video-ratio', String(getVideoAspectRatio(slide.itemData)))
+  }
+
   const handleVideoError = (root: HTMLElement, item: DriveMediaItem) => {
     const content = root.querySelector('.fancybox__content') as HTMLElement | null
     if (!content || content.querySelector('.video-preview-fallback')) return
 
     const previewUrl = escapeHtml(getDrivePreviewUrl(item.id))
     const title = escapeHtml(item.name || item.title)
-    const ratio = item.width && item.height ? `${item.width} / ${item.height}` : '16 / 9'
 
+    content.style.setProperty('--video-ratio', String(getVideoAspectRatio(item)))
+    content.classList.add('is-iframe-fallback')
     content.innerHTML = `
       <iframe
         class="video-preview-fallback"
@@ -67,7 +81,6 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
         title="${title}"
         allow="autoplay; fullscreen"
         allowfullscreen
-        style="display:block;width:min(92vw,960px);aspect-ratio:${ratio};max-height:calc(100dvh - 96px);border:0;background:#000;"
       ></iframe>
     `
   }
@@ -78,6 +91,8 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
     const container = fb?.container as HTMLElement | undefined
     if (!container) return
     container.classList.toggle('is-video-slide', !!isVideo)
+
+    applyVideoRatio(slide)
 
     if (slide?.type === 'html5video' && slide?.itemData) {
       const slideRoot = (slide?.el as HTMLElement | undefined) || container
@@ -130,6 +145,7 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
           }
     },
     on: {
+      'Carousel.createSlide': (_fb: any, _carousel: any, slide: any) => applyVideoRatio(slide),
       'Carousel.ready': syncSlideUi,
       'Carousel.change': syncSlideUi,
       destroy: () => {
