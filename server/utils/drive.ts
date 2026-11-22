@@ -16,8 +16,7 @@ let customConfig: Partial<DriveConfig> = {}
 
 export function setRuntimeDriveConfig(config: Partial<DriveConfig>) {
   customConfig = { ...customConfig, ...config }
-  cache.clear()
-  inFlightAllFiles = null
+  clearDriveCache()
 }
 
 export function getDriveConfig(): DriveConfig {
@@ -45,7 +44,11 @@ interface CacheEntry<T> {
 }
 
 const cache = new Map<string, CacheEntry<any>>()
-const CACHE_TTL = 15 * 60 * 1000
+const CACHE_TTL = 2 * 60 * 1000
+const MAX_FOLDER_DEPTH = 5
+
+const PHOTO_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif', 'jfif', 'gif', 'avif', 'bmp']
+const VIDEO_EXTENSIONS = ['mp4', 'mov', 'webm', 'mkv', 'avi', '3gp', 'm4v']
 
 function getCached<T>(key: string): T | null {
   const item = cache.get(key)
@@ -61,8 +64,12 @@ function setCache<T>(key: string, data: T) {
   cache.set(key, { data, expiry: Date.now() + CACHE_TTL })
 }
 
-// Single-flight promise to dedupe concurrent full-archive fetches
-let inFlightAllFiles: Promise<DriveMediaItem[]> | null = null
+export function clearDriveCache() {
+  cache.clear()
+  inFlightAllFiles = null
+}
+
+let inFlightAllFiles: Promise<{ items: DriveMediaItem[]; incomplete: boolean }> | null = null
 
 // Retry with exponential backoff on rate limits (429/403) and transient errors
 async function fetchWithRetry<T>(url: string, retries = 3): Promise<T> {
@@ -100,8 +107,12 @@ async function mapConcurrent<T, R>(items: T[], limit: number, fn: (item: T) => P
   return results
 }
 
-export async function fetchFoldersInParent(apiKey: string, parentId: string): Promise<DriveFolder[]> {
+async function fetchFoldersInParentResult(
+  apiKey: string,
+  parentId: string
+): Promise<{ folders: DriveFolder[]; incomplete: boolean }> {
   const folders: DriveFolder[] = []
+  let incomplete = false
   let pageToken: string | undefined = undefined
 
   do {
@@ -122,43 +133,57 @@ export async function fetchFoldersInParent(apiKey: string, parentId: string): Pr
       pageToken = res?.nextPageToken
     } catch (err: any) {
       console.warn(`Failed to fetch folders in parent ${parentId}:`, err.message)
+      incomplete = true
       break
     }
   } while (pageToken)
 
+  return { folders, incomplete }
+}
+
+export async function fetchFoldersInParent(apiKey: string, parentId: string): Promise<DriveFolder[]> {
+  const { folders } = await fetchFoldersInParentResult(apiKey, parentId)
   return folders
 }
 
-export async function fetchGoogleDriveFolders(): Promise<DriveFolder[]> {
+async function fetchGoogleDriveFoldersResult(): Promise<{ folders: DriveFolder[]; incomplete: boolean }> {
   const { apiKey, folderId } = getDriveConfig()
 
   if (apiKey && folderId) {
     try {
       const cacheKey = `drive-folders-${folderId}`
       const cached = getCached<DriveFolder[]>(cacheKey)
-      if (cached) return cached
+      if (cached) return { folders: cached, incomplete: false }
 
-      const folders = await fetchFoldersInParent(apiKey, folderId)
-      setCache(cacheKey, folders)
-      return folders
+      const { folders, incomplete } = await fetchFoldersInParentResult(apiKey, folderId)
+      if (!incomplete) {
+        setCache(cacheKey, folders)
+      }
+      return { folders, incomplete }
     } catch (err: any) {
       console.warn('Google Drive folders fetch failed:', err.message)
+      return { folders: [], incomplete: true }
     }
   }
 
-  return []
+  return { folders: [], incomplete: false }
+}
+
+export async function fetchGoogleDriveFolders(): Promise<DriveFolder[]> {
+  const { folders } = await fetchGoogleDriveFoldersResult()
+  return folders
 }
 
 export async function fetchGoogleDriveStats(): Promise<DriveStats> {
   const { apiKey, folderId: rootFolderId } = getDriveConfig()
-  const folders = await fetchGoogleDriveFolders()
+  const { folders, incomplete: foldersIncomplete } = await fetchGoogleDriveFoldersResult()
 
   if (apiKey && rootFolderId) {
     const cacheKey = `drive-stats-${rootFolderId}`
     const cachedStats = getCached<DriveStats>(cacheKey)
     if (cachedStats) return cachedStats
 
-    const allFiles = await getAllDriveFiles(apiKey, rootFolderId)
+    const { items: allFiles, incomplete: filesIncomplete } = await getAllDriveFiles(apiKey, rootFolderId)
     const photos = allFiles.filter(item => item.type === 'photo').length
     const videos = allFiles.filter(item => item.type === 'video').length
 
@@ -167,7 +192,9 @@ export async function fetchGoogleDriveStats(): Promise<DriveStats> {
       videos,
       folders: folders.length
     }
-    setCache(cacheKey, stats)
+    if (!foldersIncomplete && !filesIncomplete) {
+      setCache(cacheKey, stats)
+    }
     return stats
   }
 
@@ -178,94 +205,171 @@ export async function fetchGoogleDriveStats(): Promise<DriveStats> {
   }
 }
 
+function buildMimeQuery(type?: 'photo' | 'video' | 'all'): string {
+  const extClauses = (exts: string[]) => exts.map(ext => `fileExtension = '${ext}'`).join(' or ')
+  if (type === 'photo') {
+    return `(mimeType contains 'image/' or ${extClauses(PHOTO_EXTENSIONS)})`
+  }
+  if (type === 'video') {
+    return `(mimeType contains 'video/' or ${extClauses(VIDEO_EXTENSIONS)})`
+  }
+  return `(mimeType contains 'image/' or mimeType contains 'video/' or ${extClauses([...VIDEO_EXTENSIONS, ...PHOTO_EXTENSIONS])})`
+}
+
+function mapDriveFile(f: any, albumFolderId: string, albumFolderName: string): DriveMediaItem {
+  const ext = (f.fileExtension || f.name?.split('.').pop() || '').toLowerCase()
+  const isVideo = f.mimeType?.includes('video') || VIDEO_EXTENSIONS.includes(ext)
+  const mediaType: 'photo' | 'video' = isVideo ? 'video' : 'photo'
+
+  let thumb = f.thumbnailLink || ''
+  if (thumb && thumb.includes('=s')) {
+    thumb = thumb.replace(/=s\d+/, '=s400')
+  } else if (thumb) {
+    thumb = `${thumb}=s400`
+  } else {
+    thumb = `https://lh3.googleusercontent.com/d/${f.id}=s400`
+  }
+
+  const preview = isVideo
+    ? `/api/drive/video/${f.id}`
+    : `https://lh3.googleusercontent.com/d/${f.id}=s0`
+
+  const download = f.webContentLink || `https://drive.google.com/uc?export=download&id=${f.id}`
+
+  return {
+    id: f.id,
+    name: f.name,
+    title: f.description?.split('\n')[0] || f.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '),
+    description: f.description || '',
+    mimeType: f.mimeType || (isVideo ? 'video/mp4' : 'image/jpeg'),
+    type: mediaType,
+    thumbnailUrl: thumb,
+    previewUrl: preview,
+    downloadUrl: download,
+    createdTime: f.createdTime || new Date().toISOString(),
+    folderId: albumFolderId,
+    folderName: albumFolderName || '',
+    size: f.size ? Number(f.size) : undefined,
+    width: Number(f.imageMediaMetadata?.width || f.videoMediaMetadata?.width) || undefined,
+    height: Number(f.imageMediaMetadata?.height || f.videoMediaMetadata?.height) || undefined,
+    durationMillis: f.videoMediaMetadata?.durationMillis ? Number(f.videoMediaMetadata.durationMillis) : undefined
+  }
+}
+
+function dedupeMediaItems(items: DriveMediaItem[]): DriveMediaItem[] {
+  const uniqueMap = new Map<string, DriveMediaItem>()
+  for (const item of items) {
+    if (!uniqueMap.has(item.id)) {
+      uniqueMap.set(item.id, item)
+    }
+  }
+  return Array.from(uniqueMap.values())
+}
+
+async function fetchDirectMediaInFolder(
+  apiKey: string,
+  currentFolderId: string,
+  albumFolderId: string,
+  albumFolderName: string,
+  mimeQuery: string
+): Promise<{ items: DriveMediaItem[]; incomplete: boolean }> {
+  const rawItems: any[] = []
+  let incomplete = false
+  let pageToken: string | undefined = undefined
+
+  do {
+    const q = encodeURIComponent(`'${currentFolderId}' in parents and trashed = false and ${mimeQuery}`)
+    const fields = encodeURIComponent('nextPageToken,files(id,name,mimeType,fileExtension,description,createdTime,size,imageMediaMetadata,videoMediaMetadata,thumbnailLink,webContentLink,webViewLink)')
+    let url = `https://www.googleapis.com/drive/v3/files?q=${q}&fields=${fields}&key=${apiKey}&pageSize=1000&orderBy=createdTime desc&supportsAllDrives=true&includeItemsFromAllDrives=true`
+    if (pageToken) {
+      url += `&pageToken=${encodeURIComponent(pageToken)}`
+    }
+
+    try {
+      const res = await fetchWithRetry<{ nextPageToken?: string; files?: any[] }>(url)
+      if (res?.files?.length) {
+        rawItems.push(...res.files)
+      }
+      pageToken = res?.nextPageToken
+    } catch (err: any) {
+      console.warn(`Failed to fetch media from folder "${albumFolderName}" (${currentFolderId}):`, err.message)
+      incomplete = true
+      break
+    }
+  } while (pageToken)
+
+  return {
+    items: rawItems.map(f => mapDriveFile(f, albumFolderId, albumFolderName)),
+    incomplete
+  }
+}
+
 async function queryGoogleDriveFolder(
   apiKey: string,
   folderId: string,
   folderName: string,
-  type?: 'photo' | 'video' | 'all'
-): Promise<DriveMediaItem[]> {
-  try {
-    const cacheKey = `drive-folder-${folderId}-${type || 'all'}`
-    const cached = getCached<DriveMediaItem[]>(cacheKey)
-    if (cached) return cached
+  type?: 'photo' | 'video' | 'all',
+  recursive = true
+): Promise<{ items: DriveMediaItem[]; incomplete: boolean }> {
+  const cacheKey = `drive-folder-${folderId}-${type || 'all'}-${recursive ? 'rec' : 'direct'}`
+  const cached = getCached<DriveMediaItem[]>(cacheKey)
+  if (cached) return { items: cached, incomplete: false }
 
-    let mimeQuery = "(mimeType contains 'image/' or mimeType contains 'video/' or fileExtension = 'mp4' or fileExtension = 'mov' or fileExtension = 'webm' or fileExtension = 'mkv' or fileExtension = 'avi' or fileExtension = '3gp' or fileExtension = 'jpg' or fileExtension = 'jpeg' or fileExtension = 'png' or fileExtension = 'webp')"
-    if (type === 'photo') {
-      mimeQuery = "(mimeType contains 'image/' or fileExtension = 'jpg' or fileExtension = 'jpeg' or fileExtension = 'png' or fileExtension = 'webp')"
-    } else if (type === 'video') {
-      mimeQuery = "(mimeType contains 'video/' or fileExtension = 'mp4' or fileExtension = 'mov' or fileExtension = 'webm' or fileExtension = 'mkv' or fileExtension = 'avi' or fileExtension = '3gp')"
+  const mimeQuery = buildMimeQuery(type)
+
+  if (!recursive) {
+    const { items, incomplete } = await fetchDirectMediaInFolder(apiKey, folderId, folderId, folderName, mimeQuery)
+    const uniqueItems = dedupeMediaItems(items)
+    if (!incomplete) {
+      setCache(cacheKey, uniqueItems)
+    }
+    return { items: uniqueItems, incomplete }
+  }
+
+  const visited = new Set<string>()
+
+  const scanFolder = async (
+    currentId: string,
+    depth: number
+  ): Promise<{ items: DriveMediaItem[]; incomplete: boolean }> => {
+    if (visited.has(currentId)) {
+      return { items: [], incomplete: false }
+    }
+    visited.add(currentId)
+
+    const [directResult, subResult] = await Promise.all([
+      fetchDirectMediaInFolder(apiKey, currentId, folderId, folderName, mimeQuery),
+      depth < MAX_FOLDER_DEPTH
+        ? fetchFoldersInParentResult(apiKey, currentId)
+        : Promise.resolve({ folders: [] as DriveFolder[], incomplete: false })
+    ])
+
+    let nestedResults: Array<{ items: DriveMediaItem[]; incomplete: boolean }> = []
+    if (subResult.folders.length > 0) {
+      nestedResults = await mapConcurrent(subResult.folders, 4, sub => scanFolder(sub.id, depth + 1))
     }
 
-    const items: any[] = []
-    let pageToken: string | undefined = undefined
-
-    do {
-      const q = encodeURIComponent(`'${folderId}' in parents and trashed = false and ${mimeQuery}`)
-      const fields = encodeURIComponent('nextPageToken,files(id,name,mimeType,fileExtension,description,createdTime,size,imageMediaMetadata,videoMediaMetadata,thumbnailLink,webContentLink,webViewLink)')
-      let url = `https://www.googleapis.com/drive/v3/files?q=${q}&fields=${fields}&key=${apiKey}&pageSize=1000&orderBy=createdTime desc&supportsAllDrives=true&includeItemsFromAllDrives=true`
-      if (pageToken) {
-        url += `&pageToken=${encodeURIComponent(pageToken)}`
-      }
-
-      const res = await fetchWithRetry<{ nextPageToken?: string; files?: any[] }>(url)
-      if (res?.files?.length) {
-        items.push(...res.files)
-      }
-      pageToken = res?.nextPageToken
-    } while (pageToken)
-
-    const mapped: DriveMediaItem[] = items.map((f: any) => {
-      const ext = (f.fileExtension || f.name?.split('.').pop() || '').toLowerCase()
-      const isVideo = f.mimeType?.includes('video') || ['mp4', 'mov', 'webm', 'mkv', 'avi', '3gp'].includes(ext)
-      const mediaType: 'photo' | 'video' = isVideo ? 'video' : 'photo'
-
-      let thumb = f.thumbnailLink || ''
-      if (thumb && thumb.includes('=s')) {
-        thumb = thumb.replace(/=s\d+/, '=s400')
-      } else if (thumb) {
-        thumb = `${thumb}=s400`
-      } else {
-        thumb = `https://lh3.googleusercontent.com/d/${f.id}=s400`
-      }
-
-      const preview = isVideo
-        ? `/api/drive/video/${f.id}`
-        : `https://lh3.googleusercontent.com/d/${f.id}=s0`
-
-      const download = f.webContentLink || `https://drive.google.com/uc?export=download&id=${f.id}`
-
-      return {
-        id: f.id,
-        name: f.name,
-        title: f.description?.split('\n')[0] || f.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '),
-        description: f.description || '',
-        mimeType: f.mimeType || (isVideo ? 'video/mp4' : 'image/jpeg'),
-        type: mediaType,
-        thumbnailUrl: thumb,
-        previewUrl: preview,
-        downloadUrl: download,
-        createdTime: f.createdTime || new Date().toISOString(),
-        folderId,
-        folderName: folderName || '',
-        size: f.size ? Number(f.size) : undefined,
-        width: Number(f.imageMediaMetadata?.width || f.videoMediaMetadata?.width) || undefined,
-        height: Number(f.imageMediaMetadata?.height || f.videoMediaMetadata?.height) || undefined,
-        durationMillis: f.videoMediaMetadata?.durationMillis ? Number(f.videoMediaMetadata.durationMillis) : undefined
-      }
-    })
-
-    setCache(cacheKey, mapped)
-    return mapped
-  } catch (err: any) {
-    console.warn(`Failed to fetch media from folder "${folderName}" (${folderId}):`, err.message)
-    return []
+    return {
+      items: [...directResult.items, ...nestedResults.flatMap(r => r.items)],
+      incomplete: directResult.incomplete || subResult.incomplete || nestedResults.some(r => r.incomplete)
+    }
   }
+
+  const { items, incomplete } = await scanFolder(folderId, 0)
+  const uniqueItems = dedupeMediaItems(items)
+  if (!incomplete) {
+    setCache(cacheKey, uniqueItems)
+  }
+  return { items: uniqueItems, incomplete }
 }
 
-async function getAllDriveFiles(apiKey: string, rootFolderId: string): Promise<DriveMediaItem[]> {
+async function getAllDriveFiles(
+  apiKey: string,
+  rootFolderId: string
+): Promise<{ items: DriveMediaItem[]; incomplete: boolean }> {
   const cacheKey = `drive-all-files-${rootFolderId}`
   const cached = getCached<DriveMediaItem[]>(cacheKey)
-  if (cached) return cached
+  if (cached) return { items: cached, incomplete: false }
 
   if (inFlightAllFiles) {
     return inFlightAllFiles
@@ -273,31 +377,30 @@ async function getAllDriveFiles(apiKey: string, rootFolderId: string): Promise<D
 
   inFlightAllFiles = (async () => {
     try {
-      const folders = await fetchGoogleDriveFolders()
-      const rootFilesPromise = queryGoogleDriveFolder(apiKey, rootFolderId, '', 'all')
+      const { folders, incomplete: foldersIncomplete } = await fetchGoogleDriveFoldersResult()
+      const rootFilesPromise = queryGoogleDriveFolder(apiKey, rootFolderId, '', 'all', false)
       const folderFilesPromise = mapConcurrent(folders, 4, async (f) => {
-        return await queryGoogleDriveFolder(apiKey, f.id, f.name, 'all')
+        return await queryGoogleDriveFolder(apiKey, f.id, f.name, 'all', true)
       })
 
-      const [rootFiles, folderFilesNested] = await Promise.all([
+      const [rootResult, folderResults] = await Promise.all([
         rootFilesPromise,
         folderFilesPromise
       ])
 
-      const allFiles = [...rootFiles, ...folderFilesNested.flat()]
-      const uniqueMap = new Map<string, DriveMediaItem>()
-      for (const item of allFiles) {
-        if (!uniqueMap.has(item.id)) {
-          uniqueMap.set(item.id, item)
-        }
-      }
-      const uniqueFiles = Array.from(uniqueMap.values())
+      const uniqueFiles = dedupeMediaItems([
+        ...rootResult.items,
+        ...folderResults.flatMap(r => r.items)
+      ])
+      const incomplete = foldersIncomplete || rootResult.incomplete || folderResults.some(r => r.incomplete)
 
-      setCache(cacheKey, uniqueFiles)
-      return uniqueFiles
+      if (!incomplete) {
+        setCache(cacheKey, uniqueFiles)
+      }
+      return { items: uniqueFiles, incomplete }
     } catch (err: any) {
       console.warn('Failed to load all Drive files:', err.message)
-      return []
+      return { items: [], incomplete: true }
     } finally {
       inFlightAllFiles = null
     }
@@ -322,10 +425,12 @@ export async function fetchGoogleDriveFiles(options: MediaFilterOptions = {}): P
           const folders = await fetchGoogleDriveFolders()
           const targetFolder = folders.find(f => f.id === requestedFolderId)
           const folderName = targetFolder?.name || ''
-          allFiles = await queryGoogleDriveFolder(apiKey, requestedFolderId, folderName, 'all')
+          const { items } = await queryGoogleDriveFolder(apiKey, requestedFolderId, folderName, 'all', true)
+          allFiles = items
         }
       } else {
-        allFiles = await getAllDriveFiles(apiKey, rootFolderId)
+        const { items } = await getAllDriveFiles(apiKey, rootFolderId)
+        allFiles = items
       }
 
       return processAndPaginate(allFiles, options)

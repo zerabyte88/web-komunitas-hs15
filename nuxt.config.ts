@@ -1,8 +1,8 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
 const driveJsonCacheRule = {
-  cache: { maxAge: 60 * 15, staleMaxAge: 60 * 60 * 24 },
-  headers: { 'Cache-Control': 'public, max-age=300, s-maxage=900, stale-while-revalidate=86400' }
+  cache: { maxAge: 60 * 2, staleMaxAge: 60 * 5 },
+  headers: { 'Cache-Control': 'public, max-age=60, s-maxage=120, stale-while-revalidate=300' }
 }
 
 export default defineNuxtConfig({

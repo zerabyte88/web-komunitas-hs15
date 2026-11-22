@@ -4,8 +4,7 @@ import { openMediaLightbox } from '~/composables/useLightbox'
 const { getStats, getMedia } = useGoogleDrive()
 
 const { data: stats, pending: statsPending } = getStats()
-const { data: recentPhotos, pending: photosPending } = getMedia({
-  type: 'photo',
+const { data: recentMedia, pending: mediaPending } = getMedia({
   limit: 4,
   sort: 'newest'
 })
@@ -47,7 +46,15 @@ const formatDate = (dateStr: string) => {
   }
 }
 
-const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.items ?? [], index)
+const formatDuration = (ms?: number) => {
+  if (!ms) return ''
+  const totalSeconds = Math.floor(ms / 1000)
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+}
+
+const openLightbox = (index: number) => openMediaLightbox(recentMedia.value?.items ?? [], index)
 </script>
 
 <template>
@@ -133,7 +140,7 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
             Dokumentasi terbaru
           </h2>
           <p class="text-sm text-[var(--text-secondary)]">
-            Cuplikan foto perjalanan dan agenda komunitas terkini.
+            Cuplikan foto dan video perjalanan serta agenda komunitas terkini.
           </p>
         </div>
 
@@ -148,7 +155,7 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
         </NuxtLink>
       </div>
 
-      <div v-if="photosPending" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div v-if="mediaPending" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div
           v-for="n in 4"
           :key="n"
@@ -156,29 +163,46 @@ const openLightbox = (index: number) => openMediaLightbox(recentPhotos.value?.it
         />
       </div>
 
-      <div v-else-if="recentPhotos?.items?.length" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div v-else-if="recentMedia?.items?.length" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <button
-          v-for="(photo, idx) in recentPhotos.items"
-          :key="photo.id"
+          v-for="(item, idx) in recentMedia.items"
+          :key="item.id"
           type="button"
           class="group relative rounded-xl overflow-hidden aspect-[4/3] text-left cursor-pointer border border-[var(--border-subtle)] hover:border-[var(--border-strong)] bg-[var(--bg-surface)] hover:-translate-y-0.5 transition-[border-color,transform] duration-200 ease-[var(--ease-out)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
           @click="openLightbox(idx)"
         >
           <img
-            :src="photo.thumbnailUrl"
-            :alt="photo.title || photo.name"
+            :src="item.thumbnailUrl"
+            :alt="item.title || item.name"
             loading="lazy"
             width="400"
             height="300"
             class="w-full h-full object-cover"
           >
 
+          <template v-if="item.type === 'video'">
+            <div class="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-150 flex items-center justify-center pointer-events-none">
+              <div class="w-11 h-11 rounded-full bg-black/75 border border-white/25 text-white flex items-center justify-center pl-0.5">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            </div>
+
+            <span
+              v-if="item.durationMillis"
+              class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/75 text-white text-[11px] font-mono tabular-nums z-10"
+            >
+              {{ formatDuration(item.durationMillis) }}
+            </span>
+          </template>
+
           <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-150 p-3 flex flex-col justify-end">
             <span class="text-xs font-medium text-white truncate">
-              {{ photo.name || photo.title }}
+              {{ item.name || item.title }}
             </span>
             <span class="text-[11px] font-mono tabular-nums text-white/75 mt-0.5">
-              {{ formatDate(photo.createdTime) }}
+              {{ formatDate(item.createdTime) }}
             </span>
           </div>
         </button>
