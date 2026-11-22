@@ -3,18 +3,8 @@ import type { DriveMediaItem } from '~/types/drive'
 const escapeHtml = (s: string) =>
   s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
 
-const getDrivePreviewUrl = (id: string) =>
-  `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview`
-
-const isHighResVideo = (item: DriveMediaItem) =>
-  Math.max(item.width ?? 0, item.height ?? 0) > 1920
-
-const getVideoAspectRatio = (item: DriveMediaItem) => {
-  if (item.width && item.height) {
-    return Math.min(2.4, Math.max(0.45, item.width / item.height))
-  }
-  return 16 / 9
-}
+const getDriveViewUrl = (id: string) =>
+  `https://drive.google.com/file/d/${encodeURIComponent(id)}/view`
 
 export async function openMediaLightbox(items: DriveMediaItem[], startIndex: number) {
   if (!items.length) return
@@ -27,28 +17,22 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
 
   const isMobile = window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches
 
-  const slides = items.map(item => {
-    const useAdaptiveIframe = item.type === 'video' && isMobile && isHighResVideo(item)
-    return {
-      src: item.type === 'video'
-        ? (useAdaptiveIframe ? getDrivePreviewUrl(item.id) : `/api/drive/video/${item.id}`)
-        : item.previewUrl,
-      thumb: item.thumbnailUrl,
-      type: item.type === 'video' ? (useAdaptiveIframe ? 'iframe' : 'html5video') : 'image',
-      videoFormat: item.type === 'video' && !useAdaptiveIframe ? item.mimeType : undefined,
-      preload: useAdaptiveIframe ? false : undefined,
-      width: useAdaptiveIframe ? undefined : item.width,
-      height: useAdaptiveIframe ? undefined : item.height,
-      caption: `
-        <div class="gallery-caption-box">
-          <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>
-          <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-        </div>
-      `,
-      downloadSrc: item.downloadUrl,
-      itemData: item
-    }
-  })
+  const slides = items.map(item => ({
+    src: item.type === 'video' ? `/api/drive/video/${item.id}` : item.previewUrl,
+    thumb: item.thumbnailUrl,
+    type: item.type === 'video' ? 'html5video' : 'image',
+    videoFormat: item.type === 'video' ? item.mimeType : undefined,
+    width: item.width,
+    height: item.height,
+    caption: `
+      <div class="gallery-caption-box">
+        <div class="gallery-caption-title">${escapeHtml(item.name || item.title)}</div>
+        <div class="gallery-caption-date">${new Date(item.createdTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+      </div>
+    `,
+    downloadSrc: item.downloadUrl,
+    itemData: item
+  }))
 
   // Push history state so mobile back closes the lightbox instead of leaving the page
   history.pushState({ ...history.state, lightbox: true }, '')
@@ -59,29 +43,54 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
   }
   window.addEventListener('popstate', onPopState, { once: true })
 
-  const applyVideoRatio = (slide: any) => {
-    if (slide?.type !== 'iframe' || !slide?.itemData) return
-    const slideEl = slide.el as HTMLElement | undefined
-    slideEl?.style.setProperty('--video-ratio', String(getVideoAspectRatio(slide.itemData)))
-  }
-
   const handleVideoError = (root: HTMLElement, item: DriveMediaItem) => {
     const content = root.querySelector('.fancybox__content') as HTMLElement | null
-    if (!content || content.querySelector('.video-preview-fallback')) return
+    if (!content || content.querySelector('.video-fallback-card')) return
 
-    const previewUrl = escapeHtml(getDrivePreviewUrl(item.id))
-    const title = escapeHtml(item.name || item.title)
+    const videoEl = root.querySelector('video')
+    if (videoEl) {
+      videoEl.pause()
+      videoEl.removeAttribute('src')
+      videoEl.querySelectorAll('source').forEach(sourceEl => sourceEl.removeAttribute('src'))
+      videoEl.load()
+    }
 
-    content.style.setProperty('--video-ratio', String(getVideoAspectRatio(item)))
-    content.classList.add('is-iframe-fallback')
+    const driveViewUrl = escapeHtml(getDriveViewUrl(item.id))
+    const downloadUrl = escapeHtml(item.downloadUrl || `/api/drive/video/${item.id}`)
+
+    content.classList.add('is-fallback-card')
     content.innerHTML = `
-      <iframe
-        class="video-preview-fallback"
-        src="${previewUrl}"
-        title="${title}"
-        allow="autoplay; fullscreen"
-        allowfullscreen
-      ></iframe>
+      <div class="video-fallback-card">
+        <div class="video-fallback-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+          </svg>
+        </div>
+        <div class="video-fallback-title">Video Tidak Dapat Diputar Langsung</div>
+        <div class="video-fallback-desc">
+          Perangkat atau browser ini tidak mendukung resolusi atau codec video asli. Buka lewat Google Drive untuk kualitas adaptif, atau unduh videonya.
+        </div>
+        <div class="video-fallback-actions">
+          <a href="${driveViewUrl}" target="_blank" rel="noopener noreferrer" class="video-fallback-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span>Putar di Google Drive</span>
+          </a>
+          <a href="${downloadUrl}" target="_blank" rel="noopener noreferrer" class="video-fallback-btn-secondary" download>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Unduh Video</span>
+          </a>
+        </div>
+      </div>
     `
   }
 
@@ -92,20 +101,30 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
     if (!container) return
     container.classList.toggle('is-video-slide', !!isVideo)
 
-    applyVideoRatio(slide)
-
     if (slide?.type === 'html5video' && slide?.itemData) {
       const slideRoot = (slide?.el as HTMLElement | undefined) || container
       const videoEl = slideRoot.querySelector('video')
       if (videoEl && !videoEl.hasAttribute('data-error-handled')) {
         videoEl.setAttribute('data-error-handled', '1')
-        const onFail = () => handleVideoError(slideRoot, slide.itemData)
+        let handled = false
+        const onFail = () => {
+          if (handled) return
+          handled = true
+          handleVideoError(slideRoot, slide.itemData)
+        }
+        const checkVideoTrack = () => {
+          if (videoEl.readyState >= 2 && videoEl.videoWidth === 0 && videoEl.videoHeight === 0) {
+            onFail()
+          }
+        }
         if (videoEl.error) {
           onFail()
         } else {
           videoEl.addEventListener('error', onFail, { once: true })
-          const sourceEl = videoEl.querySelector('source')
-          sourceEl?.addEventListener('error', onFail, { once: true })
+          videoEl.querySelector('source')?.addEventListener('error', onFail, { once: true })
+          videoEl.addEventListener('loadeddata', checkVideoTrack, { once: true })
+          videoEl.addEventListener('playing', checkVideoTrack, { once: true })
+          checkVideoTrack()
         }
       }
     }
@@ -136,16 +155,26 @@ export async function openMediaLightbox(items: DriveMediaItem[], startIndex: num
     Toolbar: {
       enabled: true,
       absolute: true,
+      items: {
+        driveView: {
+          tpl: '<button class="f-button is-drive-view-btn" title="Putar di Google Drive" aria-label="Putar di Google Drive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button>',
+          click: (toolbar: any) => {
+            const slide = toolbar?.instance?.getSlide?.() ?? Fancybox.getSlide?.()
+            const item = slide?.itemData as DriveMediaItem | undefined
+            if (!item || item.type !== 'video') return
+            window.open(getDriveViewUrl(item.id), '_blank', 'noopener,noreferrer')
+          }
+        }
+      },
       display: isMobile
-        ? { left: [], middle: [], right: ['download', 'close'] }
+        ? { left: [], middle: [], right: ['driveView', 'download', 'close'] }
         : {
             left: [],
             middle: [],
-            right: ['zoomIn', 'zoomOut', 'rotateCCW', 'rotateCW', 'download', 'close']
+            right: ['zoomIn', 'zoomOut', 'rotateCCW', 'rotateCW', 'driveView', 'download', 'close']
           }
     },
     on: {
-      'Carousel.createSlide': (_fb: any, _carousel: any, slide: any) => applyVideoRatio(slide),
       'Carousel.ready': syncSlideUi,
       'Carousel.change': syncSlideUi,
       destroy: () => {
